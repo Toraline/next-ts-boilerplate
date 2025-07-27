@@ -8,15 +8,15 @@ const getData = async () => {
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string; categoriaId: string }>;
+  params: Promise<{ slug: string; categoyId: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { categoriaId, slug } = await params;
+  const { categoyId, slug } = await params;
   await getData();
 
   return (
     <h1>
-      Categoria: {categoriaId} {slug}
+      Categoria: {categoyId} {slug}
     </h1>
   );
 }
