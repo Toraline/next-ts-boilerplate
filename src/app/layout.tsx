@@ -28,7 +28,7 @@ export default function RootLayout({
             </SignedOut>
             <SignedIn>
               <UserButton afterSwitchSessionUrl="/" showName />
-              <SignOutButton redirectUrl="https://studious-system-97xvrjjwwq52pwq9-3000.app.github.dev/" />
+              <SignOutButton />
             </SignedIn>
           </header>
           {children}
