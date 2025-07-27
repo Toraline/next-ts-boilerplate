@@ -8,8 +8,8 @@ const getData = async () => {
 export default async function Page({
   params,
 }: {
-  params: { slug: string; categoriaId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string; categoriaId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { categoriaId, slug } = await params;
   await getData();
