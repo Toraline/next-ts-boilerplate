@@ -8,6 +8,11 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.27.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/roboto": "^5.2.6",
+    "@mui/icons-material": "^7.3.0",
+    "@mui/material": "^7.3.0",
     "dotenv": "^17.2.1",
     "next": "^15.4.4",
     "react": "^19.1.0",
