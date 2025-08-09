@@ -1,9 +1,8 @@
-import { categories, category1 } from "../../../fixtures/categories";
+import { categories, category1 } from "../../../tests/fixtures/categories";
 
 describe("GET /api/categories", () => {
   test("should return all categories", async () => {
     const response = await fetch(process.env.API_URL + "/api/categories");
-
     expect(response.status).toBe(200);
 
     const data = await response.json();
