@@ -1,6 +1,9 @@
 {
   "scripts": {
     "dev": "next dev",
+    "services:up": "docker compose --file=src/infra/compose.yaml up -d",
+    "services:stop": "docker compose --file=src/infra/compose.yaml stop",
+    "services:down": "docker compose --file=src/infra/compose.yaml down",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -10,6 +13,8 @@
     "@clerk/nextjs": "^6.27.1",
     "dotenv": "^17.2.1",
     "next": "^15.4.4",
+    "node-pg-migrate": "^8.0.3",
+    "pg": "^8.16.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -20,6 +25,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "24.1.0",
+    "@types/pg": "^8.15.5",
     "@types/react": "19.1.8",
     "autoprefixer": "^10.4.21",
     "eslint": "9.31.0",
