@@ -1,24 +1,22 @@
 import { NextResponse } from "next/server";
-import db from "infra/database";
+import prisma from "infra/database";
+import { RowVersion, RowConnections, RowMaxConnections } from "./status.types";
 
 export async function GET() {
-  const client = await db.getNewClient();
-
   try {
-    const databaseVersionResult = await client.query("SHOW server_version");
-    const { server_version } = databaseVersionResult.rows[0];
+    const [{ server_version }] = await prisma.$queryRaw<
+      RowVersion[]
+    >`SHOW server_version;`;
 
-    const databaseMaxConnectionsResult = await client.query(
-      "SHOW max_connections;"
-    );
-    const { max_connections } = databaseMaxConnectionsResult.rows[0];
+    const [{ max_connections }] = await prisma.$queryRaw<
+      RowMaxConnections[]
+    >`SHOW max_connections;`;
 
-    const databaseName = process.env.POSTGRES_DB;
-    const databaseConnectionsResult = await client.query({
-      text: `SELECT count(*)::int FROM pg_stat_activity WHERE datname=$1;`,
-      values: [databaseName],
-    });
-    const connections = databaseConnectionsResult.rows[0].count;
+    const [{ count }] = await prisma.$queryRaw<
+      RowConnections[]
+    >`SELECT COUNT(*)::int AS count
+      FROM pg_stat_activity
+      WHERE datname = current_database();`;
 
     return NextResponse.json(
       {
@@ -26,7 +24,7 @@ export async function GET() {
           database: {
             server_version,
             max_connections: Number(max_connections),
-            connections,
+            connections: count,
           },
         },
       },
@@ -34,17 +32,13 @@ export async function GET() {
     );
   } catch (error) {
     console.error("Error fetching stats:", error);
-    return NextResponse.json({
-      ok: false,
-      error: "Failed to fetch status",
-    });
-  } finally {
-    await client.end();
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Failed to fetch status",
+      },
+      { status: 500 }
+    );
   }
-}
-
-export async function POST(request: Request) {
-  const newCategory = await request.json();
-
-  return Response.json(newCategory, { status: 201 });
 }
