@@ -4,6 +4,6 @@ services:
     image: "postgres:16"
     restart: unless-stopped
     env_file:
-      - ../../.env.development
+      - ../../.env
     ports:
       - "5432:5432"
