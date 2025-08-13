@@ -1,9 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+import { Client } from "pg";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const getNewClient = async () => {
+  const url = process.env.DATABASE_URL;
 
-const prisma = globalForPrisma.prisma ?? new PrismaClient();
+  const client = new Client({ connectionString: url });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+  await client.connect();
 
-export default prisma;
+  return client;
+};
+
+export default {
+  getNewClient,
+};
