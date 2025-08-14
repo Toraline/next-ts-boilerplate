@@ -8,8 +8,8 @@
     "prisma:generate": "prisma generate dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@clerk/nextjs": "^6.27.1",
@@ -21,6 +21,8 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@next/eslint-plugin-next": "^15.4.6",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
@@ -29,8 +31,7 @@
     "@types/node": "24.1.0",
     "@types/react": "19.1.8",
     "autoprefixer": "^10.4.21",
-    "eslint": "9.31.0",
-    "eslint-config-next": "15.4.4",
+    "eslint": "^9.33.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "next-router-mock": "^1.0.2",
