@@ -5,7 +5,7 @@ dotenv.config();
 
 const createJestConfig = nextJest();
 const customJestConfig = createJestConfig({
-  moduleDirectories: ["node_modules", "<rootDir>/"],
+  moduleDirectories: ["node_modules", "<rootDir>/src"],
   testTimeout: 60000,
 });
 
