@@ -4,17 +4,13 @@ import { RowVersion, RowConnections, RowMaxConnections } from "./status.types";
 
 export async function GET() {
   try {
-    const [{ server_version }] = await prisma.$queryRaw<
-      RowVersion[]
-    >`SHOW server_version;`;
+    const [{ server_version }] = await prisma.$queryRaw<RowVersion[]>`SHOW server_version;`;
 
     const [{ max_connections }] = await prisma.$queryRaw<
       RowMaxConnections[]
     >`SHOW max_connections;`;
 
-    const [{ count }] = await prisma.$queryRaw<
-      RowConnections[]
-    >`SELECT COUNT(*)::int AS count
+    const [{ count }] = await prisma.$queryRaw<RowConnections[]>`SELECT COUNT(*)::int AS count
       FROM pg_stat_activity
       WHERE datname = current_database();`;
 
@@ -28,7 +24,7 @@ export async function GET() {
           },
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error fetching stats:", error);
@@ -38,7 +34,7 @@ export async function GET() {
         ok: false,
         error: "Failed to fetch status",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
