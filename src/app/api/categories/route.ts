@@ -4,7 +4,14 @@ import prisma from "infra/database";
 export const runtime = "nodejs";
 
 export async function GET() {
-  return Response.json("initialCategories");
+  try {
+    const items = await prisma.category.findMany();
+
+    return NextResponse.json({ items });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

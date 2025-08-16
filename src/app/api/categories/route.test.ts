@@ -8,12 +8,31 @@ describe("API Categories", () => {
   });
 
   describe("GET /api/categories", () => {
-    test("should return all categories", async () => {
+    test("should return empty array when no categories exist", async () => {
       const response = await fetch(process.env.API_URL + "/api/categories");
       expect(response.status).toBe(200);
 
       const data = await response.json();
-      expect(data).toEqual("initialCategories");
+      expect(data).toEqual({ items: [] });
+    });
+
+    test("should return all categories when any", async () => {
+      // create a new category
+      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryComplete),
+      });
+      const { createdAt, id, updatedAt } = await categoryResponse.json();
+
+      // fetch all categories
+      const response = await fetch(process.env.API_URL + "/api/categories");
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data).toEqual({ items: [{ ...categoryComplete, createdAt, id, updatedAt }] });
     });
   });
 
