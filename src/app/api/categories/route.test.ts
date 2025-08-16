@@ -1,12 +1,7 @@
 import { categoryRequiredData, categoryComplete } from "tests/fixtures/categories";
-import { resetDb } from "tests/utils/reset-db";
 import prisma from "infra/database";
 
 describe("API Categories", () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   describe("GET /api/categories", () => {
     test("should return empty array when no categories exist", async () => {
       const response = await fetch(process.env.API_URL + "/api/categories");

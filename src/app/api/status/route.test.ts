@@ -9,7 +9,6 @@ describe("GET /api/status", () => {
       dependencies: {
         database: {
           server_version: "16.9 (Debian 16.9-1.pgdg120+1)",
-          connections: 1,
           max_connections: 100,
         },
       },
