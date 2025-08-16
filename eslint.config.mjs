@@ -52,7 +52,12 @@ export default [
     rules: { "prettier/prettier": "error" },
   },
   {
-    files: ["src/**/*.{test,spec}.{js,jsx,ts,tsx}", "src/**/__tests__/**/*.{js,jsx,ts,tsx}"],
+    files: [
+      "src/**/*.{test,spec}.{js,jsx,ts,tsx}",
+      "src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "src/tests/**/*.{js,ts,jsx,tsx}",
+      "src/tests/setup-*.{js,ts}",
+    ],
     plugins: { jest },
     languageOptions: { globals: { ...globals.jest } },
     rules: { ...jest.configs.recommended.rules },
