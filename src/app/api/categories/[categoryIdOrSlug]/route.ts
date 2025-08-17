@@ -3,7 +3,7 @@ import prisma from "infra/database";
 import { Category } from "models/Category";
 export const runtime = "nodejs";
 
-type RouteParams = { params: { categoryIdOrSlug: string } };
+type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };
 
 export async function GET(_r: Request, { params }: RouteParams) {
   const { categoryIdOrSlug } = await params;
