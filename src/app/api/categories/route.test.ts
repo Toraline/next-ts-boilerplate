@@ -81,6 +81,31 @@ describe("API Categories", () => {
       expect(savedCategory).toEqual(createdCategory);
     });
 
+    test("should return error when slug already exists", async () => {
+      await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryRequiredData),
+      });
+
+      const response = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryRequiredData),
+      });
+
+      expect(response.status).toBe(409);
+
+      const data = await response.json();
+      expect(data).toEqual({
+        error: "Category with this slug already exists",
+      });
+    });
+
     test("should return error when no slug is passed", async () => {
       const response = await fetch(process.env.API_URL + "/api/categories", {
         method: "POST",

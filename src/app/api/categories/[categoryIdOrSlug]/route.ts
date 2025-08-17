@@ -61,6 +61,13 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(updatedCategory);
   } catch (error) {
+    if (error?.code === "P2002") {
+      return NextResponse.json(
+        { error: "Category with this slug already exists" },
+        { status: 409 },
+      );
+    }
+
     console.error("Error updating category:", error);
     return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
   }
@@ -70,11 +77,11 @@ export async function DELETE(request: Request, { params }: RouteParams) {
   const { categoryIdOrSlug } = await params;
 
   try {
-    const category = await prisma.category.findUnique({
+    const savedCategory = await prisma.category.findUnique({
       where: { id: categoryIdOrSlug },
     });
 
-    if (!category) {
+    if (!savedCategory) {
       return NextResponse.json({ error: "Category not found" }, { status: 404 });
     }
 

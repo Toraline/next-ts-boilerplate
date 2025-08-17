@@ -1,4 +1,4 @@
-import { categoryComplete } from "tests/fixtures/categories";
+import { categoryComplete, categoryRequiredData } from "tests/fixtures/categories";
 import prisma from "infra/database";
 
 describe("API Categories", () => {
@@ -110,6 +110,36 @@ describe("API Categories", () => {
 
       const data = await response.json();
       expect(data).toEqual({ error: "Category not found" });
+    });
+
+    test("should return error if updating slug to an existing one", async () => {
+      await fetch(process.env.API_URL + `/api/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryComplete),
+      });
+
+      const categoryResponse = await fetch(process.env.API_URL + `/api/categories`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryRequiredData),
+      });
+
+      const { id } = await categoryResponse.json();
+
+      const response = await fetch(process.env.API_URL + `/api/categories/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ slug: categoryComplete.slug }),
+      });
+
+      expect(response.status).toBe(409);
     });
   });
 
