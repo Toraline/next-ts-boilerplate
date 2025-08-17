@@ -65,3 +65,26 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request, { params }: RouteParams) {
+  const { categoryIdOrSlug } = await params;
+
+  try {
+    const category = await prisma.category.findUnique({
+      where: { id: categoryIdOrSlug },
+    });
+
+    if (!category) {
+      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    }
+
+    const deletedCategory = await prisma.category.delete({
+      where: { id: categoryIdOrSlug },
+    });
+
+    return NextResponse.json(deletedCategory);
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    return NextResponse.json({ error: "Failed to delete category" }, { status: 500 });
+  }
+}

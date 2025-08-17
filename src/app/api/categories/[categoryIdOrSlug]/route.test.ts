@@ -2,7 +2,7 @@ import { categoryComplete } from "tests/fixtures/categories";
 import prisma from "infra/database";
 
 describe("API Categories", () => {
-  describe("GET /api/categories/:categoryId", () => {
+  describe("GET /api/categories/:categoryIdOrSlug", () => {
     test("should return category details when id exists", async () => {
       // create a new category
       const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
@@ -52,7 +52,7 @@ describe("API Categories", () => {
     });
   });
 
-  describe("PATCH /api/categories/:categoryId", () => {
+  describe("PATCH /api/categories/:categoryIdOrSlug", () => {
     test("should update category when id exists", async () => {
       // create a new category
       const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
@@ -105,6 +105,38 @@ describe("API Categories", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name: "Updated Category" }),
+      });
+      expect(response.status).toBe(404);
+
+      const data = await response.json();
+      expect(data).toEqual({ error: "Category not found" });
+    });
+  });
+
+  describe("DELETE /api/categories/:categoryIdOrSlug", () => {
+    test("should delete category when id exists", async () => {
+      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categoryComplete),
+      });
+      const { id } = await categoryResponse.json();
+
+      const response = await fetch(process.env.API_URL + `/api/categories/${id}`, {
+        method: "DELETE",
+      });
+      expect(response.status).toBe(200);
+
+      const savedCategory = await prisma.category.findUnique({ where: { id } });
+
+      expect(savedCategory).toBeNull();
+    });
+
+    test("should return error when category do not exists", async () => {
+      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
+        method: "DELETE",
       });
       expect(response.status).toBe(404);
 
