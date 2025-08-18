@@ -7,6 +7,7 @@ import {
   emptyNameError,
 } from "tests/fixtures/categories";
 import prisma from "infra/database";
+import { errorMessages } from "constants/errors";
 
 describe("API Categories", () => {
   describe("GET /api/categories", () => {
@@ -109,7 +110,7 @@ describe("API Categories", () => {
 
       const data = await response.json();
       expect(data).toEqual({
-        error: "Category with this slug already exists",
+        error: errorMessages.CATEGORY_EXISTS_ERROR,
       });
     });
 

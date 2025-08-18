@@ -1,3 +1,5 @@
+import { errorMessages } from "constants/errors";
+
 export const categoryComplete = {
   name: "Category Complete",
   slug: "category_complete",
@@ -12,37 +14,37 @@ export const categoryRequiredData = {
 export const categories = [categoryComplete, categoryRequiredData];
 
 export const missingSlugError = {
-  error: "Validation error",
+  error: errorMessages.VALIDATION_ERROR,
   issues: {
     slug: {
-      errors: ["Slug should be a string"],
+      errors: [errorMessages.SLUG_TYPE_ERROR],
     },
   },
 };
 
 export const emptySlugError = {
-  error: "Validation error",
+  error: errorMessages.VALIDATION_ERROR,
   issues: {
     slug: {
-      errors: ["Slug can not be empty"],
+      errors: [errorMessages.SLUG_EMPTY_ERROR],
     },
   },
 };
 
 export const missingNameError = {
-  error: "Validation error",
+  error: errorMessages.VALIDATION_ERROR,
   issues: {
     name: {
-      errors: ["Name should be a string"],
+      errors: [errorMessages.NAME_TYPE_ERROR],
     },
   },
 };
 
 export const emptyNameError = {
-  error: "Validation error",
+  error: errorMessages.VALIDATION_ERROR,
   issues: {
     name: {
-      errors: ["Name can not be empty"],
+      errors: [errorMessages.NAME_EMPTY_ERROR],
     },
   },
 };
