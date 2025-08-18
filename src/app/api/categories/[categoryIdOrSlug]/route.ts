@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "infra/database";
-import { Category } from "models/Category";
+import { Category } from "schemas/category";
 export const runtime = "nodejs";
 
 type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };
