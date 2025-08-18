@@ -1,5 +1,8 @@
+import * as z from "zod";
 import { NextResponse } from "next/server";
+
 import prisma from "infra/database";
+import { CategorySchema } from "schemas/category";
 
 export const runtime = "nodejs";
 
@@ -17,15 +20,15 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, slug, description } = body;
+    const parsed = CategorySchema.safeParse(body);
 
-    if (typeof name !== "string" || name.trim() === "") {
-      return NextResponse.json({ error: "Name is required" }, { status: 400 });
+    if (!parsed.success) {
+      const errorsTree = z.treeifyError(parsed.error);
+      const issues = errorsTree.properties;
+      return NextResponse.json({ error: "Validation error", issues }, { status: 400 });
     }
 
-    if (typeof slug !== "string" || slug.trim() === "") {
-      return NextResponse.json({ error: "Slug is required" }, { status: 400 });
-    }
+    const { name, slug, description } = parsed.data;
 
     const created = await prisma.category.create({
       data: {

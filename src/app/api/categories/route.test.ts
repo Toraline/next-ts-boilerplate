@@ -1,4 +1,11 @@
-import { categoryRequiredData, categoryComplete } from "tests/fixtures/categories";
+import {
+  categoryRequiredData,
+  categoryComplete,
+  missingSlugError,
+  emptySlugError,
+  missingNameError,
+  emptyNameError,
+} from "tests/fixtures/categories";
 import prisma from "infra/database";
 
 describe("API Categories", () => {
@@ -119,9 +126,39 @@ describe("API Categories", () => {
 
       const data = await response.json();
 
-      expect(data).toEqual({
-        error: "Slug is required",
+      expect(data).toEqual(missingSlugError);
+    });
+
+    test("should return error when slug is not a string", async () => {
+      const response = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: "Category without slug", slug: 1 }),
       });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+
+      expect(data).toEqual(missingSlugError);
+    });
+
+    test("should return error when slug is empty", async () => {
+      const response = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: "Category without slug", slug: "" }),
+      });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+
+      expect(data).toEqual(emptySlugError);
     });
 
     test("should return error when no name is passed", async () => {
@@ -137,9 +174,39 @@ describe("API Categories", () => {
 
       const data = await response.json();
 
-      expect(data).toEqual({
-        error: "Name is required",
+      expect(data).toEqual(missingNameError);
+    });
+
+    test("should return error when name is not a string", async () => {
+      const response = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ slug: "category_without_name", name: 1 }),
       });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+
+      expect(data).toEqual(missingNameError);
+    });
+
+    test("should return error when name is empty", async () => {
+      const response = await fetch(process.env.API_URL + "/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ slug: "category_without_name", name: "" }),
+      });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+
+      expect(data).toEqual(emptyNameError);
     });
   });
 });
