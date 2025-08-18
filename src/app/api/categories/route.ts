@@ -1,14 +1,13 @@
 import * as z from "zod";
 import { NextResponse } from "next/server";
 
-import prisma from "infra/database";
-import { CategorySchema } from "schemas/category";
+import { CategorySchema, createCategory, listCategories } from "modules/categories";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const items = await prisma.category.findMany();
+    const items = await listCategories();
 
     return NextResponse.json({ items });
   } catch (error) {
@@ -28,15 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Validation error", issues }, { status: 400 });
     }
 
-    const { name, slug, description } = parsed.data;
-
-    const created = await prisma.category.create({
-      data: {
-        name: name.trim(),
-        slug: slug.trim(),
-        description: description?.trim() || "",
-      },
-    });
+    const created = await createCategory(parsed.data);
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
