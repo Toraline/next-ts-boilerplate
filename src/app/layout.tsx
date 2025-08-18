@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import {
   ClerkProvider,
   SignInButton,
@@ -9,11 +10,7 @@ import {
 } from "@clerk/nextjs";
 import "../styles/globals.css";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en">
