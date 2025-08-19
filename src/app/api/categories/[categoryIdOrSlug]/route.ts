@@ -1,6 +1,13 @@
+import * as z from "zod";
 import { NextResponse } from "next/server";
-import prisma from "infra/database";
-import { Category } from "models/Category";
+
+import {
+  CategorySchema,
+  getCategoryByIdOrSlug,
+  updateCategoryByIdOrSlug,
+  deleteCategoryByIdOrSlug,
+} from "modules/categories";
+import { errorMessages } from "constants/errors";
 export const runtime = "nodejs";
 
 type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };
@@ -9,26 +16,16 @@ export async function GET(_r: Request, { params }: RouteParams) {
   const { categoryIdOrSlug } = await params;
 
   try {
-    const categoryById = await prisma.category.findUnique({
-      where: { id: categoryIdOrSlug },
-    });
+    const category = await getCategoryByIdOrSlug(categoryIdOrSlug);
 
-    if (categoryById) {
-      return NextResponse.json(categoryById);
+    if (category) {
+      return NextResponse.json(category);
     }
 
-    const categoryBySlug = await prisma.category.findUnique({
-      where: { slug: categoryIdOrSlug },
-    });
-
-    if (categoryBySlug) {
-      return NextResponse.json(categoryBySlug);
-    }
-
-    return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
   } catch (error) {
-    console.error("Error fetching categories:", error);
-    return NextResponse.json({ error: "Failed to fetch categories" }, { status: 500 });
+    console.error(errorMessages.GET_CATEGORIES_ERROR, error);
+    return NextResponse.json({ error: errorMessages.GET_CATEGORIES_ERROR }, { status: 500 });
   }
 }
 
@@ -36,62 +33,49 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   const { categoryIdOrSlug } = await params;
 
   try {
-    const { name, slug, description } = await request.json();
-    const data: Partial<Category> = {};
-    if (name) data.name = name;
-    if (slug) data.slug = slug;
-    if (description) data.description = description;
+    const body = await request.json();
+    const parsed = CategorySchema.partial().safeParse(body);
 
-    if (Object.keys(data).length === 0) {
-      return NextResponse.json({ error: "No fields to update" }, { status: 400 });
+    if (!parsed.success) {
+      const errorsTree = z.treeifyError(parsed.error);
+      const issues = errorsTree.properties;
+      return NextResponse.json({ error: errorMessages.VALIDATION_ERROR, issues }, { status: 400 });
     }
 
-    const savedCategory = await prisma.category.findUnique({
-      where: { id: categoryIdOrSlug },
-    });
-
-    if (!savedCategory) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    if (Object.keys(parsed.data).length === 0) {
+      return NextResponse.json({ error: errorMessages.NO_FIELDS_TO_UPDATE_ERROR }, { status: 400 });
     }
 
-    const updatedCategory = await prisma.category.update({
-      where: { id: categoryIdOrSlug },
-      data,
-    });
+    const updatedCategory = await updateCategoryByIdOrSlug(categoryIdOrSlug, parsed.data);
+
+    if (!updatedCategory) {
+      return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
+    }
 
     return NextResponse.json(updatedCategory);
   } catch (error) {
     if (error?.code === "P2002") {
-      return NextResponse.json(
-        { error: "Category with this slug already exists" },
-        { status: 409 },
-      );
+      return NextResponse.json({ error: errorMessages.CATEGORY_EXISTS_ERROR }, { status: 409 });
     }
 
-    console.error("Error updating category:", error);
-    return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
+    console.error(errorMessages.UPDATE_CATEGORY_ERROR, error);
+    return NextResponse.json({ error: errorMessages.UPDATE_CATEGORY_ERROR }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE(_r: Request, { params }: RouteParams) {
   const { categoryIdOrSlug } = await params;
 
   try {
-    const savedCategory = await prisma.category.findUnique({
-      where: { id: categoryIdOrSlug },
-    });
+    const deletedCategory = await deleteCategoryByIdOrSlug(categoryIdOrSlug);
 
-    if (!savedCategory) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+    if (!deletedCategory) {
+      return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
     }
-
-    const deletedCategory = await prisma.category.delete({
-      where: { id: categoryIdOrSlug },
-    });
 
     return NextResponse.json(deletedCategory);
   } catch (error) {
-    console.error("Error deleting category:", error);
-    return NextResponse.json({ error: "Failed to delete category" }, { status: 500 });
+    console.error(errorMessages.DELETE_CATEGORY_ERROR, error);
+    return NextResponse.json({ error: errorMessages.DELETE_CATEGORY_ERROR }, { status: 500 });
   }
 }
