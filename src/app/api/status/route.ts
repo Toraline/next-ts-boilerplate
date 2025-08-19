@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "infra/database";
-import { RowVersion, RowConnections, RowMaxConnections } from "./status.types";
+import { RowVersion, RowMaxConnections } from "./status.types";
 
 export async function GET() {
   try {
@@ -10,17 +10,12 @@ export async function GET() {
       RowMaxConnections[]
     >`SHOW max_connections;`;
 
-    const [{ count }] = await prisma.$queryRaw<RowConnections[]>`SELECT COUNT(*)::int AS count
-      FROM pg_stat_activity
-      WHERE datname = current_database();`;
-
     return NextResponse.json(
       {
         dependencies: {
           database: {
             server_version,
             max_connections: Number(max_connections),
-            connections: count,
           },
         },
       },

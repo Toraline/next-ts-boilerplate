@@ -1,10 +1,50 @@
-export const category1 = {
-  id: "1",
-  name: "Category 1",
-  description: "Description for Category 1",
-  tasks: [],
-  createdAt: new Date("2023-01-01T00:00:00Z").getTime(),
-  updatedAt: new Date("2023-01-01T00:00:00Z").getTime(),
+import { errorMessages } from "constants/errors";
+
+export const categoryComplete = {
+  name: "Category Complete",
+  slug: "category_complete",
+  description: "Description for Category Complete",
 };
 
-export const categories = [category1];
+export const categoryRequiredData = {
+  name: "Category required data",
+  slug: "category_required",
+};
+
+export const categories = [categoryComplete, categoryRequiredData];
+
+export const missingSlugError = {
+  error: errorMessages.VALIDATION_ERROR,
+  issues: {
+    slug: {
+      errors: [errorMessages.SLUG_TYPE_ERROR],
+    },
+  },
+};
+
+export const emptySlugError = {
+  error: errorMessages.VALIDATION_ERROR,
+  issues: {
+    slug: {
+      errors: [errorMessages.SLUG_EMPTY_ERROR],
+    },
+  },
+};
+
+export const missingNameError = {
+  error: errorMessages.VALIDATION_ERROR,
+  issues: {
+    name: {
+      errors: [errorMessages.NAME_TYPE_ERROR],
+    },
+  },
+};
+
+export const emptyNameError = {
+  error: errorMessages.VALIDATION_ERROR,
+  issues: {
+    name: {
+      errors: [errorMessages.NAME_EMPTY_ERROR],
+    },
+  },
+};
