@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.27.1",
+    "@scalar/api-reference-react": "^0.6.31",
     "dotenv": "^17.2.1",
     "next": "^15.4.4",
     "react": "^19.1.0",
