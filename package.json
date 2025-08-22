@@ -8,11 +8,16 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.27.1",
+    "@omer-x/next-openapi-json-generator": "^2.0.2",
+    "@omer-x/next-openapi-route-handler": "^2.0.0",
     "@scalar/api-reference-react": "^0.6.31",
     "dotenv": "^17.2.1",
+    "drizzle-zod": "^0.8.3",
     "next": "^15.4.4",
+    "node": "^18.18.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
