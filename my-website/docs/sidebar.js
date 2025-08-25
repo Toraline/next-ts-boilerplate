@@ -1,11 +1,11 @@
 export default {
-  tutorialSidebar: [
+  componentsSidebar: [
     "intro",
     "hello",
     {
       type: "category",
-      label: "Tutorial",
-      items: ["tutorial-basics/create-a-document"],
+      label: "Components",
+      items: ["button/Button"],
     },
   ],
 };
