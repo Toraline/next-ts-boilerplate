@@ -72,8 +72,6 @@ export default [
 
       "eslint.config.*",
       "next.config.*",
-      "tailwind.config.*",
-      "postcss.config.*",
       "jest.config.*",
       "vitest.config.*",
       ".prettierrc*",

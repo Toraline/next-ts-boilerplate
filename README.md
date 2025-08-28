@@ -6,4 +6,3 @@
 - Typescript
 - Jest + React Testing Library
 - Clerk
-- Tailwind
