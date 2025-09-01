@@ -1,22 +1,25 @@
-const getData = async () => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, 3000);
-  });
-  return true;
-};
+import FormEditCategory from "./components/FormEditCategory/FormEditCategory";
+import { getCategoryByIdOrSlug } from "modules/categories";
 
 export default async function Page({
   params,
 }: {
-  params: Promise<{ slug: string; categoyId: string }>;
+  params: Promise<{ categoryId: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { categoyId, slug } = await params;
-  await getData();
+  const { categoryId } = await params;
 
+  const category = await getCategoryByIdOrSlug(categoryId);
+
+  const initialState = category || {
+    name: "",
+    slug: "",
+    description: "",
+  };
   return (
-    <h1>
-      Categoria: {categoyId} {slug}
-    </h1>
+    <>
+      <h1>Categoria: {initialState.name}</h1>
+      <FormEditCategory initialState={initialState} id={categoryId} />
+    </>
   );
 }
