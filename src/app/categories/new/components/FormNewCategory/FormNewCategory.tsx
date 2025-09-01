@@ -12,8 +12,7 @@ export default function FormNewCategory() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const newCategory = { name, slug, description };
-    const savedCategory = await postCategory(newCategory);
-    console.log(savedCategory);
+    await postCategory(newCategory);
     setName("");
     setDescription("");
     setSlug("");
@@ -28,7 +27,7 @@ export default function FormNewCategory() {
         name="category-name"
         id="category-name"
         type="text"
-        placeholder="Escreva o nome da categoria"
+        placeholder="Enter the name of the category"
         required
       />
       <input
@@ -37,7 +36,7 @@ export default function FormNewCategory() {
         name="category-slug"
         id="category-slug"
         type="text"
-        placeholder="Escreva o nome do atalho"
+        placeholder="Enter the slug of the category"
         required
       />
       <input
@@ -46,7 +45,7 @@ export default function FormNewCategory() {
         name="category-description"
         id="category-description"
         type="text"
-        placeholder="Escreva a descrição da categoria"
+        placeholder="Enter the category description"
       ></input>
       <button type="submit">Submit</button>
     </form>
