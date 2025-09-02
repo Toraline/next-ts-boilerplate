@@ -1,5 +1,6 @@
 import { Category } from "./categories.schema";
 
+// TODO: Ticket TOR-52
 const postCategory = async (newCategory: Category) => {
   const response = await fetch("http://localhost:3000/api/categories", {
     method: "POST",
