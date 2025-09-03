@@ -1,17 +1,15 @@
-"use client";
-
 import Link from "next/link";
 import CategoriesTable from "./components/CategoriesTable/CategoriesTable";
+import { getAllCategories } from "modules/categories/categories.api";
 
-export default function Page() {
-  const categories = [{ name: "Categoria 1", slug: "categoria1" }];
-  const isLoading = false;
+export default async function Page() {
+  const categoriesData = await getAllCategories();
+
   return (
     <>
       <h1>Categories</h1>
-      <CategoriesTable categories={categories} loading={isLoading} />
+      <CategoriesTable categories={categoriesData?.items || []} loading={!categoriesData} />
       <Link href="/categories/new">Create Category</Link>
-      {/* <Link href="/categories/categoryId">Edit Category</Link> */}
     </>
   );
 }

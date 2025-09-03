@@ -10,10 +10,11 @@ export default function CategoriesTable({ categories, loading }: CategoriesTable
   return (
     <ul>
       {loading && "is loading..."}
+      {categories.length && "No categories found"}
       {!loading &&
-        categories.length &&
+        categories.length > 0 &&
         categories.map((category) => (
-          <li>
+          <li key={category.slug}>
             <p> {category.name}</p>
             <p> {category.slug}</p>
             <p>{category.description}</p>
