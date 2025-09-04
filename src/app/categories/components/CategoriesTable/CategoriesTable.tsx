@@ -16,7 +16,6 @@ export default function CategoriesTable({ initialState, loading }: CategoriesTab
     await deleteCategory(slug);
     const filteredCategories = categories.filter((categories) => categories.slug !== slug);
     setCategories(filteredCategories);
-    console.log(filteredCategories);
   };
   return (
     <ul>

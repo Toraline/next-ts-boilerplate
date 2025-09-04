@@ -41,7 +41,7 @@ export async function deleteCategory(slug: string) {
   const response = await fetch("http://localhost:3000/api/categories/" + slug, {
     method: "DELETE",
   });
-  console.log(response);
+  return response;
 }
 
 export { postCategory, getCategoryByIdOrSlug, updateCategoryByIdOrSlug };
