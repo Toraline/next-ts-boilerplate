@@ -31,4 +31,10 @@ const updateCategoryByIdOrSlug = async (category: Category, id: string) => {
   return updatedCategory;
 };
 
+export async function getAllCategories() {
+  const response = await fetch("http://localhost:3000/api/categories");
+  const categories = await response.json();
+  return categories;
+}
+
 export { postCategory, getCategoryByIdOrSlug, updateCategoryByIdOrSlug };
