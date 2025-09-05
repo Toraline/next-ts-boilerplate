@@ -8,7 +8,7 @@ export default async function Page() {
   return (
     <>
       <h1>Categories</h1>
-      <CategoriesTable categories={categoriesData?.items || []} loading={!categoriesData} />
+      <CategoriesTable initialState={categoriesData?.items || []} loading={!categoriesData} />
       <Link href="/categories/new">Create Category</Link>
     </>
   );
