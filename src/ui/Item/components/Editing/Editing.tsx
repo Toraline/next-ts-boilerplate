@@ -1,21 +1,25 @@
 import React, { Fragment } from "react";
-import { Input } from "ui/Input/Input";
 import { Button } from "ui/Button/Button";
 import { SaveIcon } from "../Icons/Icons";
+import { Field } from "ui/Field/Field";
 
 type EditingProp = {
   value: string;
-  onChange: (event: React.ChangeEvent) => void;
   onClick: (event: React.MouseEvent) => void;
+  onChange: (event: React.ChangeEvent) => void;
 };
 
-export const Editing = ({ value, onChange, onClick }: EditingProp) => {
+export const Editing = ({ onChange, value, onClick }: EditingProp) => {
   return (
     <Fragment>
-      <Input
+      <Field
+        name={""}
+        id={""}
+        placeholder={""}
+        type={"text"}
+        label={"text-input"}
         value={value}
         onChange={onChange}
-        // className="item__input"
         onClick={(e) => e.stopPropagation()}
       />
       <Button
