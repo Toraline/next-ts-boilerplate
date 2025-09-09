@@ -14,7 +14,7 @@ export default function FormEditCategory({
   const [category, setCategory] = useState(initialState);
 
   function showAlert(): void {
-    alert("Saved successfully");
+    console.log("Saved successfully");
   }
 
   const handleSubmit = async (e: FormEvent) => {

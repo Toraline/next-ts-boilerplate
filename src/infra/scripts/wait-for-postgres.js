@@ -1,4 +1,4 @@
-const { exec } = require("node:child_process");
+import { exec } from "node:child_process";
 
 console.log("\n🔴 Waiting for Postgres to accept connections");
 
