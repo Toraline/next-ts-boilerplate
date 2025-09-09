@@ -12,11 +12,7 @@ export const DeleteButton = ({ onDelete }: DeleteButtonProps) => {
     onDelete?.();
   };
   return (
-    <Button
-      // className="item__button"
-      aria-label="delete"
-      onClick={handleDelete}
-    >
+    <Button aria-label="delete" onClick={handleDelete}>
       <DeleteIcon></DeleteIcon>
     </Button>
   );
