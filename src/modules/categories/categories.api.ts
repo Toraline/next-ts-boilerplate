@@ -31,9 +31,14 @@ const updateCategoryByIdOrSlug = async (category: Category, id: string) => {
 };
 
 export async function getAllCategories() {
-  const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories");
-  const categories = await response.json();
-  return categories;
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories");
+    const categories = await response.json();
+    return categories;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 export async function deleteCategory(slug: string) {

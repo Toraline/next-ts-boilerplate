@@ -3,7 +3,7 @@ import retry from "async-retry";
 const waitForAllServices = async () => {
   const waitForWebServer = async () => {
     const fetchStatusPage = async () => {
-      const response = await fetch("http://localhost:3000/api/v1/status");
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/v1/status");
       if (response.status !== 200) {
         throw Error();
       }
