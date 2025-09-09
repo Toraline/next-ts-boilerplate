@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "ui/Button/Button";
-import { CheckIcon, EditIcon } from "../Icons/Icons";
+import { Check } from "../../../Icons/Check";
+import { Edit } from "ui/Icons/Edit";
 import { DeleteButton } from "../DeleteButton/DeleteButton";
 
 type NotEditingProps = {
@@ -15,7 +16,7 @@ const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => 
 
   return (
     <div className="item__container">
-      <div className="item__checkbox">{isDone && <CheckIcon></CheckIcon>}</div>
+      <div className="item__checkbox">{isDone && <Check />}</div>
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
       <Button
@@ -23,7 +24,7 @@ const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => 
         aria-label="edit"
         onClick={onClick}
       >
-        {<EditIcon></EditIcon>}
+        {<Edit />}
       </Button>
 
       {onDelete && <DeleteButton onDelete={onDelete} />}

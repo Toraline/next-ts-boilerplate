@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Button } from "ui/Button/Button";
-import { SaveIcon } from "../Icons/Icons";
+import { Save } from "../../../Icons/Save";
 import { Field } from "ui/Field/Field";
 
 type EditingProp = {
@@ -27,7 +27,7 @@ export const Editing = ({ onChange, value, onClick }: EditingProp) => {
         aria-label="save changes"
         onClick={onClick}
       >
-        {<SaveIcon></SaveIcon>}
+        {<Save />}
       </Button>
     </Fragment>
   );

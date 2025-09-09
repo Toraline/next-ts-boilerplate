@@ -1,5 +1,5 @@
 import { Button } from "ui/Button/Button";
-import { DeleteIcon } from "../Icons/Icons";
+import { Delete } from "../../../Icons/Delete";
 import React from "react";
 
 type DeleteButtonProps = {
@@ -13,7 +13,7 @@ export const DeleteButton = ({ onDelete }: DeleteButtonProps) => {
   };
   return (
     <Button aria-label="delete" onClick={handleDelete}>
-      <DeleteIcon></DeleteIcon>
+      <Delete />
     </Button>
   );
 };
