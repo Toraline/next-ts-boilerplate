@@ -1,34 +1,18 @@
 import { ReactNode } from "react";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignOutButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body>
-          <header>
-            <SignedOut>
-              <SignInButton />
-              <SignUpButton>
-                <button>Sign Up</button>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton afterSwitchSessionUrl="/" showName />
-              <SignOutButton />
-            </SignedIn>
-          </header>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body>
+        <header>
+          <nav>
+            <Link href="/">Home</Link>
+            <Link href="/categories">Categories</Link>
+          </nav>
+        </header>
+        {children}
+      </body>
+    </html>
   );
 }
