@@ -8,51 +8,12 @@
   position: relative;
 }
 
-.item__container {
-  padding: 1rem;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-grow: 1;
-}
-
 .item--done {
   background: rgba(224, 224, 224, 0.8);
 }
 
-.item__input {
-  width: 100%;
-  border-radius: 10px;
-  padding: 1rem;
-  background: transparent;
-  border: none;
-}
-
-.item__checkbox {
-  border: 1px solid #9381ff;
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.item__content {
-  margin: 0;
-  flex-grow: 1;
-  text-align: left;
-}
-
 .item__content--done {
   text-decoration: line-through;
-}
-
-.item__button {
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
 }
 
 .item__button--edit {

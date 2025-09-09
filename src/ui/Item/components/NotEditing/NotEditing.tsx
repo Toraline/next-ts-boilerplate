@@ -3,6 +3,7 @@ import { Button } from "ui/Button/Button";
 import { Check } from "../../../Icons/Check";
 import { Edit } from "ui/Icons/Edit";
 import { DeleteButton } from "../DeleteButton/DeleteButton";
+import "./NotEditing.style.css";
 
 type NotEditingProps = {
   onClick: (event: React.MouseEvent) => void;
@@ -19,11 +20,7 @@ const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => 
       <div className="item__checkbox">{isDone && <Check />}</div>
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
-      <Button
-        //   className="item__button"
-        aria-label="edit"
-        onClick={onClick}
-      >
+      <Button aria-label="edit" onClick={onClick}>
         {<Edit />}
       </Button>
 

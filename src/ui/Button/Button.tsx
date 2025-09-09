@@ -1,10 +1,14 @@
-import React from "react";
+import React, { ComponentProps } from "react";
+import "./Button.styles.css";
 
-type ButtonProps = {
-  onClick: (event: React.MouseEvent) => void;
+type ButtonProps = ComponentProps<"button"> & {
   children: React.ReactNode;
 };
 
-export const Button = ({ onClick, children }: ButtonProps) => {
-  return <button onClick={onClick}>{children}</button>;
+export const Button = ({ children, type = "button", ...buttonProps }: ButtonProps) => {
+  return (
+    <button className="button" type={type} {...buttonProps}>
+      {children}
+    </button>
+  );
 };
