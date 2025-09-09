@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import "./Item.css";
-import { Button } from "ui/Button/Button";
-import { CheckIcon, DeleteIcon, EditIcon, SaveIcon } from "./components/Icons/Icons";
-import { Input } from "ui/Input/Input";
+import { Editing } from "./components/Editing/Editing";
+import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
   content: string;
@@ -25,13 +24,8 @@ export const Item = ({
   onEdit,
 }: ItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const contentIsDoneClass = isDone ? " item__content--done" : "";
   const itemIsDoneClass = isDone ? " item--done" : "";
 
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    onDelete?.();
-  };
   const handleEdit = (e) => {
     e.stopPropagation();
     onEdit();
@@ -51,32 +45,18 @@ export const Item = ({
       }}
     >
       {isEditing ? (
-        <Fragment>
-          <Input
-            value={content}
-            onChange={(e) => onContentChange(e.target.value)}
-            className="item__input"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <Button className="item__button--edit" aria-label="save changes" onClick={handleEdit}>
-            {<SaveIcon></SaveIcon>}
-          </Button>
-        </Fragment>
+        <Editing
+          onChange={(e) => onContentChange(e.target.value)}
+          value={content}
+          onClick={handleEdit}
+        />
       ) : (
-        <div className="item__container">
-          <div className="item__checkbox">{isDone && <CheckIcon></CheckIcon>}</div>
-          <p className={`item__content${contentIsDoneClass}`}>{content}</p>
-
-          <Button className="item__button" aria-label="edit" onClick={toggleEditMode}>
-            {<EditIcon></EditIcon>}
-          </Button>
-
-          {onDelete && (
-            <Button className="item__button" aria-label="delete" onClick={handleDelete}>
-              <DeleteIcon></DeleteIcon>
-            </Button>
-          )}
-        </div>
+        <NotEditing
+          onDelete={onDelete}
+          onClick={toggleEditMode}
+          content={content}
+          isDone={isDone}
+        />
       )}
     </div>
   );
