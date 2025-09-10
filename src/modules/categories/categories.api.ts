@@ -45,7 +45,7 @@ export async function getAllCategories() {
 }
 
 export async function deleteCategory(slug: string) {
-  const response = await fetch(getApiUrl(`/api/categories/${slug}`), {
+  const response = await fetch(process.env.NEXT_PUBLIC_VERCEL_URL + "/api/categories/" + slug, {
     method: "DELETE",
   });
   return response;
