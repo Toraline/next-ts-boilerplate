@@ -1,7 +1,9 @@
 import { Category } from "./categories.schema";
+import { getUrl } from "utils/getUrl";
 
 const postCategory = async (newCategory: Category) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_VERCEL_URL + "/api/categories", {
+  const url = getUrl("api/categories");
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -13,29 +15,26 @@ const postCategory = async (newCategory: Category) => {
 };
 
 const getCategoryByIdOrSlug = async (idOrSlug: string) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_VERCEL_URL + "/api/categories/" + idOrSlug);
+  const response = await fetch(getUrl("api/categories/" + idOrSlug));
   const category = await response.json();
   return category;
 };
 const updateCategoryByIdOrSlug = async (category: Category, id: string) => {
   const { slug } = category;
-  const response = await fetch(
-    process.env.NEXT_PUBLIC_VERCEL_URL + "/api/categories/" + id || slug,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(category),
+  const response = await fetch(getUrl("api/categories/" + id || slug), {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify(category),
+  });
   const updatedCategory = await response.json();
   return updatedCategory;
 };
 
 export async function getAllCategories() {
   try {
-    const response = await fetch(process.env.NEXT_PUBLIC_VERCEL_URL + "/api/categories");
+    const response = await fetch(getUrl("api/categories"));
     const categories = await response.json();
     return categories;
   } catch (error) {
@@ -45,7 +44,7 @@ export async function getAllCategories() {
 }
 
 export async function deleteCategory(slug: string) {
-  const response = await fetch(process.env.NEXT_PUBLIC_VERCEL_URL + "/api/categories/" + slug, {
+  const response = await fetch(getUrl("api/categories/" + slug), {
     method: "DELETE",
   });
   return response;
