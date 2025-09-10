@@ -16,7 +16,11 @@ export default function FormEditCategory({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await updateCategoryByIdOrSlug(category, id);
+<<<<<<< HEAD
     console.log("Editou");
+=======
+    console.log("editou");
+>>>>>>> origin
   };
 
   return (

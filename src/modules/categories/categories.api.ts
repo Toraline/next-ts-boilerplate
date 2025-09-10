@@ -1,8 +1,9 @@
 import { Category } from "./categories.schema";
+import { getUrl } from "utils/getUrl";
 
-// TODO: Ticket TOR-52
 const postCategory = async (newCategory: Category) => {
-  const response = await fetch("http://localhost:3000/api/categories", {
+  const url = getUrl("api/categories");
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,13 +15,13 @@ const postCategory = async (newCategory: Category) => {
 };
 
 const getCategoryByIdOrSlug = async (idOrSlug: string) => {
-  const response = await fetch("http://localhost:3000/api/categories/" + idOrSlug);
+  const response = await fetch(getUrl("api/categories/" + idOrSlug));
   const category = await response.json();
   return category;
 };
 const updateCategoryByIdOrSlug = async (category: Category, id: string) => {
   const { slug } = category;
-  const response = await fetch("http://localhost:3000/api/categories/" + id || slug, {
+  const response = await fetch(getUrl("api/categories/" + id || slug), {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -32,13 +33,18 @@ const updateCategoryByIdOrSlug = async (category: Category, id: string) => {
 };
 
 export async function getAllCategories() {
-  const response = await fetch("http://localhost:3000/api/categories");
-  const categories = await response.json();
-  return categories;
+  try {
+    const response = await fetch(getUrl("api/categories"));
+    const categories = await response.json();
+    return categories;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 export async function deleteCategory(slug: string) {
-  const response = await fetch("http://localhost:3000/api/categories/" + slug, {
+  const response = await fetch(getUrl("api/categories/" + slug), {
     method: "DELETE",
   });
   return response;

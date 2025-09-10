@@ -13,7 +13,7 @@ describe("API Categories", () => {
   describe("GET /api/categories/:categoryIdOrSlug", () => {
     test("should return category details when id exists", async () => {
       // create a new category
-      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+      const categoryResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ describe("API Categories", () => {
       const { createdAt, id, updatedAt } = await categoryResponse.json();
 
       // fetch category by ID
-      const response = await fetch(process.env.API_URL + `/api/categories/${id}`);
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories/${id}`);
       expect(response.status).toBe(200);
 
       const data = await response.json();
@@ -31,7 +31,9 @@ describe("API Categories", () => {
     });
 
     test("should return error when category do not exists", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`);
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+      );
       expect(response.status).toBe(404);
 
       const data = await response.json();
@@ -42,7 +44,7 @@ describe("API Categories", () => {
   describe("PATCH /api/categories/:categoryIdOrSlug", () => {
     test("should update category when id exists", async () => {
       // create a new category
-      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+      const categoryResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +54,7 @@ describe("API Categories", () => {
       const { id } = await categoryResponse.json();
 
       // update category by ID
-      const response = await fetch(process.env.API_URL + `/api/categories/${id}`, {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +75,7 @@ describe("API Categories", () => {
 
     test("should update category when slug exists", async () => {
       // create a new category
-      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+      const categoryResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +85,7 @@ describe("API Categories", () => {
       const { slug } = await categoryResponse.json();
 
       // update category by slug
-      const response = await fetch(process.env.API_URL + `/api/categories/${slug}`, {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories/${slug}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -103,13 +105,16 @@ describe("API Categories", () => {
     });
 
     test("should return error when no data is passed", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
         },
-        body: JSON.stringify({}),
-      });
+      );
       expect(response.status).toBe(400);
 
       const data = await response.json();
@@ -117,15 +122,18 @@ describe("API Categories", () => {
     });
 
     test("should return error when name is not a string", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: 1,
+          }),
         },
-        body: JSON.stringify({
-          name: 1,
-        }),
-      });
+      );
       expect(response.status).toBe(400);
 
       const data = await response.json();
@@ -133,15 +141,18 @@ describe("API Categories", () => {
     });
 
     test("should return error when empty name is passed", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: "",
+          }),
         },
-        body: JSON.stringify({
-          name: "",
-        }),
-      });
+      );
       expect(response.status).toBe(400);
 
       const data = await response.json();
@@ -149,15 +160,18 @@ describe("API Categories", () => {
     });
 
     test("should return error when slug is not a string", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            slug: 1,
+          }),
         },
-        body: JSON.stringify({
-          slug: 1,
-        }),
-      });
+      );
       expect(response.status).toBe(400);
 
       const data = await response.json();
@@ -165,15 +179,18 @@ describe("API Categories", () => {
     });
 
     test("should return error when empty slug is passed", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            slug: "",
+          }),
         },
-        body: JSON.stringify({
-          slug: "",
-        }),
-      });
+      );
       expect(response.status).toBe(400);
 
       const data = await response.json();
@@ -181,13 +198,16 @@ describe("API Categories", () => {
     });
 
     test("should return error when category do not exists", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: "Updated Category" }),
         },
-        body: JSON.stringify({ name: "Updated Category" }),
-      });
+      );
       expect(response.status).toBe(404);
 
       const data = await response.json();
@@ -195,7 +215,7 @@ describe("API Categories", () => {
     });
 
     test("should return error if updating slug to an existing one", async () => {
-      await fetch(process.env.API_URL + `/api/categories`, {
+      await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -203,7 +223,7 @@ describe("API Categories", () => {
         body: JSON.stringify(categoryComplete),
       });
 
-      const categoryResponse = await fetch(process.env.API_URL + `/api/categories`, {
+      const categoryResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,7 +233,7 @@ describe("API Categories", () => {
 
       const { id } = await categoryResponse.json();
 
-      const response = await fetch(process.env.API_URL + `/api/categories/${id}`, {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -227,7 +247,7 @@ describe("API Categories", () => {
 
   describe("DELETE /api/categories/:categoryIdOrSlug", () => {
     test("should delete category when id exists", async () => {
-      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+      const categoryResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -236,7 +256,7 @@ describe("API Categories", () => {
       });
       const { id } = await categoryResponse.json();
 
-      const response = await fetch(process.env.API_URL + `/api/categories/${id}`, {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/categories/${id}`, {
         method: "DELETE",
       });
       expect(response.status).toBe(200);
@@ -247,9 +267,12 @@ describe("API Categories", () => {
     });
 
     test("should return error when category do not exists", async () => {
-      const response = await fetch(process.env.API_URL + `/api/categories/non-existing-category`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + `/api/categories/non-existing-category`,
+        {
+          method: "DELETE",
+        },
+      );
       expect(response.status).toBe(404);
 
       const data = await response.json();
