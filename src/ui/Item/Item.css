@@ -1,0 +1,22 @@
+.item {
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid rgba(40, 40, 70, 0.1);
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.item--done {
+  background: rgba(224, 224, 224, 0.8);
+}
+
+.item__content--done {
+  text-decoration: line-through;
+}
+
+.item__button--edit {
+  position: absolute;
+  right: 16px;
+}
