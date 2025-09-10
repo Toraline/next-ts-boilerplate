@@ -2,8 +2,6 @@ node_modules/
 .next
 .vscode/
 
-# clerk configuration (can include secrets)
-/.clerk/
 
 .env.local
 

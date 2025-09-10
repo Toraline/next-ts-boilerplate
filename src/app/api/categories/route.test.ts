@@ -12,7 +12,7 @@ import { errorMessages } from "constants/errors";
 describe("API Categories", () => {
   describe("GET /api/categories", () => {
     test("should return empty array when no categories exist", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories");
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories");
       expect(response.status).toBe(200);
 
       const data = await response.json();
@@ -21,7 +21,7 @@ describe("API Categories", () => {
 
     test("should return all categories when any", async () => {
       // create a new category
-      const categoryResponse = await fetch(process.env.API_URL + "/api/categories", {
+      const categoryResponse = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +31,7 @@ describe("API Categories", () => {
       const { createdAt, id, updatedAt } = await categoryResponse.json();
 
       // fetch all categories
-      const response = await fetch(process.env.API_URL + "/api/categories");
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories");
       expect(response.status).toBe(200);
 
       const data = await response.json();
@@ -41,7 +41,7 @@ describe("API Categories", () => {
 
   describe("POST /api/categories", () => {
     test("should create a new category when all the data is passed", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +65,7 @@ describe("API Categories", () => {
     });
 
     test("should create a new category when only required data is passed", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,7 +90,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when slug already exists", async () => {
-      await fetch(process.env.API_URL + "/api/categories", {
+      await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ describe("API Categories", () => {
         body: JSON.stringify(categoryRequiredData),
       });
 
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when no slug is passed", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +131,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when slug is not a string", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when slug is empty", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -163,7 +163,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when no name is passed", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -179,7 +179,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when name is not a string", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -195,7 +195,7 @@ describe("API Categories", () => {
     });
 
     test("should return error when name is empty", async () => {
-      const response = await fetch(process.env.API_URL + "/api/categories", {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

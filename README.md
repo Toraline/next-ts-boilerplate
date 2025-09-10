@@ -5,4 +5,3 @@
 - Next.js (app router)
 - Typescript
 - Jest + React Testing Library
-- Clerk
