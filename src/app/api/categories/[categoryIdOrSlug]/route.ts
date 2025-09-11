@@ -54,6 +54,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     }
 
     revalidatePath(`/categories/${categoryIdOrSlug}`);
+    revalidatePath("/categories");
 
     return NextResponse.json(updatedCategory);
   } catch (error) {
