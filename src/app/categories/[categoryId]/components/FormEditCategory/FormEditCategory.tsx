@@ -3,6 +3,7 @@
 import { updateCategoryByIdOrSlug } from "modules/categories/categories.api";
 import { Category } from "modules/categories";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function FormEditCategory({
   initialState,
@@ -12,11 +13,12 @@ export default function FormEditCategory({
   id: string;
 }) {
   const [category, setCategory] = useState(initialState);
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await updateCategoryByIdOrSlug(category, id);
-    console.log("editou");
+    router.push("/categories");
   };
 
   return (
