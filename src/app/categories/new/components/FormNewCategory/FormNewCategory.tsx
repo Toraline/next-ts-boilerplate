@@ -3,11 +3,13 @@
 import { postCategory } from "modules/categories/categories.api";
 import "./FormNewCategory.css";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function FormNewCategory() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [slug, setSlug] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -16,6 +18,7 @@ export default function FormNewCategory() {
     setName("");
     setDescription("");
     setSlug("");
+    router.push("/categories");
   };
 
   return (

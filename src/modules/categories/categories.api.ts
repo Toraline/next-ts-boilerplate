@@ -10,7 +10,13 @@ const postCategory = async (newCategory: Category) => {
     },
     body: JSON.stringify(newCategory),
   });
+
+  if (response.status !== 201) {
+    throw new Error(response.status + " " + response.statusText);
+  }
+
   const savedCategory = await response.json();
+
   return savedCategory;
 };
 
