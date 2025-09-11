@@ -1,0 +1,59 @@
+.button--default {
+  cursor: pointer;
+  border-radius: 8px;
+  background: #000;
+  display: flex;
+  height: 40px;
+  padding: 0 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-family:
+    "Inter",
+    sans serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.button--default:hover {
+  background-color: gray;
+}
+
+.button--sm {
+  cursor: pointer;
+  display: flex;
+  padding: 4px 8px;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: black;
+  border-radius: 8px;
+}
+
+.button--sm:hover {
+  background-color: gray;
+}
+
+.button--transparent {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+.button--transparent:hover {
+  background-color: #cad5e2;
+}
+
+.container {
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
