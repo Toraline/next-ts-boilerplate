@@ -6,7 +6,7 @@
     "services:down": "docker compose --file=src/infra/compose.yaml down",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && prisma migrate && next build",
     "start": "next start",
     "test": "jest --runInBand --coverage --verbose --coverageReporters=text-summary",
     "test:ci": "npm run services:up && npm run prisma:generate && npm run prisma:migrate && concurrently -n next,jest --k -s command-jest \"next dev\" \"npm test\"",
