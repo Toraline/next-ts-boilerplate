@@ -1,14 +1,14 @@
 import Link from "next/link";
 import CategoriesTable from "./components/CategoriesTable/CategoriesTable";
-import { getAllCategories } from "modules/categories/categories.api";
+import { listCategories } from "modules/categories/categories.service";
 
 export default async function Page() {
-  const categoriesData = await getAllCategories();
+  const categories = await listCategories();
 
   return (
     <>
       <h1>Categories</h1>
-      <CategoriesTable initialState={categoriesData?.items || []} loading={!categoriesData} />
+      <CategoriesTable initialState={categories || []} loading={!categories} />
       <Link href="/categories/new">Create Category</Link>
     </>
   );
