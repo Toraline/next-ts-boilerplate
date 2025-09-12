@@ -1,0 +1,14 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.menu__item {
+  text-decoration: none;
+  color: #000;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 16px;
+}
