@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import {
   CategorySchema,
@@ -52,6 +53,9 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
     }
 
+    revalidatePath(`/categories/${categoryIdOrSlug}`);
+    revalidatePath("/categories");
+
     return NextResponse.json(updatedCategory);
   } catch (error) {
     if (error?.code === "P2002") {
@@ -72,6 +76,8 @@ export async function DELETE(_r: Request, { params }: RouteParams) {
     if (!deletedCategory) {
       return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
     }
+
+    revalidatePath(`/categories/${categoryIdOrSlug}`);
 
     return NextResponse.json(deletedCategory);
   } catch (error) {

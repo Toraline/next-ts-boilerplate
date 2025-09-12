@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { CategorySchema, createCategory, listCategories } from "modules/categories";
 import { errorMessages } from "constants/errors";
+import { revalidatePath } from "next/cache";
 
 export const runtime = "nodejs";
 
@@ -29,6 +30,8 @@ export async function POST(request: Request) {
     }
 
     const created = await createCategory(parsed.data);
+
+    revalidatePath("/categories");
 
     return NextResponse.json(created, { status: 201 });
   } catch (error) {
