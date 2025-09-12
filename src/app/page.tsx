@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Item } from "../ui/Item";
-import { Button } from "./Button/Button";
+import { Item } from "ui/Item";
+import { Button } from "ui/Button/Button";
+import "styles/global.css";
 
 export default function Page() {
   const [content, setContent] = useState("initial value");
@@ -21,7 +22,7 @@ export default function Page() {
 
       <h1>Componente Botão</h1>
       <div className="container">
-        <Button variant="default">Padrão</Button>
+        <Button>Padrão</Button>
         <Button size="sm">Pequeno</Button>
         <Button variant="transparent">Transparente</Button>
       </div>

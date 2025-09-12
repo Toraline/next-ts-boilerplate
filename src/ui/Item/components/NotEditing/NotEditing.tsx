@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "ui/Button/Button";
-import { Check } from "../../../Icons/Check";
+import { Check } from "ui/Icons/Check";
 import { Edit } from "ui/Icons/Edit";
-import { DeleteButton } from "../DeleteButton/DeleteButton";
+import { Delete } from "ui/Icons/Delete";
 import "./NotEditing.style.css";
 
 type NotEditingProps = {
@@ -14,17 +14,26 @@ type NotEditingProps = {
 
 const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => {
   const contentIsDoneClass = isDone ? " item__content--done" : "";
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.();
+  };
 
   return (
     <div className="item__container">
       <div className="item__checkbox">{isDone && <Check />}</div>
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
-      <Button aria-label="edit" onClick={onClick}>
+      <Button variant="transparent" aria-label="edit" onClick={onClick}>
         {<Edit />}
       </Button>
 
-      {onDelete && <DeleteButton onDelete={onDelete} />}
+      {onDelete && (
+        <Button variant="transparent" onClick={handleDelete}>
+          {" "}
+          <Delete />
+        </Button>
+      )}
     </div>
   );
 };
