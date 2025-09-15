@@ -3,15 +3,12 @@
   border-radius: 8px;
   background: #000;
   display: flex;
-  height: 40px;
   padding: 0 16px;
   justify-content: center;
   align-items: center;
   gap: 8px;
   color: #fff;
-  font-family:
-    "Inter",
-    sans serif;
+  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 500;
   border: none;

@@ -30,7 +30,6 @@ const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => 
 
       {onDelete && (
         <Button variant="transparent" onClick={handleDelete}>
-          {" "}
           <Delete />
         </Button>
       )}
