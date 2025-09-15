@@ -13,3 +13,12 @@
   font-weight: 500;
   padding: 8px 16px;
 }
+.menu__item:hover {
+  background-color: #e0e0e0cc;
+  border-radius: 4px;
+}
+
+.menu__item--active {
+  background-color: #e0e0e0cc;
+  border-radius: 4px;
+}

@@ -13,7 +13,7 @@ export const Sidebar = () => {
         </Link>
         <Button className="button"> {<PlusSign className="button_icon" />}</Button>
       </div>
-      <span className="menu">
+      <span className="sidebar__menu">
         <Menu />
       </span>
     </div>
