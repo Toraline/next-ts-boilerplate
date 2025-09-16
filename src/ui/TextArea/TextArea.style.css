@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+}
+
+.label {
+  color: #000;
+  font-weight: 500;
+  padding: 0 0 8px 0;
+}
+
+.textarea {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  color: #000;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  outline: none;
+}
