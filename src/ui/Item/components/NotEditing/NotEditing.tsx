@@ -25,7 +25,7 @@ const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => 
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
       <Button variant="transparent" aria-label="edit" onClick={onClick}>
-        {<Edit />}
+        <Edit />
       </Button>
 
       {onDelete && (
