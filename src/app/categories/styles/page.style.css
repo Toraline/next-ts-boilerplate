@@ -1,0 +1,21 @@
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.menu__item {
+  font-size: 24px;
+  font-weight: 600;
+  color: #a1a1a1;
+  font-family: "Inter", sans-serif;
+  padding: 0 16px;
+}
+
+.menu__item--subtitle {
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+  color: #a1a1a1;
+}
