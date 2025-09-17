@@ -1,6 +1,6 @@
 import React, { ComponentProps, Fragment } from "react";
 import { Button } from "ui/Button/Button";
-import { Save } from "../../../Icons/Save";
+import { Save } from "ui/Icons/Save";
 import { Field } from "ui/Field/Field";
 
 type EditingProp = ComponentProps<"input"> & {
@@ -18,7 +18,7 @@ export const Editing = ({ onChange, value, onClick, ...fieldProps }: EditingProp
         onClick={(e) => e.stopPropagation()}
         {...fieldProps}
       />
-      <Button className="button" aria-label="save changes" onClick={onClick}>
+      <Button variant="transparent" aria-label="save changes" onClick={onClick}>
         {<Save />}
       </Button>
     </Fragment>
