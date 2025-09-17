@@ -3,7 +3,7 @@ import "./Field.style.css";
 import clsx from "clsx";
 
 type FieldProps = ComponentProps<"input"> & {
-  variant?: "primary" | "nolabel";
+  variant?: "primary" | "nolabel" | "noborder";
   label?: string;
 };
 
@@ -16,6 +16,7 @@ export const Field = ({
 }: FieldProps) => {
   const classes = clsx("input", {
     "input--nolabel": variant === "nolabel",
+    "input--noborder": variant === "noborder",
   });
   return (
     <div className="container">

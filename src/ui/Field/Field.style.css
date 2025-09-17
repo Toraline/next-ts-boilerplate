@@ -3,6 +3,7 @@
   flex-direction: column;
   font-family: "Inter", sans-serif;
   color: #000;
+  flex-grow: 1;
 }
 
 .label {
@@ -29,4 +30,8 @@
 
 .input::placeholder {
   color: #a1a1a1;
+}
+
+.input--noborder {
+  border: none;
 }

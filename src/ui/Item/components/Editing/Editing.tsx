@@ -13,12 +13,13 @@ export const Editing = ({ onChange, value, onClick, ...fieldProps }: EditingProp
   return (
     <Fragment>
       <Field
+        variant="noborder"
         value={value}
         onChange={onChange}
         onClick={(e) => e.stopPropagation()}
         {...fieldProps}
       />
-      <Button className="button" aria-label="save changes" onClick={onClick}>
+      <Button className="button--edit" aria-label="save changes" onClick={onClick}>
         {<Save />}
       </Button>
     </Fragment>

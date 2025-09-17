@@ -15,8 +15,3 @@
 .item__content--done {
   text-decoration: line-through;
 }
-
-.item__button--edit {
-  position: absolute;
-  right: 16px;
-}
