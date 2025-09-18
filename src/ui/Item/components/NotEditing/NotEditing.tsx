@@ -10,14 +10,16 @@ type NotEditingProps = {
   content: string;
   isDone: boolean;
   onDelete?: () => void;
+  checkbox?: boolean;
 };
 
-const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => {
+const NotEditing = ({ checkbox = true, content, isDone, onDelete, onClick }: NotEditingProps) => {
   const contentIsDoneClass = isDone ? " item__content--done" : "";
 
   return (
     <div className="item__container">
-      <div className="item__checkbox">{isDone && <Check />}</div>
+      {checkbox && <div className="item__checkbox">{isDone && <Check />}</div>}
+
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
       <Button aria-label="edit" onClick={onClick}>

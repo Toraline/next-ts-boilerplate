@@ -6,6 +6,7 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
+  checkbox?: boolean;
   content: string;
   contentPlaceholder?: string;
   isDone: boolean;
@@ -16,6 +17,7 @@ type ItemProps = {
 };
 
 export const Item = ({
+  checkbox,
   content,
   isDone,
   onContentChange,
@@ -52,6 +54,7 @@ export const Item = ({
         />
       ) : (
         <NotEditing
+          checkbox={checkbox}
           onDelete={onDelete}
           onClick={toggleEditMode}
           content={content}
