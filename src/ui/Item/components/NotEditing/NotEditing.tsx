@@ -8,12 +8,20 @@ import "./NotEditing.style.css";
 type NotEditingProps = {
   onClick: (event: React.MouseEvent) => void;
   content: string;
-  isDone: boolean;
+  isDone?: boolean;
   onDelete?: () => void;
   checkbox?: boolean;
+  edit?: boolean;
 };
 
-const NotEditing = ({ checkbox = true, content, isDone, onDelete, onClick }: NotEditingProps) => {
+const NotEditing = ({
+  edit = true,
+  checkbox = true,
+  content,
+  isDone,
+  onDelete,
+  onClick,
+}: NotEditingProps) => {
   const contentIsDoneClass = isDone ? " item__content--done" : "";
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -26,9 +34,11 @@ const NotEditing = ({ checkbox = true, content, isDone, onDelete, onClick }: Not
 
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
-      <Button variant="transparent" aria-label="edit" onClick={onClick}>
-        <Edit />
-      </Button>
+      {edit && (
+        <Button variant="transparent" aria-label="edit" onClick={onClick}>
+          <Edit />
+        </Button>
+      )}
 
       {onDelete && (
         <Button variant="transparent" onClick={handleDelete}>
