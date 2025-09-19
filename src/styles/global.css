@@ -1,4 +1,9 @@
-.container {
+.page__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.button__container {
   justify-content: center;
   display: flex;
   flex-direction: row;

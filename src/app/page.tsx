@@ -22,7 +22,7 @@ export default function Page() {
       />
 
       <h1>Componente Botão</h1>
-      <div className="container">
+      <div className="button__container">
         <Button>Padrão</Button>
         <Button size="sm">Pequeno</Button>
         <Button variant="transparent">Transparente</Button>

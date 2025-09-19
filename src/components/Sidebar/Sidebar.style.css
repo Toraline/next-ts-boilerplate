@@ -11,6 +11,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 16px 0;
 }
 
 .header__title {
@@ -21,12 +22,15 @@
   font-weight: 500;
 }
 
-.button_icon {
-  width: 10px;
-  height: 10px;
-  padding: 8px;
-  border-radius: 8px;
+.sidebar__button__container {
+  padding: 0 16px;
+}
+
+.sidebar__button {
+  border-radius: 4px;
   background: #000;
+  border: none;
+  padding: 4 4px;
 }
 
 .sidebar__menu {

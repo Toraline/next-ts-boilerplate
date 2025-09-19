@@ -4,4 +4,5 @@
   position: relative;
   align-items: center;
   max-width: 100%;
+  flex-direction: column;
 }
