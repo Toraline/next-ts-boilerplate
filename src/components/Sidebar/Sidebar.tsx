@@ -1,5 +1,3 @@
-"use client";
-
 import { Menu } from "components/Menu/Menu";
 import Link from "next/link";
 import { Button } from "ui/Button/Button";
@@ -11,8 +9,8 @@ export const Sidebar = async () => {
   const categories = await listCategories();
   return (
     <div className="sidebar">
-      <div className="header">
-        <Link className="header__title" href="/categories">
+      <div className="sidebar__header">
+        <Link className="sidebar__header__title" href="/categories">
           Categories
         </Link>
         <div className="sidebar__button__container">

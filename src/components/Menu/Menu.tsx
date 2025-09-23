@@ -10,7 +10,7 @@ type MenuProps = {
   initialState: Category[];
 };
 
-export const Menu = async ({ initialState }: MenuProps) => {
+export const Menu = ({ initialState }: MenuProps) => {
   const pathname = usePathname();
   return (
     <div className="menu">
