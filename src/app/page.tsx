@@ -1,6 +1,5 @@
 "use client";
 
-import "./styles/page.style.css";
 import { useState } from "react";
 import { Item } from "ui/Item";
 import { Button } from "ui/Button/Button";

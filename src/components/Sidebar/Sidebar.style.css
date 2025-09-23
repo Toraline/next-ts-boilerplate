@@ -12,7 +12,7 @@
   padding: 16px 0;
 }
 
-.sidebar__header__title {
+.sidebar__header-title {
   color: #000;
   font-family: "Inter", sans-serif;
   font-size: 24px;
@@ -20,17 +20,6 @@
   font-weight: 500;
 }
 
-.sidebar__button__container {
+.sidebar__button-container {
   padding: 0 16px;
-}
-
-.sidebar__button {
-  border-radius: 4px;
-  background: #000;
-  border: none;
-  padding: 4 4px;
-}
-
-.sidebar__menu {
-  width: 256px;
 }

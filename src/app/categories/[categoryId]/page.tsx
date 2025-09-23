@@ -1,6 +1,5 @@
 // import FormEditCategory from "./components/FormEditCategory/FormEditCategory";
 import { getCategoryByIdOrSlug } from "modules/categories";
-import "./styles/page.style.css";
 import { Button } from "ui/Button/Button";
 import { Edit } from "ui/Icons/Edit";
 import { Delete } from "ui/Icons/Delete";

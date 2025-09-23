@@ -1,8 +1,0 @@
-.page__container {
-  display: flex;
-  margin-left: 300px;
-  position: relative;
-  align-items: center;
-  max-width: 100%;
-  flex-direction: column;
-}
