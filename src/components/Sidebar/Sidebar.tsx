@@ -10,16 +10,16 @@ export const Sidebar = async () => {
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        <Link className="sidebar__header__title" href="/categories">
+        <Link className="sidebar__header-title" href="/categories">
           Categories
         </Link>
-        <div className="sidebar__button__container">
-          <Button className="sidebar__button" size="sm">
+        <div className="sidebar__button-container">
+          <Button href="/categories/new" size="sm">
             <PlusSign />
           </Button>
         </div>
       </div>
-      <span className="sidebar__menu">
+      <span>
         <Menu initialState={categories || []} />
       </span>
     </div>

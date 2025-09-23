@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
-import Link from "next/link";
 import { Sidebar } from "components/Sidebar/Sidebar";
+import { Button } from "ui/Button/Button";
+import "../styles/global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -8,8 +9,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <header>
           <nav className="header__nav">
-            <Link href="/">Home</Link>
-            <Link href="/categories">Categories</Link>
+            <Button href="/">Home</Button>
             <Sidebar />
           </nav>
         </header>
