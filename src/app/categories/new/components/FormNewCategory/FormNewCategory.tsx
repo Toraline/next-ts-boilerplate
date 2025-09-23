@@ -22,7 +22,7 @@ export default function FormNewCategory() {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
+    <form className="form-new-category" onSubmit={handleSubmit}>
       <label htmlFor="category-name">Name</label>
       <input
         value={name}
