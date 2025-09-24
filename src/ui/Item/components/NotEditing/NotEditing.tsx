@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "ui/Button/Button";
 import { Check } from "ui/Icons/Check";
-import { Edit } from "ui/Icons/Edit";
-import { Delete } from "ui/Icons/Delete";
+import { EditTask } from "ui/Icons/EditTask";
+import { DeleteTask } from "ui/Icons/DeleteTask";
 import "./NotEditing.style.css";
 
 type NotEditingProps = {
@@ -25,12 +25,12 @@ const NotEditing = ({ content, isDone, onDelete, onClick }: NotEditingProps) => 
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
       <Button variant="transparent" aria-label="edit" onClick={onClick}>
-        <Edit />
+        <EditTask />
       </Button>
 
       {onDelete && (
         <Button variant="transparent" onClick={handleDelete}>
-          <Delete />
+          <DeleteTask />
         </Button>
       )}
     </div>
