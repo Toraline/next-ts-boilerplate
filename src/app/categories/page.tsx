@@ -12,9 +12,9 @@ export default async function Page() {
       <CategoriesTable initialState={categories || []} loading={!categories} />
       <Link href="/categories/new">Create Category</Link>
       {categories.length === 0 && (
-        <div className="menu">
-          <h1 className="menu__item">No category selected</h1>
-          <h3 className="menu__item menu__item--subtitle">Select or create a new category</h3>
+        <div className="no-content">
+          <h1 className="no-content__item__title">No category selected</h1>
+          <h3 className="no-content__item__subtitle">Select or create a new category</h3>
         </div>
       )}
     </>
