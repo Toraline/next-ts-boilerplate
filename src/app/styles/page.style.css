@@ -1,7 +1,4 @@
-.page__container {
-  display: flex;
-  margin-left: 300px;
-  position: relative;
-  align-items: center;
-  max-width: 100%;
+.page-container {
+  margin-left: 256px;
+  padding: 24px;
 }

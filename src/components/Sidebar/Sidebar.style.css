@@ -1,9 +1,6 @@
 .sidebar {
   padding: 24px 8px;
-  flex-direction: column;
-  justify-self: start;
   height: 100vh;
-  flex-grow: 1;
   position: fixed;
 }
 
@@ -19,14 +16,6 @@
   font-size: 24px;
   text-decoration: none;
   font-weight: 500;
-}
-
-.button_icon {
-  width: 10px;
-  height: 10px;
-  padding: 8px;
-  border-radius: 8px;
-  background: #000;
 }
 
 .sidebar__menu {

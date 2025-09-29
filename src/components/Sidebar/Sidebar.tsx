@@ -11,7 +11,9 @@ export const Sidebar = () => {
         <Link className="header__title" href="/categories">
           Categories
         </Link>
-        <Button className="button"> {<PlusSign className="button_icon" />}</Button>
+        <Button size="sm">
+          <PlusSign className="add-button-icon" />
+        </Button>
       </div>
       <span className="sidebar__menu">
         <Menu />
