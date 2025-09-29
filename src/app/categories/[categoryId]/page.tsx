@@ -3,6 +3,8 @@ import { getCategoryByIdOrSlug } from "modules/categories";
 import { Button } from "ui/Button/Button";
 import { Edit } from "ui/Icons/Edit";
 import { Delete } from "ui/Icons/Delete";
+import { deleteCategory } from "modules/categories/categories.api";
+import { useState } from "react";
 
 export default async function Page({
   params,
@@ -11,14 +13,20 @@ export default async function Page({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { categoryId } = await params;
-
   const category = await getCategoryByIdOrSlug(categoryId);
-
   const initialState = category || {
     name: "",
     slug: "",
     description: "",
   };
+  const [categories, setCategories] = useState(initialState);
+
+  const handleDelete = async (slug) => {
+    await deleteCategory(slug);
+    const filteredCategories = categories.filter((categories) => categories.slug !== slug);
+    setCategories(filteredCategories);
+  };
+
   return (
     <div className="page__container">
       <div className="page__header">
@@ -27,7 +35,7 @@ export default async function Page({
           <Button variant="transparent">
             <Edit />
           </Button>
-          <Button variant="transparent">
+          <Button variant="transparent" onClick={handleDelete}>
             <Delete />
           </Button>
         </div>
