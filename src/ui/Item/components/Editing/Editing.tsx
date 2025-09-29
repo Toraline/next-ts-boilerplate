@@ -20,13 +20,8 @@ export const Editing = ({ onChange, value, onClick, ...fieldProps }: EditingProp
         {...fieldProps}
       />
 
-      <Button
-        className="button--edit"
-        variant="transparent"
-        aria-label="save changes"
-        onClick={onClick}
-      >
-        {<Save />}
+      <Button variant="transparent" aria-label="save changes" onClick={onClick}>
+        <Save />
       </Button>
     </Fragment>
   );

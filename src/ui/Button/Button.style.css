@@ -32,12 +32,3 @@
 .button--transparent:hover {
   background: transparent;
 }
-
-.button--edit {
-  position: absolute;
-  right: 16px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-}
