@@ -5,11 +5,11 @@ import { deleteCategory } from "modules/categories/categories.api";
 import { Button } from "ui/Button/Button";
 import { Delete } from "ui/Icons/Delete";
 
-type DeleteCategoryButtonProps = {
+type DeleteCategoryProps = {
   slug: string;
 };
 
-export function DeleteCategoryButton({ slug }: DeleteCategoryButtonProps) {
+export function DeleteCategory({ slug }: DeleteCategoryProps) {
   const router = useRouter();
 
   const onDelete = async () => {
