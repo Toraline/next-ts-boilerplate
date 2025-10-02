@@ -7,7 +7,7 @@ import "./NotEditing.style.css";
 
 type NotEditingProps = {
   onClick: (event: React.MouseEvent) => void;
-  content: string;
+  content?: string;
   isDone?: boolean;
   onDelete?: () => void;
   checkbox?: boolean;

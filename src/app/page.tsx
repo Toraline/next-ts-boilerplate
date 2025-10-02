@@ -46,9 +46,9 @@ export default function Page() {
       />
       <h2>Item só com content</h2>
       <Item
+        onlyEditing={true}
         checkbox={false}
         edit={false}
-        content={content}
         onContentChange={setContent}
         onIsDoneChange={setIsDone}
         onEdit={() => console.log("editou")}

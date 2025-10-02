@@ -4,23 +4,20 @@ import { Save } from "ui/Icons/Save";
 import { Field } from "ui/Field/Field";
 
 type EditingProp = ComponentProps<"input"> & {
-  value: string;
+  save?: boolean;
+  value?: string;
   onClick: (event: React.MouseEvent) => void;
-  onChange: (event: React.ChangeEvent) => void;
 };
 
-export const Editing = ({ onChange, value, onClick, ...fieldProps }: EditingProp) => {
+export const Editing = ({ save = true, value, onClick, ...fieldProps }: EditingProp) => {
   return (
     <Fragment>
-      <Field
-        value={value}
-        onChange={onChange}
-        onClick={(e) => e.stopPropagation()}
-        {...fieldProps}
-      />
-      <Button variant="transparent" aria-label="save changes" onClick={onClick}>
-        <Save />
-      </Button>
+      <Field value={value} onClick={(e) => e.stopPropagation()} {...fieldProps} />
+      {save && (
+        <Button variant="transparent" aria-label="save changes" onClick={onClick}>
+          <Save />
+        </Button>
+      )}
     </Fragment>
   );
 };

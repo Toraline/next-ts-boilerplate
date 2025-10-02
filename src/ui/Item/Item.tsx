@@ -6,9 +6,11 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
+  save?: boolean;
+  onlyEditing?: boolean;
   edit?: boolean;
   checkbox?: boolean;
-  content: string;
+  content?: string;
   contentPlaceholder?: string;
   isDone?: boolean;
   onContentChange?: (content: string) => void;
@@ -18,6 +20,8 @@ type ItemProps = {
 };
 
 export const Item = ({
+  save,
+  onlyEditing = false,
   edit = true,
   checkbox,
   content,
@@ -48,11 +52,14 @@ export const Item = ({
         onIsDoneChange?.(!isDone);
       }}
     >
+      {onlyEditing ? <Editing onClick={handleEdit} save={false} /> : isEditing}
+
       {isEditing ? (
         <Editing
           onChange={(e) => onContentChange?.(e.target.value)}
           value={content}
           onClick={handleEdit}
+          save={save}
         />
       ) : (
         <NotEditing
