@@ -2,10 +2,10 @@
   display: flex;
   border-radius: 10px;
   border: 1px solid rgba(40, 40, 70, 0.1);
-  gap: 10px;
-  align-items: center;
   cursor: pointer;
   position: relative;
+  flex-grow: 1;
+  padding: 0 8px 0 0;
 }
 
 .item--done {
@@ -14,9 +14,4 @@
 
 .item__content--done {
   text-decoration: line-through;
-}
-
-.item__button--edit {
-  position: absolute;
-  right: 16px;
 }
