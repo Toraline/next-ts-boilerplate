@@ -6,7 +6,7 @@ import "../styles/global.css";
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="body">
         <header>
           <nav className="header__nav">
             <Button href="/">Home</Button>
