@@ -37,6 +37,7 @@
 }
 
 .button__container {
+  gap: 16px;
   justify-content: center;
   display: flex;
   flex-direction: row;
