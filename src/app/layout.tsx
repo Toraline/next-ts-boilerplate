@@ -7,10 +7,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body className="body">
         <header>
-          <nav>
-            <Sidebar />
+          <nav className="header__nav">
             <Link href="/">Home</Link>
             <Link href="/categories">Categories</Link>
+            <Sidebar />
           </nav>
         </header>
         {children}

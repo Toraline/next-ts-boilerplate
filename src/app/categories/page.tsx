@@ -7,7 +7,7 @@ export default async function Page() {
   const categories = await listCategories();
 
   return (
-    <>
+    <span className="page__container">
       <h1>Categories</h1>
       <CategoriesTable initialState={categories || []} loading={!categories} />
       <Link href="/categories/new">Create Category</Link>
@@ -17,6 +17,6 @@ export default async function Page() {
           <h3 className="no-content__item__subtitle">Select or create a new category</h3>
         </div>
       )}
-    </>
+    </span>
   );
 }
