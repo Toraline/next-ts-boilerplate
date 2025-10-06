@@ -18,7 +18,7 @@ export const Sidebar = async () => {
           </Link>
         </div>
       </div>
-      <span>
+      <span className="sidebar__menu">
         <Menu initialState={categories || []} />
       </span>
     </div>

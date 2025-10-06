@@ -4,6 +4,7 @@
   justify-self: start;
   height: 100vh;
   flex-grow: 1;
+  height: 100vh;
   position: fixed;
 }
 
