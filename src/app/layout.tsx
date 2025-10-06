@@ -8,7 +8,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="body">
         <header>
           <nav className="header__nav">
-            <Sidebar />
             <Link href="/">Home</Link>
             <Link href="/categories">Categories</Link>
             <Sidebar />
