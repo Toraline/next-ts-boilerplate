@@ -1,15 +1,10 @@
 .text-area {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 4px;
   font-family: "Inter", sans-serif;
   font-size: 16px;
   gap: 8px;
-}
-
-.label {
-  color: #000;
-  font-weight: 500;
 }
 
 .textarea {
@@ -19,4 +14,10 @@
   font-size: 16px;
   font-family: "Inter", sans-serif;
   outline: none;
+}
+.label {
+  color: #000;
+  font-weight: 500;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
 }

@@ -30,7 +30,10 @@ export default function Page() {
       </div>
 
       <h1>Componente TextArea</h1>
+      <h2>Com label</h2>
       <TextArea label="Description" id="textarea" placeholder="Daily description" />
+      <h2>Sem label</h2>
+      <TextArea id="textarea" placeholder="Daily description" />
     </div>
   );
 }
