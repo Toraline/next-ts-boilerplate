@@ -1,5 +1,6 @@
 "use client";
 
+import { TextArea } from "ui/TextArea/TextArea";
 import "./styles/page.style.css";
 import { useState } from "react";
 import { Field } from "ui/Field";
@@ -34,6 +35,11 @@ export default function Page() {
       <Field label="Category name" placeholder="Type your category name" />
       <h2>Sem label</h2>
       <Field placeholder="Type your task name here" />
+      <h1>Componente TextArea</h1>
+      <h2>Com label</h2>
+      <TextArea label="Description" id="textarea" placeholder="Daily description" />
+      <h2>Sem label</h2>
+      <TextArea id="textarea" placeholder="Daily description" />
     </div>
   );
 }
