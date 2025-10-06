@@ -22,11 +22,6 @@
   font-size: 16px;
 }
 
-.input--nolabel {
-  color: #000;
-  font-size: 14px;
-}
-
 .input::placeholder {
   color: #a1a1a1;
 }

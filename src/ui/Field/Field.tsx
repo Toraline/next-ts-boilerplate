@@ -15,7 +15,6 @@ export const Field = ({
   ...inputProps
 }: FieldProps) => {
   const classes = clsx("input", {
-    "input--nolabel": variant === "nolabel",
     "input--noborder": variant === "noborder",
   });
   return (

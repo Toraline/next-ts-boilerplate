@@ -1,5 +1,6 @@
 "use client";
 
+import "./styles/page.style.css";
 import { useState } from "react";
 import { Field } from "ui/Field";
 import { Item } from "ui/Item";
@@ -10,7 +11,7 @@ export default function Page() {
   const [content, setContent] = useState("initial value");
   const [isDone, setIsDone] = useState(true);
   return (
-    <>
+    <div className="page-container">
       <h1>My public Page</h1>
       <Item
         content={content}
@@ -32,7 +33,7 @@ export default function Page() {
       <h2> Com label</h2>
       <Field label="Category name" placeholder="Type your category name" />
       <h2>Sem label</h2>
-      <Field placeholder="Type your task name here" variant="nolabel" />
-    </>
+      <Field placeholder="Type your task name here" />
+    </div>
   );
 }
