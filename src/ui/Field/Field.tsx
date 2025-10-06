@@ -18,7 +18,7 @@ export const Field = ({
     "input--noborder": variant === "noborder",
   });
   return (
-    <div className="container">
+    <div className="field__container">
       {label && (
         <label className="label" htmlFor={id}>
           {label}

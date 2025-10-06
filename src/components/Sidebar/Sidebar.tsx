@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PlusSign } from "ui/Icons/PlusSign";
 import "./Sidebar.style.css";
 import { listCategories } from "modules/categories";
+import { Button } from "ui/Button/Button";
 
 export const Sidebar = async () => {
   const categories = await listCategories();
@@ -13,12 +14,12 @@ export const Sidebar = async () => {
           Categories
         </Link>
         <div className="sidebar__button-container">
-          <Link href="/categories/new">
+          <Button href="/categories/new" size="sm">
             <PlusSign />
-          </Link>
+          </Button>
         </div>
       </div>
-      <span className="sidebar__menu">
+      <span>
         <Menu initialState={categories || []} />
       </span>
     </div>

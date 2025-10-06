@@ -12,7 +12,7 @@ export default function Page() {
   const [content, setContent] = useState("initial value");
   const [isDone, setIsDone] = useState(true);
   return (
-    <div className="page-container">
+    <div className="page__container">
       <h1>My public Page</h1>
       <Item
         content={content}
