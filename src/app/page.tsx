@@ -1,6 +1,7 @@
 "use client";
 
 import { TextArea } from "ui/TextArea/TextArea";
+import "./styles/page.style.css";
 import { useState } from "react";
 import { Item } from "ui/Item";
 import { Button } from "ui/Button/Button";
@@ -10,7 +11,7 @@ export default function Page() {
   const [content, setContent] = useState("initial value");
   const [isDone, setIsDone] = useState(true);
   return (
-    <div>
+    <div className="page-container">
       <h1>My public Page</h1>
       <Item
         content={content}
