@@ -28,4 +28,5 @@
 
 .input--noborder {
   border: none;
+  outline: none;
 }

@@ -6,16 +6,24 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
-  content: string;
+  save?: boolean;
+  onlyEditing?: boolean;
+  editButton?: boolean;
+  checkbox?: boolean;
+  content?: string;
   contentPlaceholder?: string;
-  isDone: boolean;
-  onContentChange: (content: string) => void;
-  onIsDoneChange: (isDone: boolean) => void;
+  isDone?: boolean;
+  onContentChange?: (content: string) => void;
+  onIsDoneChange?: (isDone: boolean) => void;
   onDelete?: () => void;
-  onEdit: () => void;
+  onEdit?: () => void;
 };
 
 export const Item = ({
+  save,
+  onlyEditing,
+  editButton,
+  checkbox,
   content,
   isDone,
   onContentChange,
@@ -28,7 +36,7 @@ export const Item = ({
 
   const handleEdit = (e) => {
     e.stopPropagation();
-    onEdit();
+    onEdit?.();
     setIsEditing(false);
   };
   const toggleEditMode = (e) => {
@@ -41,17 +49,22 @@ export const Item = ({
       className={`item${itemIsDoneClass}`}
       onClick={(e) => {
         e.stopPropagation();
-        onIsDoneChange(!isDone);
+        onIsDoneChange?.(!isDone);
       }}
     >
+      {onlyEditing ? <Editing onClick={handleEdit} save={false} /> : isEditing}
+
       {isEditing ? (
         <Editing
-          onChange={(e) => onContentChange(e.target.value)}
+          onChange={(e) => onContentChange?.(e.target.value)}
           value={content}
           onClick={handleEdit}
+          save={save}
         />
       ) : (
         <NotEditing
+          editButton={editButton}
+          checkbox={checkbox}
           onDelete={onDelete}
           onClick={toggleEditMode}
           content={content}

@@ -14,12 +14,46 @@ export default function Page() {
   return (
     <div className="page__container">
       <h1>My public Page</h1>
+      <h1>Componente Item</h1>
       <Item
         content={content}
         isDone={isDone}
         onContentChange={setContent}
         onIsDoneChange={setIsDone}
         onDelete={() => console.log("deletou")}
+        onEdit={() => console.log("editou")}
+      />
+      <h2>Item sem o checkbox</h2>
+      <Item
+        checkbox={false}
+        content={content}
+        onContentChange={setContent}
+        onDelete={() => console.log("deletou")}
+        onEdit={() => console.log("editou")}
+      />
+      <h2>Item sem o botão de edit</h2>
+      <Item
+        editButton={false}
+        content={content}
+        isDone={isDone}
+        onIsDoneChange={setIsDone}
+        onDelete={() => console.log("deletou")}
+      />
+      <h2>Item sem o botão de delete</h2>
+      <Item
+        content={content}
+        isDone={isDone}
+        onContentChange={setContent}
+        onIsDoneChange={setIsDone}
+        onEdit={() => console.log("editou")}
+      />
+      <h2>Item só com content</h2>
+      <Item
+        onlyEditing={true}
+        checkbox={false}
+        editButton={false}
+        onContentChange={setContent}
+        onIsDoneChange={setIsDone}
         onEdit={() => console.log("editou")}
       />
 
