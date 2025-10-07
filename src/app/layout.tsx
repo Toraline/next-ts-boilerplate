@@ -1,16 +1,16 @@
 import { ReactNode } from "react";
-import Link from "next/link";
 import { Sidebar } from "components/Sidebar/Sidebar";
+import { Button } from "ui/Button/Button";
+import "../styles/global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="body">
         <header>
-          <nav>
+          <nav className="header__nav">
+            <Button href="/">Home</Button>
             <Sidebar />
-            <Link href="/">Home</Link>
-            <Link href="/categories">Categories</Link>
           </nav>
         </header>
         {children}

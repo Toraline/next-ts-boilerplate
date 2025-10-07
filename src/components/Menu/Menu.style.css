@@ -19,6 +19,6 @@
 }
 
 .menu__item--active {
-  background-color: #e0e0e0cc;
-  border-radius: 4px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
 }

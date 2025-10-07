@@ -1,15 +1,30 @@
 import { ComponentProps } from "react";
 import "./Field.style.css";
+import clsx from "clsx";
 
 type FieldProps = ComponentProps<"input"> & {
+  variant?: "primary" | "nolabel" | "noborder";
   label?: string;
 };
 
-export const Field = ({ id, type = "text", label, ...inputProps }: FieldProps) => {
+export const Field = ({
+  id,
+  type = "text",
+  variant = "primary",
+  label,
+  ...inputProps
+}: FieldProps) => {
+  const classes = clsx("input", {
+    "input--noborder": variant === "noborder",
+  });
   return (
-    <>
-      {label && <label htmlFor={id}>{label}</label>}
-      <input className="input" id={id} type={type} {...inputProps} />
-    </>
+    <div className="field__container">
+      {label && (
+        <label className="label" htmlFor={id}>
+          {label}
+        </label>
+      )}
+      <input className={classes} id={id} type={type} {...inputProps} />
+    </div>
   );
 };

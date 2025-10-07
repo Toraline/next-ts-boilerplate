@@ -1,22 +1,26 @@
 import { Menu } from "components/Menu/Menu";
 import Link from "next/link";
-import { Button } from "ui/Button/Button";
 import { PlusSign } from "ui/Icons/PlusSign";
 import "./Sidebar.style.css";
+import { listCategories } from "modules/categories";
+import { Button } from "ui/Button/Button";
 
-export const Sidebar = () => {
+export const Sidebar = async () => {
+  const categories = await listCategories();
   return (
     <div className="sidebar">
-      <div className="header">
-        <Link className="header__title" href="/categories">
+      <div className="sidebar__header">
+        <Link className="sidebar__header-title" href="/categories">
           Categories
         </Link>
-        <Button size="sm">
-          <PlusSign className="add-button-icon" />
-        </Button>
+        <div className="sidebar__button-container">
+          <Button href="/categories/new" size="sm">
+            <PlusSign />
+          </Button>
+        </div>
       </div>
-      <span className="sidebar__menu">
-        <Menu />
+      <span>
+        <Menu initialState={categories || []} />
       </span>
     </div>
   );

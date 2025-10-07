@@ -12,7 +12,12 @@ type EditingProp = ComponentProps<"input"> & {
 export const Editing = ({ save = true, value, onClick, ...fieldProps }: EditingProp) => {
   return (
     <Fragment>
-      <Field value={value} onClick={(e) => e.stopPropagation()} {...fieldProps} />
+      <Field
+        variant="noborder"
+        value={value}
+        onClick={(e) => e.stopPropagation()}
+        {...fieldProps}
+      />
       {save && (
         <Button variant="transparent" aria-label="save changes" onClick={onClick}>
           <Save />
