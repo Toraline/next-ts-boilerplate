@@ -1,9 +1,9 @@
 import { Menu } from "components/Menu/Menu";
 import Link from "next/link";
-import { Button } from "ui/Button/Button";
 import { PlusSign } from "ui/Icons/PlusSign";
 import "./Sidebar.style.css";
 import { listCategories } from "modules/categories";
+import { Button } from "ui/Button/Button";
 
 export const Sidebar = async () => {
   const categories = await listCategories();

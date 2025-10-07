@@ -17,7 +17,7 @@
   font-weight: 600;
 }
 
-.page__header-icons {
+.page__header-buttons {
   display: flex;
   flex-direction: row;
   padding: 0 0 4px 16px;
@@ -37,6 +37,7 @@
 }
 
 .button__container {
+  gap: 16px;
   justify-content: center;
   display: flex;
   flex-direction: row;

@@ -1,4 +1,5 @@
 import FormNewCategory from "./components/FormNewCategory/FormNewCategory";
+
 export default function Page() {
   return (
     <div className="page__container">
