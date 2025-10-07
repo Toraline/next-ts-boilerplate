@@ -11,11 +11,11 @@ type NotEditingProps = {
   isDone?: boolean;
   onDelete?: () => void;
   checkbox?: boolean;
-  edit?: boolean;
+  editButton?: boolean;
 };
 
 const NotEditing = ({
-  edit = true,
+  editButton = true,
   checkbox = true,
   content,
   isDone,
@@ -34,7 +34,7 @@ const NotEditing = ({
 
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 
-      {edit && (
+      {editButton && (
         <Button variant="transparent" aria-label="edit" onClick={onClick}>
           <EditTask />
         </Button>

@@ -33,7 +33,7 @@ export default function Page() {
       />
       <h2>Item sem o botão de edit</h2>
       <Item
-        edit={false}
+        editButton={false}
         content={content}
         isDone={isDone}
         onIsDoneChange={setIsDone}
@@ -51,7 +51,7 @@ export default function Page() {
       <Item
         onlyEditing={true}
         checkbox={false}
-        edit={false}
+        editButton={false}
         onContentChange={setContent}
         onIsDoneChange={setIsDone}
         onEdit={() => console.log("editou")}
