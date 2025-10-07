@@ -4,6 +4,7 @@ import { updateCategoryByIdOrSlug } from "modules/categories/categories.api";
 import { Category } from "modules/categories";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "ui/Button/Button";
 
 export default function FormEditCategory({
   initialState,
@@ -18,7 +19,7 @@ export default function FormEditCategory({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await updateCategoryByIdOrSlug(category, id);
-    router.push("/categories");
+    router.push(`/categories/${category.slug}`);
   };
 
   return (
@@ -47,7 +48,9 @@ export default function FormEditCategory({
         value={category.slug}
         onChange={(e) => setCategory({ ...category, slug: e.target.value })}
       />
-      <button type="submit">Save</button>
+      <Button size="sm" type="submit">
+        Save
+      </Button>
     </form>
   );
 }

@@ -1,8 +1,7 @@
-// import FormEditCategory from "./components/FormEditCategory/FormEditCategory";
 import { getCategoryByIdOrSlug } from "modules/categories";
 import { Button } from "ui/Button/Button";
-import { Edit } from "ui/Icons/Edit";
 import { Delete } from "ui/Icons/Delete";
+import EditState from "./components/EditState/EditState";
 
 export default async function Page({
   params,
@@ -23,10 +22,8 @@ export default async function Page({
     <div className="page__container">
       <div className="page__header">
         <h1 className="page__header-title"> {initialState.name}</h1>
-        <div className="page__header-icons">
-          <Button variant="transparent">
-            <Edit />
-          </Button>
+        <div className="page__header-buttons">
+          <EditState initialState={initialState} id={categoryId} />
           <Button variant="transparent">
             <Delete />
           </Button>
@@ -36,8 +33,6 @@ export default async function Page({
         <div className="page__body-title"> Tasks </div>
         <Button size="sm">New task</Button>
       </div>
-
-      {/* <FormEditCategory initialState={initialState} id={categoryId} /> */}
     </div>
   );
 }
