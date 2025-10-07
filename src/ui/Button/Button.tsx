@@ -5,7 +5,7 @@ import React, { ComponentProps } from "react";
 
 type ButtonProps = ComponentProps<"button"> & {
   href?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   size?: "sm" | "md";
   variant?: "primary" | "transparent";
 };
