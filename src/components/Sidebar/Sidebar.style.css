@@ -13,7 +13,7 @@
 }
 
 .sidebar-header__title {
-  color: #000;
+  color: var(--black);
   font-family: "Inter", sans-serif;
   font-size: 24px;
   text-decoration: none;
