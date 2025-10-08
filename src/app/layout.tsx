@@ -6,9 +6,9 @@ import "../styles/global.css";
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="body">
+      <body>
         <header>
-          <nav className="header__nav">
+          <nav>
             <Button href="/">Home</Button>
             <Sidebar />
           </nav>

@@ -5,14 +5,14 @@
   position: fixed;
 }
 
-.sidebar__header {
+.sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
 }
 
-.sidebar__header-title {
+.sidebar-header__title {
   color: #000;
   font-family: "Inter", sans-serif;
   font-size: 24px;
