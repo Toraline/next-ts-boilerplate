@@ -19,9 +19,9 @@ export const Sidebar = async () => {
           </Button>
         </div>
       </div>
-      <span>
+      <nav>
         <Menu initialState={categories || []} />
-      </span>
+      </nav>
     </div>
   );
 };

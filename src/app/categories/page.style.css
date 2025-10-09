@@ -1,9 +1,11 @@
 .no-content {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
   gap: 32px;
   padding: 16px 0;
+  flex-grow: 1;
 }
 
 .no-content__item__title {

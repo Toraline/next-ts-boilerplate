@@ -1,13 +1,13 @@
 import Link from "next/link";
 import CategoriesTable from "./components/CategoriesTable/CategoriesTable";
 import { listCategories } from "modules/categories/categories.service";
-import "./styles/page.style.css";
+import "./page.style.css";
 
 export default async function Page() {
   const categories = await listCategories();
 
   return (
-    <span className="page__container">
+    <span className="page">
       {categories.length > 0 ? (
         <>
           <h1>Categories</h1>
