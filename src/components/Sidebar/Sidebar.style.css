@@ -10,14 +10,6 @@
   padding: 16px 0;
 }
 
-.sidebar__header-title {
-  color: #000;
-  font-family: "Inter", sans-serif;
-  font-size: 24px;
-  text-decoration: none;
-  font-weight: 500;
-}
-
 .sidebar__button-container {
   padding: 0 16px;
 }

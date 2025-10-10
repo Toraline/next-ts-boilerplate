@@ -15,14 +15,16 @@ export default function EditState({ initialState, id }: { initialState: Category
 
   return (
     <>
-      <div className="page__header-buttons" onSubmit={handleSubmit}>
-        {!isEditing && (
-          <Button variant="transparent" onClick={() => setIsEditing(true)}>
-            <Edit />
-          </Button>
-        )}
-        {isEditing && <FormEditCategory initialState={initialState} id={id} />}
-      </div>
+      {!isEditing && (
+        <Button variant="transparent" onClick={() => setIsEditing(true)}>
+          <Edit />
+        </Button>
+      )}
+      {isEditing && (
+        <div onSubmit={handleSubmit}>
+          <FormEditCategory initialState={initialState} id={id} />
+        </div>
+      )}
     </>
   );
 }
