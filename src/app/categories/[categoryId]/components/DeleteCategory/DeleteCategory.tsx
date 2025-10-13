@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { deleteCategory } from "modules/categories/categories.api";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import { Delete } from "ui/Icons/Delete";
 
 type DeleteCategoryProps = {

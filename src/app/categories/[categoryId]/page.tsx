@@ -1,6 +1,6 @@
 import { getCategoryByIdOrSlug } from "modules/categories";
 import { DeleteCategory } from "./components/DeleteCategory/DeleteCategory";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import EditState from "./components/EditState/EditState";
 
 export default async function Page({

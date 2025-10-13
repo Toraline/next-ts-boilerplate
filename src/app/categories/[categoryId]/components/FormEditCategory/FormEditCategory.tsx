@@ -4,7 +4,7 @@ import { updateCategoryByIdOrSlug } from "modules/categories/categories.api";
 import { Category } from "modules/categories";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 
 export default function FormEditCategory({
   initialState,

@@ -5,7 +5,7 @@ import "./styles/page.style.css";
 import { useState } from "react";
 import { Field } from "ui/Field";
 import { Item } from "ui/Item";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import "styles/global.css";
 
 export default function Page() {

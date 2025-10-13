@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import { Check } from "ui/Icons/Check";
 import { EditTask } from "ui/Icons/EditTask";
 import { DeleteTask } from "ui/Icons/DeleteTask";

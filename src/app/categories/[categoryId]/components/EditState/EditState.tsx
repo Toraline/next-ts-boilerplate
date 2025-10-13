@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
 import { Category } from "modules/categories";

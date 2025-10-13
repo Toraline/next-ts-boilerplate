@@ -1,5 +1,5 @@
 import React, { ComponentProps, Fragment } from "react";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import { Save } from "ui/Icons/Save";
 import { Field } from "ui/Field/Field";
 
