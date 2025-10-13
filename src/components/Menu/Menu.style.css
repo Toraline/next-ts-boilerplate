@@ -3,22 +3,25 @@
   flex-direction: column;
   padding: 4px 0;
   width: 256px;
+  font-family: "Inter", sans-serif;
+  color: var(--dark-gray);
+  font-size: 16px;
 }
 
 .menu__item {
   text-decoration: none;
-  color: #000;
+  color: var(--black);
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 500;
   padding: 8px 16px;
 }
 .menu__item:hover {
-  background-color: #e0e0e0cc;
+  background-color: var(--gray);
   border-radius: 4px;
 }
 
 .menu__item--active {
-  background-color: #f7f7f7;
+  background-color: var(--light-gray);
   border-radius: 8px;
 }

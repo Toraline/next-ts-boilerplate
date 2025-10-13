@@ -9,8 +9,8 @@ export const Sidebar = async () => {
   const categories = await listCategories();
   return (
     <div className="sidebar">
-      <div className="sidebar__header">
-        <Link className="sidebar__header-title" href="/categories">
+      <div className="sidebar-header">
+        <Link className="sidebar-header__title" href="/categories">
           Categories
         </Link>
         <div className="sidebar__button-container">

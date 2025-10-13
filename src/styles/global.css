@@ -1,4 +1,7 @@
-body {
+@import "variables.css";
+
+.body {
+  padding: 0;
   margin: 0;
   display: flex;
   font-family: "Inter", sans-serif;
@@ -37,7 +40,6 @@ body {
   padding: 0 0 4px 16px;
   gap: 4px;
 }
-
 
 .page__body-title {
   font-size: 24px;
