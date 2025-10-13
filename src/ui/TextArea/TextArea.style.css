@@ -9,13 +9,13 @@
 .textarea {
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--gray);
   font-size: 16px;
   font-family: "Inter", sans-serif;
   outline: none;
 }
 .label {
-  color: #000;
+  color: var(--black);
   font-weight: 500;
   font-size: 16px;
   font-family: "Inter", sans-serif;

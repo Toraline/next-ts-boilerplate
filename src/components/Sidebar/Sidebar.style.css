@@ -3,7 +3,7 @@
   justify-self: start;
 }
 
-.sidebar__header {
+.sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;

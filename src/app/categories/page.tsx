@@ -16,8 +16,8 @@ export default async function Page() {
         </>
       ) : (
         <div className="no-content">
-          <h1 className="no-content__item__title">No category selected</h1>
-          <h3 className="no-content__item__subtitle">Select or create a new category</h3>
+          <h1 className="no-content__title">No category selected</h1>
+          <h3 className="no-content__subtitle">Select or create a new category</h3>
         </div>
       )}
     </span>

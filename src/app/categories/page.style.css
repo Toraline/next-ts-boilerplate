@@ -8,16 +8,16 @@
   flex-grow: 1;
 }
 
-.no-content__item__title {
+.no-content__title {
   font-size: 24px;
   font-weight: 600;
-  color: #a1a1a1;
+  color: var(--dark-gray);
   font-family: "Inter", sans-serif;
 }
 
-.no-content__item__subtitle {
+.no-content__subtitle {
   font-size: 16px;
   font-weight: 500;
   font-family: "Inter", sans-serif;
-  color: #a1a1a1;
+  color: var(--dark-gray);
 }
