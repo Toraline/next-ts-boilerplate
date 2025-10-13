@@ -1,5 +1,6 @@
 import nextJest from "next/jest.js";
 import dotenv from "dotenv";
+import { TextEncoder, TextDecoder } from "util";
 
 dotenv.config();
 
@@ -11,8 +12,8 @@ const customJestConfig = createJestConfig({
   clearMocks: true,
   testEnvironment: "jsdom",
   globals: {
-    TextEncoder: require("util").TextEncoder,
-    TextDecoder: require("util").TextDecoder,
+    TextEncoder,
+    TextDecoder,
   },
 });
 
