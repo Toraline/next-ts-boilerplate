@@ -8,8 +8,12 @@ import {
 } from "tests/fixtures/categories";
 import prisma from "infra/database";
 import { errorMessages } from "constants/errors";
+import { resetDb } from "tests/utils/reset-db";
 
 describe("API Categories", () => {
+  beforeEach(async () => {
+    await resetDb();
+  });
   describe("GET /api/categories/:categoryIdOrSlug", () => {
     test("should return category details when id exists", async () => {
       // create a new category

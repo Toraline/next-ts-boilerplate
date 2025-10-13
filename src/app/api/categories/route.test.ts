@@ -8,8 +8,12 @@ import {
 } from "tests/fixtures/categories";
 import prisma from "infra/database";
 import { errorMessages } from "constants/errors";
+import { resetDb } from "tests/utils/reset-db";
 
 describe("API Categories", () => {
+  beforeEach(async () => {
+    await resetDb();
+  });
   describe("GET /api/categories", () => {
     test("should return empty array when no categories exist", async () => {
       const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/categories");
