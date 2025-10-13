@@ -1,6 +1,6 @@
 @import "variables.css";
 
-.body {
+body {
   padding: 0;
   margin: 0;
   display: flex;
@@ -40,20 +40,4 @@ a {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: purple;
-}
-
-.page__content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: row;
-}
-
-.button__container {
-  gap: 16px;
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }

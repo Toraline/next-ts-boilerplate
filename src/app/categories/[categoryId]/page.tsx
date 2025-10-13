@@ -1,7 +1,7 @@
 import { getCategoryByIdOrSlug } from "modules/categories";
-import { Button } from "ui/Button/Button";
 import EditState from "./components/EditState/EditState";
 import "./page.style.css";
+import { Tasks } from "./components/Tasks/Tasks";
 
 export default async function Page({
   params,
@@ -22,9 +22,8 @@ export default async function Page({
       <div>
         <EditState initialState={initialState} id={categoryId} slug={initialState.slug} />
       </div>
-      <div className="page__content">
-        <div className="subtitle"> Tasks </div>
-        <Button size="sm">New task</Button>
+      <div className="task">
+        <Tasks />
       </div>
     </div>
   );

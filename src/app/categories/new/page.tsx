@@ -1,9 +1,9 @@
 import FormNewCategory from "./components/FormNewCategory/FormNewCategory";
+import "./page.style.css";
 
 export default function Page() {
   return (
-    <div className="page">
-      <h1>New Category</h1>
+    <div className="new-category">
       <FormNewCategory />
     </div>
   );

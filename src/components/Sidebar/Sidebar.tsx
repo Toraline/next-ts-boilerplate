@@ -9,7 +9,7 @@ export const Sidebar = async () => {
   const categories = await listCategories();
   return (
     <div className="sidebar">
-      <div className="sidebar__header">
+      <div className="sidebar-header">
         <Link className="subtitle" href="/categories">
           Categories
         </Link>

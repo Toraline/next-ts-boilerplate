@@ -51,7 +51,7 @@ export default function EditState({
       )}
       {isEditing && (
         <div className="form-container" onSubmit={handleSubmit}>
-          <div className="form-title">
+          <div>
             <h1 className="title"> {initialState.name}</h1>
           </div>
           <FormEditCategory initialState={initialState} id={id} />
