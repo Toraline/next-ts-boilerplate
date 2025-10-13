@@ -1,8 +1,6 @@
 .sidebar {
   flex-direction: column;
   justify-self: start;
-  flex-grow: 1;
-  position: fixed;
 }
 
 .sidebar-header {

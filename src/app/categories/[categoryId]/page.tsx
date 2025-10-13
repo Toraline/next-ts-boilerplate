@@ -18,7 +18,7 @@ export default async function Page({
   };
 
   return (
-    <div className="page__container">
+    <div className="page">
       <div className="page__header">
         <h1 className="page__header-title"> {initialState.name}</h1>
         <div className="page__header-buttons">
