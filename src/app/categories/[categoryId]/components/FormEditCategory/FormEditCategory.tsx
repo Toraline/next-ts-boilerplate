@@ -5,6 +5,9 @@ import { Category } from "modules/categories";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "ui/Button/Button";
+import { Field } from "ui/Field";
+import { TextArea } from "ui/TextArea";
+import "./FormEditCategory.style.css";
 
 export default function FormEditCategory({
   initialState,
@@ -23,35 +26,32 @@ export default function FormEditCategory({
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="">Name</label>
-        <input
-          id="category-name"
-          name="category-name"
-          type="text"
-          value={category.name}
-          onChange={(e) => setCategory({ ...category, name: e.target.value })}
+    <div className="form__container">
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-header">
+          <Field
+            label="Name"
+            id="category-name"
+            type="text"
+            value={category.name}
+            onChange={(e) => setCategory({ ...category, name: e.target.value })}
+          />
+          <Field
+            label="Slug"
+            id="category-slug"
+            name="category-slug"
+            type="text"
+            value={category.slug}
+            onChange={(e) => setCategory({ ...category, slug: e.target.value })}
+          />
+        </div>
+        <TextArea
+          id={"description"}
+          label="Description"
+          placeholder={category.name + " description"}
         />
-        <label htmlFor="category-description">Description</label>
-        <input
-          id="category-description"
-          name="category-description"
-          type="text"
-          value={category.description || ""}
-          onChange={(e) => setCategory({ ...category, description: e.target.value })}
-        />
-        <label htmlFor="category-slug">Slug</label>
-        <input
-          id="category-slug"
-          name="category-slug"
-          type="text"
-          value={category.slug}
-          onChange={(e) => setCategory({ ...category, slug: e.target.value })}
-        />
-        <Button size="sm" type="submit">
-          Save changes
-        </Button>
+
+        <Button type="submit">Save changes</Button>
       </form>
     </div>
   );

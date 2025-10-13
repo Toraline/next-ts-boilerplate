@@ -1,5 +1,4 @@
 import { getCategoryByIdOrSlug } from "modules/categories";
-import { DeleteCategory } from "./components/DeleteCategory/DeleteCategory";
 import { Button } from "ui/Button/Button";
 import EditState from "./components/EditState/EditState";
 import "./page.style.css";
@@ -19,17 +18,9 @@ export default async function Page({
   };
 
   return (
-    <div className="page">
-      <div className="header ">
-        <div className="category-header">
-          <div>
-            <h1 className="title"> {initialState.name}</h1>
-          </div>
-          <div className="category-buttons">
-            <EditState initialState={initialState} id={categoryId} />
-            <DeleteCategory slug={initialState.slug} />
-          </div>
-        </div>
+    <div className="category">
+      <div>
+        <EditState initialState={initialState} id={categoryId} slug={initialState.slug} />
       </div>
       <div className="page__content">
         <div className="subtitle"> Tasks </div>

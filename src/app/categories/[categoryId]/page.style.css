@@ -1,11 +1,8 @@
-.category-header {
+.category {
+  flex-direction: column;
   display: flex;
-  flex-direction: row;
-  gap: 16px;
   padding-top: 72px;
-}
-
-.category-buttons {
-  display: flex;
-  flex-direction: row;
+  padding-left: 164px;
+  max-width: 613px;
+  gap: 58px;
 }
