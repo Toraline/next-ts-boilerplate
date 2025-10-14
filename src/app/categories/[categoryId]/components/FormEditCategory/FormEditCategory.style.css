@@ -1,0 +1,11 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form__header {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}

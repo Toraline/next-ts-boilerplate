@@ -1,8 +1,6 @@
 .field__container {
   display: flex;
   flex-direction: column;
-  font-family: "Inter", sans-serif;
-  color: var(--black);
   flex-grow: 1;
 }
 

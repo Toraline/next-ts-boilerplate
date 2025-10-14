@@ -1,11 +1,6 @@
 @import "variables.css";
-
-.body {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  font-family: "Inter", sans-serif;
-}
+@import "_reset.css";
+@import "_typography";
 
 .header {
   height: 100vh;
@@ -24,31 +19,4 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-}
-
-.page__body {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: row;
-  max-width: 60%;
-}
-
-.page__header-buttons {
-  display: flex;
-  flex-direction: row;
-  padding: 0 0 4px 16px;
-  gap: 4px;
-}
-
-.page__body-title {
-  font-size: 24px;
-}
-
-.button__container {
-  gap: 16px;
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }

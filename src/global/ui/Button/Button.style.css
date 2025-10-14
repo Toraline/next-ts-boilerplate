@@ -19,7 +19,7 @@
 }
 
 .button--sm {
-  padding: 8px;
+  padding: 4px 8px;
   font-size: 12px;
 }
 
@@ -32,4 +32,10 @@
 
 .button--transparent:hover {
   background: transparent;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
 }
