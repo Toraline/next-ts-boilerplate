@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Sidebar } from "components/Sidebar/Sidebar";
-import "../styles/global.css";
+import "global/styles/global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
