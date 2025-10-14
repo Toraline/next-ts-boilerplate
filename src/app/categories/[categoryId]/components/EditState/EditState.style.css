@@ -1,0 +1,14 @@
+.category-header {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+.category-buttons {
+  display: flex;
+  flex-direction: row;
+}
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

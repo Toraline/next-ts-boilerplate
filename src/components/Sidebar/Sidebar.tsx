@@ -10,7 +10,7 @@ export const Sidebar = async () => {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <Link className="sidebar-header__title" href="/categories">
+        <Link className="subtitle" href="/categories">
           Categories
         </Link>
         <div className="sidebar__button-container">

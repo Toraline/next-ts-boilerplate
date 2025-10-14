@@ -1,0 +1,9 @@
+.new-category {
+  flex-direction: column;
+  display: flex;
+  padding-top: 72px;
+  padding-left: 164px;
+  padding-right: 24px;
+  max-width: 613px;
+  gap: 58px;
+}
