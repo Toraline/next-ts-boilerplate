@@ -1,12 +1,12 @@
-import React from "react";
-import { Button } from "ui/Button/Button";
+import { MouseEvent } from "react";
+import { Button } from "global/ui";
 import { Check } from "ui/Icons/Check";
 import { EditTask } from "ui/Icons/EditTask";
 import { DeleteTask } from "ui/Icons/DeleteTask";
 import "./NotEditing.style.css";
 
 type NotEditingProps = {
-  onClick: (event: React.MouseEvent) => void;
+  onClick: (event: MouseEvent) => void;
   content?: string;
   isDone?: boolean;
   onDelete?: () => void;
@@ -23,7 +23,7 @@ const NotEditing = ({
   onClick,
 }: NotEditingProps) => {
   const contentIsDoneClass = isDone ? " item__content--done" : "";
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = (e: MouseEvent) => {
     e.stopPropagation();
     onDelete?.();
   };

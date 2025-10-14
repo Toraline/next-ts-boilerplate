@@ -1,0 +1,53 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="UI" />
+
+# UI library
+
+These are the components used cross app, they need to be generic and shouldn't have any business logic.
+
+## Files
+
+All the UI components should live inside `/src/global/ui`
+
+There, you can create a folder with the component name, like Button and, inside of it, you can create files depending of the needs for the component, for example:
+
+`/src/global/ui/Button/Button.tsx` → the main component file
+
+`/src/global/ui/Button/index.ts` → the component that exports everything
+
+`/src/global/ui/Button/Button.style.css` → the main css file
+
+### Storybook
+
+`/src/global/ui/Button/Button.stories.tsx` → the storybook file, you need it in order to show the component in Storybook.
+
+Use autodocs tag to generate an automatic documentation, but also export the proper components variations.
+
+Run npm run storybook to see storybook running at http://localhost:6006/
+
+### Testing
+
+`/src/global/ui/Button/Button.test.tsx` → the test unit file
+
+Run `npm run test:unit:watch` to run unit tests
+
+You can also see coverage reports running `open coverage/index.html`
+
+For the unit tests, we need to make sure we are covering at least all the branches.
+
+## Exporting and Importing
+
+1. You need to export your component WITHOUT using default
+
+2. Add the export for your component in `src/global/ui/index.ts`, like:
+
+```js
+export * from "./Button/Button";
+```
+
+3. Import in the component you want to use like:
+
+```js
+import { Button } from '@global/ui''
+```

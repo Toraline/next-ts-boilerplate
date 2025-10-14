@@ -1,16 +1,16 @@
 .button {
-  cursor: pointer;
-  border-radius: 8px;
-  background: var(--black);
-  display: flex;
-  padding: 8px 16px;
-  justify-content: center;
   align-items: center;
+  background: var(--black);
+  border-radius: 8px;
+  border: none;
   color: var(--white);
+  cursor: pointer;
+  display: inline-block;
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 500;
-  border: none;
+  padding: 8px 16px;
+  text-align: center;
   text-decoration: none;
 }
 

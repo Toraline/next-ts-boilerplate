@@ -5,7 +5,7 @@ import "./FormNewCategory.css";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Field } from "ui/Field/Field";
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 import { TextArea } from "ui/TextArea";
 
 export default function FormNewCategory() {

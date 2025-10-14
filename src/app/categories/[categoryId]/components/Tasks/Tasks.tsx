@@ -1,4 +1,4 @@
-import { Button } from "ui/Button/Button";
+import { Button } from "global/ui";
 
 export const Tasks = () => {
   return (

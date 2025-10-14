@@ -1,8 +1,8 @@
-import React, { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 import "./TextArea.style.css";
 
 type TextAreaProps = ComponentProps<"textarea"> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   id: string;
   label?: string;
 };

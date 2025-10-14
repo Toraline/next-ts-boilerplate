@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "global/ui";
 import { useRouter } from "next/navigation";
 import { deleteCategory } from "modules/categories/categories.api";
-import { Button } from "ui/Button/Button";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
 import { Category } from "modules/categories";

@@ -8,3 +8,7 @@ node_modules/
 coverage/
 
 /src/generated/prisma
+
+*storybook.log
+storybook-static
+.DS_Store

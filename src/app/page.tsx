@@ -5,8 +5,8 @@ import "./styles/page.style.css";
 import { useState } from "react";
 import { Field } from "ui/Field";
 import { Item } from "ui/Item";
-import { Button } from "ui/Button/Button";
-import "styles/global.css";
+import { Button } from "global/ui";
+import "global/styles/global.css";
 
 export default function Page() {
   const [content, setContent] = useState("initial value");
