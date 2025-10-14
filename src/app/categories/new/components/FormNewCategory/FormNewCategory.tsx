@@ -57,7 +57,9 @@ export default function FormNewCategory() {
           id="category-description"
           placeholder="Enter the category description"
         />
-        <Button type="submit">Save changes</Button>
+        <div>
+          <Button type="submit">Save changes</Button>
+        </div>
       </form>
     </div>
   );

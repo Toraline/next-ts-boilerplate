@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <div>
       <h1>My public Page</h1>
-      <h1>Componente Item</h1>
+      <h2 className="title">Componente Item</h2>
       <Item
         content={content}
         isDone={isDone}
@@ -23,7 +23,7 @@ export default function Page() {
         onDelete={() => console.log("deletou")}
         onEdit={() => console.log("editou")}
       />
-      <h2>Item sem o checkbox</h2>
+      <h3>Item sem o checkbox</h3>
       <Item
         checkbox={false}
         content={content}
@@ -31,7 +31,7 @@ export default function Page() {
         onDelete={() => console.log("deletou")}
         onEdit={() => console.log("editou")}
       />
-      <h2>Item sem o botão de edit</h2>
+      <h3>Item sem o botão de edit</h3>
       <Item
         editButton={false}
         content={content}
@@ -39,7 +39,7 @@ export default function Page() {
         onIsDoneChange={setIsDone}
         onDelete={() => console.log("deletou")}
       />
-      <h2>Item sem o botão de delete</h2>
+      <h3>Item sem o botão de delete</h3>
       <Item
         content={content}
         isDone={isDone}
@@ -47,7 +47,7 @@ export default function Page() {
         onIsDoneChange={setIsDone}
         onEdit={() => console.log("editou")}
       />
-      <h2>Item só com content</h2>
+      <h3>Item só com content</h3>
       <Item
         onlyEditing={true}
         checkbox={false}
@@ -57,22 +57,22 @@ export default function Page() {
         onEdit={() => console.log("editou")}
       />
 
-      <h1>Componente Botão</h1>
+      <h2>Componente Botão</h2>
       <div className="button__container">
         <Button>Padrão</Button>
         <Button size="sm">Pequeno</Button>
         <Button variant="transparent">Transparente</Button>
       </div>
 
-      <h1>Componente Field</h1>
-      <h2> Com label</h2>
+      <h2>Componente Field</h2>
+      <h3> Com label</h3>
       <Field label="Category name" placeholder="Type your category name" />
-      <h2>Sem label</h2>
+      <h3>Sem label</h3>
       <Field placeholder="Type your task name here" />
-      <h1>Componente TextArea</h1>
-      <h2>Com label</h2>
+      <h2>Componente TextArea</h2>
+      <h3>Com label</h3>
       <TextArea label="Description" id="textarea" placeholder="Daily description" />
-      <h2>Sem label</h2>
+      <h3>Sem label</h3>
       <TextArea id="textarea" placeholder="Daily description" />
     </div>
   );

@@ -26,9 +26,9 @@ export default function FormEditCategory({
   };
 
   return (
-    <div className="form__container">
+    <div className="form-container">
       <form className="form" onSubmit={handleSubmit}>
-        <div className="form-header">
+        <div className="form__header">
           <Field
             label="Name"
             id="category-name"
@@ -50,8 +50,9 @@ export default function FormEditCategory({
           label="Description"
           placeholder={category.name + " description"}
         />
-
-        <Button type="submit">Save changes</Button>
+        <div>
+          <Button type="submit">Save changes</Button>
+        </div>
       </form>
     </div>
   );

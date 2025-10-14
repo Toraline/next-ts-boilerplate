@@ -1,6 +1,8 @@
 .sidebar {
   flex-direction: column;
   justify-self: start;
+  height: 100vh;
+  border: 1px solid var(--gray);
 }
 
 .sidebar-header {
@@ -11,5 +13,9 @@
 }
 
 .sidebar__button-container {
-  padding: 0 16px;
+  padding: 0 24px;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }

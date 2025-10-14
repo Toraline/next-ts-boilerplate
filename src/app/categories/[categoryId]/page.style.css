@@ -1,4 +1,4 @@
-.category {
+.category-wrapper {
   flex-direction: column;
   display: flex;
   padding-top: 72px;
@@ -7,7 +7,7 @@
   gap: 58px;
 }
 
-.task {
+.task-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;

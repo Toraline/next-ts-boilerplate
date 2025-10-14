@@ -18,11 +18,10 @@ export default async function Page({
   };
 
   return (
-    <div className="category">
-      <div>
-        <EditState initialState={initialState} id={categoryId} slug={initialState.slug} />
-      </div>
-      <div className="task">
+    <div className="category-wrapper">
+      <EditState initialState={initialState} id={categoryId} slug={initialState.slug} />
+
+      <div className="task-wrapper">
         <Tasks />
       </div>
     </div>
