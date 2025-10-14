@@ -1,6 +1,4 @@
 import { getCategoryByIdOrSlug } from "modules/categories";
-import { DeleteCategory } from "./components/DeleteCategory/DeleteCategory";
-import { Button } from "global/ui";
 import EditState from "./components/EditState/EditState";
 import "./page.style.css";
 import { Tasks } from "./components/Tasks/Tasks";
