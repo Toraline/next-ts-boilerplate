@@ -1,11 +1,11 @@
 import Link from "next/link";
 import clsx from "clsx";
 import "./Button.style.css";
-import React, { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 
 type ButtonProps = ComponentProps<"button"> & {
   href?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   size?: "sm" | "md";
   variant?: "primary" | "transparent";
 };
