@@ -16,7 +16,7 @@
     npm run services:up
 
     npm run prisma:migrate
-    npm rum prisma:generate
+    npm run prisma:generate
 
     npm run dev
     ```
