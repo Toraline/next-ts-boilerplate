@@ -1,4 +1,4 @@
-import { Category } from "./categories.schema";
+import { Category } from "./schema";
 import { getUrl } from "utils/getUrl";
 
 const postCategory = async (newCategory: Category) => {

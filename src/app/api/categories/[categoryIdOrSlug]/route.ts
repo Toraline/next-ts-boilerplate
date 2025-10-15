@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
 import {
-  CategorySchema,
+  createCategorySchema,
   getCategoryByIdOrSlug,
   updateCategoryByIdOrSlug,
   deleteCategoryByIdOrSlug,
@@ -35,7 +35,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   try {
     const body = await request.json();
-    const parsed = CategorySchema.partial().safeParse(body);
+    const parsed = createCategorySchema.partial().safeParse(body);
 
     if (!parsed.success) {
       const errorsTree = z.treeifyError(parsed.error);

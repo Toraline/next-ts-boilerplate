@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { NextResponse } from "next/server";
 
-import { CategorySchema, createCategory, listCategories } from "modules/categories";
+import { createCategorySchema, createCategory, listCategories } from "modules/categories";
 import { errorMessages } from "constants/errors";
 import { revalidatePath } from "next/cache";
 
@@ -21,7 +21,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const parsed = CategorySchema.safeParse(body);
+    const parsed = createCategorySchema.safeParse(body);
 
     if (!parsed.success) {
       const errorsTree = z.treeifyError(parsed.error);
