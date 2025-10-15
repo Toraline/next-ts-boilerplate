@@ -17,6 +17,7 @@ export const Primary: Story = {
   args: {
     children: "Button",
     onClick: fn(),
+    size: "md",
   },
 };
 
