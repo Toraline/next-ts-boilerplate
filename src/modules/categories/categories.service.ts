@@ -1,4 +1,4 @@
-import prisma from "infra/database";
+import prisma from "lib/prisma";
 import { Category } from "modules/categories";
 
 export async function createCategory(category: Category) {

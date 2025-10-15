@@ -1,4 +1,4 @@
-import prisma from "infra/database";
+import prisma from "lib/prisma";
 
 /**
  * Truncate all public tables in the database.
