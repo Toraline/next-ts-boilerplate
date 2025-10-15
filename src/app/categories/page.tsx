@@ -1,6 +1,6 @@
 import Link from "next/link";
 import CategoriesTable from "./components/CategoriesTable/CategoriesTable";
-import { listCategories } from "modules/categories/categories.service";
+import { listCategories } from "modules/categories/server/service";
 import "./page.style.css";
 
 export default async function Page() {

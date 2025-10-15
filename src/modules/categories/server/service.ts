@@ -1,14 +1,23 @@
 import prisma from "lib/prisma";
-import { Category } from "modules/categories";
+import { Category, createCategorySchema } from "modules/categories";
+import { categoryBySlug, categoryCreate } from "modules/categories/server/repo";
 
-export async function createCategory(category: Category) {
-  return prisma.category.create({
-    data: {
-      name: category.name.trim(),
-      slug: category.slug.trim(),
-      description: category.description?.trim() ?? "",
-    },
+export async function createCategory(raw: unknown) {
+  const category = createCategorySchema.parse(raw);
+
+  const exists = await categoryBySlug(category.slug);
+  console.log(exists);
+  if (exists) {
+    throw new Error("Category with this slug already exists");
+  }
+
+  const created = await categoryCreate({
+    slug: category.slug,
+    name: category.name.trim(),
+    description: typeof category.description === "string" ? category.description.trim() : "",
   });
+
+  return created;
 }
 
 export async function listCategories() {
