@@ -21,7 +21,6 @@ type ItemProps = {
 
 export const Item = ({
   save,
-  onlyEditing,
   editButton,
   checkbox,
   content,
@@ -52,8 +51,6 @@ export const Item = ({
         onIsDoneChange?.(!isDone);
       }}
     >
-      {onlyEditing ? <Editing onClick={handleEdit} save={false} /> : isEditing}
-
       {isEditing ? (
         <Editing
           onChange={(e) => onContentChange?.(e.target.value)}

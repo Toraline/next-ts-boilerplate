@@ -11,7 +11,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const Default: Story = {
   args: {
     content: "initial value",
     isDone: true,
@@ -19,7 +19,7 @@ export const Primary: Story = {
   },
 };
 
-export const Secondary: Story = {
+export const HaveButtons: Story = {
   args: {
     content: "initial value",
     isDone: true,

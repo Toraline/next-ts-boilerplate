@@ -30,7 +30,11 @@ const NotEditing = ({
 
   return (
     <div className="item__container">
-      {checkbox && <div className="item__checkbox">{isDone && <Check />}</div>}
+      {checkbox && (
+        <div className="item__checkbox" data-testid="checkbox">
+          {isDone && <Check aria-label="check" />}
+        </div>
+      )}
 
       <p className={`item__content${contentIsDoneClass}`}>{content}</p>
 

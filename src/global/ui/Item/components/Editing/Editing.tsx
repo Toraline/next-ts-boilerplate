@@ -13,13 +13,14 @@ export const Editing = ({ save = true, value, onClick, ...fieldProps }: EditingP
   return (
     <Fragment>
       <Field
+        aria-label="input"
         variant="noborder"
         value={value}
         onClick={(e) => e.stopPropagation()}
         {...fieldProps}
       />
       {save && (
-        <Button variant="transparent" aria-label="save changes" onClick={onClick}>
+        <Button variant="transparent" aria-label="save" onClick={onClick}>
           <Save />
         </Button>
       )}

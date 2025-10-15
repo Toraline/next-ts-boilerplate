@@ -47,15 +47,6 @@ export default function Page() {
         onIsDoneChange={setIsDone}
         onEdit={() => console.log("editou")}
       />
-      <h3>Item só com content</h3>
-      <Item
-        onlyEditing={true}
-        checkbox={false}
-        editButton={false}
-        onContentChange={setContent}
-        onIsDoneChange={setIsDone}
-        onEdit={() => console.log("editou")}
-      />
 
       <h2>Componente Botão</h2>
       <div className="button__container">
