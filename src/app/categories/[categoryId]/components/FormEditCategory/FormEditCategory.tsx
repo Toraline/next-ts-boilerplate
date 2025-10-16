@@ -5,7 +5,7 @@ import { Category } from "modules/categories";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "global/ui";
-import { Field } from "ui/Field";
+import { Field } from "global/ui/Field";
 import { TextArea } from "ui/TextArea";
 import "./FormEditCategory.style.css";
 
