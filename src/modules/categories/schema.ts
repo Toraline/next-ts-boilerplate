@@ -25,6 +25,20 @@ export const createCategorySchema = z.object({
   description: descriptionSchema,
 });
 
+export const updateCategorySchema = z
+  .object({
+    name: z.string().min(2).max(80).trim().optional(),
+    slug: slugSchema.optional(),
+    description: z.string().max(500).optional(),
+  })
+  .refine(
+    (v) =>
+      typeof v.name !== "undefined" ||
+      typeof v.slug !== "undefined" ||
+      typeof v.description !== "undefined",
+    { message: "At least one field to update is required" },
+  );
+
 export const listCategoriesQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),

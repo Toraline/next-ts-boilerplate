@@ -1,6 +1,6 @@
 import prisma from "lib/prisma";
+import { NotFoundError } from "lib/errors";
 import {
-  Category,
   categoryEntitySchema,
   categoryPublicSchema,
   listCategoriesResponseSchema,
@@ -8,12 +8,15 @@ import {
   listCategoriesQuerySchema,
   idOrSlugSchema,
   isCuid,
+  idSchema,
+  updateCategorySchema,
 } from "modules/categories";
 import {
   categoryBySlug,
   categoryCreate,
   categoryFindMany,
   categoryById,
+  categoryUpdate,
 } from "modules/categories/server/repo";
 
 export async function createCategory(raw: unknown) {
@@ -63,25 +66,45 @@ export async function getCategoryByIdOrSlug(raw: unknown) {
     : await categoryBySlug(idOrSlug);
 
   if (!foundCategoryByIdOrSlug) {
-    throw new Error("Category not found");
+    throw new NotFoundError();
   }
 
   return toPublic(foundCategoryByIdOrSlug);
 }
 
-export async function updateCategoryByIdOrSlug(idOrSlug: string, data: Partial<Category>) {
-  const existingCategory = await getCategoryByIdOrSlug(idOrSlug);
+export async function updateCategoryByIdOrSlug(idOrSlug: string, raw: unknown) {
+  const isId = idSchema.safeParse(idOrSlug).success;
+  const existingCategory = isId ? await categoryById(idOrSlug) : await categoryBySlug(idOrSlug);
 
-  if (!existingCategory) return null;
+  if (!existingCategory) throw new NotFoundError();
 
-  return prisma.category.update({
-    where: { id: existingCategory.id },
-    data: {
-      name: data.name?.trim(),
-      slug: data.slug?.trim(),
-      description: data.description?.trim() ?? "",
-    },
-  });
+  const patch = updateCategorySchema.parse(raw);
+
+  if (typeof patch.slug !== "undefined" && patch.slug !== existingCategory.slug) {
+    const exists = await categoryBySlug(patch.slug);
+
+    if (exists) {
+      throw new Error("Category with this slug already exists");
+    }
+  }
+
+  const prismaPatch: Record<string, unknown> = {};
+
+  if (typeof patch.name !== "undefined") {
+    prismaPatch.name = patch.name.trim();
+  }
+
+  if (typeof patch.slug !== "undefined") {
+    prismaPatch.slug = patch.slug.trim();
+  }
+
+  if (typeof patch.description !== "undefined") {
+    prismaPatch.description = patch.description.trim();
+  }
+
+  const updatedCategory = await categoryUpdate(existingCategory.id, prismaPatch);
+
+  return toPublic(updatedCategory);
 }
 
 export async function deleteCategoryByIdOrSlug(idOrSlug: string) {

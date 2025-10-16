@@ -1,6 +1,5 @@
 "use client";
 
-import { updateCategoryByIdOrSlug } from "modules/categories/categories.api";
 import { Category } from "modules/categories";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,6 +7,7 @@ import { Button } from "global/ui";
 import { Field } from "ui/Field";
 import { TextArea } from "ui/TextArea";
 import "./FormEditCategory.style.css";
+import { API_URL } from "lib/constants";
 
 export default function FormEditCategory({
   initialState,
@@ -17,17 +17,47 @@ export default function FormEditCategory({
   id: string;
 }) {
   const [category, setCategory] = useState(initialState);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent) => {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    await updateCategoryByIdOrSlug(category, id);
-    router.push(`/categories/${category.slug}`);
-  };
+    setError(null);
+    setSaving(true);
+    try {
+      const patch: Record<string, unknown> = {};
+
+      if (category.name.trim().length > 0) patch.name = category.name.trim();
+      patch.slug = category.slug;
+      patch.description = category.description;
+
+      const res = await fetch(`${API_URL}/categories/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error);
+      }
+
+      router.push(`/categories/${data.slug}`);
+      setSaving(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unexpected error");
+
+      setSaving(false);
+    }
+  }
 
   return (
     <div className="form-container">
-      <form className="form" onSubmit={handleSubmit}>
+      {error && <div className="error">{error}</div>}
+      {saving && <div className="saving">Saving...</div>}
+      <form className="form" onSubmit={onSubmit}>
         <div className="form__header">
           <Field
             label="Name"
@@ -51,7 +81,9 @@ export default function FormEditCategory({
           placeholder={category.name + " description"}
         />
         <div>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save changes"}
+          </Button>
         </div>
       </form>
     </div>

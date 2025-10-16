@@ -30,7 +30,7 @@ export default function EditState({
   const [isEditing, setIsEditing] = useState(false);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setIsEditing(false);
+    // setIsEditing(false);
   };
   const router = useRouter();
 

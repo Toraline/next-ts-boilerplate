@@ -34,3 +34,6 @@ export async function categoryFindMany(raw: unknown) {
 
   return { items, total, page, pageSize };
 }
+
+export const categoryUpdate = (id: string, data: Prisma.CategoryUpdateInput) =>
+  prisma.category.update({ where: { id }, data });
