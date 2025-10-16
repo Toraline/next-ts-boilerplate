@@ -1,17 +1,30 @@
 "use client";
 
-import { Category } from "modules/categories";
 import { deleteCategory } from "modules/categories/categories.api";
 import Link from "next/link";
 import { useState } from "react";
 
 type CategoriesTableProps = {
-  initialState: Category[];
+  items: {
+    id: string;
+    slug: string;
+    name: string;
+    description?: string | null | undefined;
+    createdAt: string;
+    updatedAt: string;
+  }[];
   loading: boolean;
+  totalPages: number;
+  page: number;
 };
 
-export default function CategoriesTable({ initialState, loading }: CategoriesTableProps) {
-  const [categories, setCategories] = useState(initialState);
+export default function CategoriesTable({
+  items,
+  loading,
+  totalPages,
+  page,
+}: CategoriesTableProps) {
+  const [categories, setCategories] = useState(items);
   const onDelete = async (slug) => {
     await deleteCategory(slug);
     const filteredCategories = categories.filter((categories) => categories.slug !== slug);
@@ -20,6 +33,7 @@ export default function CategoriesTable({ initialState, loading }: CategoriesTab
   return (
     <ul>
       {loading && "is loading..."}
+      Page: {page} of {totalPages}
       {categories.length == 0 && "No categories found"}
       {!loading &&
         categories.length > 0 &&
@@ -28,6 +42,8 @@ export default function CategoriesTable({ initialState, loading }: CategoriesTab
             <p> {category.name}</p>
             <p> {category.slug}</p>
             <p>{category.description}</p>
+            <p>{category.createdAt}</p>
+            <p>{category.updatedAt}</p>
             <Link href={`/categories/${category.slug}`}>Edit Category</Link>
             <button id="delete-button" type="button" onClick={() => onDelete(category.slug)}>
               Delete

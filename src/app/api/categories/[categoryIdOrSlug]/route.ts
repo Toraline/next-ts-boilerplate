@@ -14,16 +14,11 @@ export const runtime = "nodejs";
 type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };
 
 export async function GET(_r: Request, { params }: RouteParams) {
-  const { categoryIdOrSlug } = await params;
-
   try {
+    const { categoryIdOrSlug } = await params;
     const category = await getCategoryByIdOrSlug(categoryIdOrSlug);
 
-    if (category) {
-      return NextResponse.json(category);
-    }
-
-    return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
+    return NextResponse.json(category);
   } catch (error) {
     console.error(errorMessages.GET_CATEGORIES_ERROR, error);
     return NextResponse.json({ error: errorMessages.GET_CATEGORIES_ERROR }, { status: 500 });

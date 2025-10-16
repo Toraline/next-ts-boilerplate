@@ -1,12 +1,26 @@
 import prisma from "lib/prisma";
-import { Category, createCategorySchema } from "modules/categories";
-import { categoryBySlug, categoryCreate } from "modules/categories/server/repo";
+import {
+  Category,
+  categoryEntitySchema,
+  categoryPublicSchema,
+  listCategoriesResponseSchema,
+  createCategorySchema,
+  listCategoriesQuerySchema,
+  idOrSlugSchema,
+  isCuid,
+} from "modules/categories";
+import {
+  categoryBySlug,
+  categoryCreate,
+  categoryFindMany,
+  categoryById,
+} from "modules/categories/server/repo";
 
 export async function createCategory(raw: unknown) {
   const category = createCategorySchema.parse(raw);
 
   const exists = await categoryBySlug(category.slug);
-  console.log(exists);
+
   if (exists) {
     throw new Error("Category with this slug already exists");
   }
@@ -20,28 +34,39 @@ export async function createCategory(raw: unknown) {
   return created;
 }
 
-export async function listCategories() {
-  return prisma.category.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
+function toPublic(row: unknown) {
+  const entity = categoryEntitySchema.parse(row);
+
+  return categoryPublicSchema.parse({
+    ...entity,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString(),
   });
 }
 
-export async function getCategoryByIdOrSlug(idOrSlug: string) {
-  const categoryById = await prisma.category.findUnique({
-    where: { id: idOrSlug },
-  });
+export async function listCategories(rawQuery: unknown) {
+  const query = listCategoriesQuerySchema.parse(rawQuery);
 
-  if (categoryById) {
-    return categoryById;
+  const response = await categoryFindMany(query);
+
+  const categories = response.items.map(toPublic);
+
+  return listCategoriesResponseSchema.parse({ ...response, items: categories });
+}
+
+export async function getCategoryByIdOrSlug(raw: unknown) {
+  const idOrSlug = idOrSlugSchema.parse(raw);
+  const cuid = isCuid(idOrSlug);
+
+  const foundCategoryByIdOrSlug = cuid
+    ? await categoryById(idOrSlug)
+    : await categoryBySlug(idOrSlug);
+
+  if (!foundCategoryByIdOrSlug) {
+    throw new Error("Category not found");
   }
 
-  const categoryBySlug = await prisma.category.findUnique({
-    where: { slug: idOrSlug },
-  });
-
-  return categoryBySlug;
+  return toPublic(foundCategoryByIdOrSlug);
 }
 
 export async function updateCategoryByIdOrSlug(idOrSlug: string, data: Partial<Category>) {

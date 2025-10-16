@@ -6,7 +6,8 @@ import { listCategories } from "modules/categories";
 import { Button } from "global/ui";
 
 export const Sidebar = async () => {
-  const categories = await listCategories();
+  const categoriesResponse = await listCategories({});
+  const { items } = await categoriesResponse;
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -20,7 +21,7 @@ export const Sidebar = async () => {
         </div>
       </div>
       <nav>
-        <Menu initialState={categories || []} />
+        <Menu initialState={items} />
       </nav>
     </div>
   );
