@@ -6,7 +6,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Field } from "ui/Field/Field";
 import { Button } from "global/ui";
-import { TextArea } from "ui/TextArea";
+import { TextArea } from "global/ui/TextArea";
 
 export default function FormNewCategory() {
   const [name, setName] = useState("");
@@ -51,6 +51,7 @@ export default function FormNewCategory() {
           />
         </div>
         <TextArea
+          label="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           name="category-description"
