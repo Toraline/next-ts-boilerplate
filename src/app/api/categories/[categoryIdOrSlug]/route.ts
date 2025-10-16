@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 
 import {
   getCategoryByIdOrSlug,
@@ -36,20 +35,11 @@ export async function PATCH(req: Request, { params }: RouteParams) {
 }
 
 export async function DELETE(_r: Request, { params }: RouteParams) {
-  const { categoryIdOrSlug } = await params;
-
   try {
-    const deletedCategory = await deleteCategoryByIdOrSlug(categoryIdOrSlug);
-
-    if (!deletedCategory) {
-      return NextResponse.json({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR }, { status: 404 });
-    }
-
-    revalidatePath(`/categories/${categoryIdOrSlug}`);
-
-    return NextResponse.json(deletedCategory);
+    const { categoryIdOrSlug } = await params;
+    await deleteCategoryByIdOrSlug(categoryIdOrSlug);
+    return new Response(null, { status: 204 });
   } catch (error) {
-    console.error(errorMessages.DELETE_CATEGORY_ERROR, error);
-    return NextResponse.json({ error: errorMessages.DELETE_CATEGORY_ERROR }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
   }
 }

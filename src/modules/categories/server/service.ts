@@ -1,4 +1,3 @@
-import prisma from "lib/prisma";
 import { NotFoundError } from "lib/errors";
 import {
   categoryEntitySchema,
@@ -17,6 +16,7 @@ import {
   categoryFindMany,
   categoryById,
   categoryUpdate,
+  categoryDelete,
 } from "modules/categories/server/repo";
 
 export async function createCategory(raw: unknown) {
@@ -108,11 +108,12 @@ export async function updateCategoryByIdOrSlug(idOrSlug: string, raw: unknown) {
 }
 
 export async function deleteCategoryByIdOrSlug(idOrSlug: string) {
-  const existingCategory = await getCategoryByIdOrSlug(idOrSlug);
+  const isId = idSchema.safeParse(idOrSlug).success;
+  const existingCategory = isId ? await categoryById(idOrSlug) : await categoryBySlug(idOrSlug);
 
-  if (!existingCategory) return null;
+  if (!existingCategory) throw new NotFoundError();
 
-  return prisma.category.delete({
-    where: { id: existingCategory.id },
-  });
+  await categoryDelete(existingCategory.id);
+
+  return;
 }

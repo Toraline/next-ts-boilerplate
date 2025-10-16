@@ -37,3 +37,5 @@ export async function categoryFindMany(raw: unknown) {
 
 export const categoryUpdate = (id: string, data: Prisma.CategoryUpdateInput) =>
   prisma.category.update({ where: { id }, data });
+
+export const categoryDelete = (id: string) => prisma.category.delete({ where: { id } });
