@@ -1,6 +1,6 @@
 import { Menu } from "components/Menu/Menu";
 import Link from "next/link";
-import { PlusSign } from "ui/Icons/PlusSign";
+import { PlusSign } from "global/ui/Icons/PlusSign";
 import "./Sidebar.style.css";
 import { listCategories } from "modules/categories";
 import { Button } from "global/ui";

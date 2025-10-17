@@ -1,0 +1,98 @@
+import { Meta, IconGallery, IconItem } from "@storybook/addon-docs/blocks";
+
+import { Check, Delete, DeleteTask, Edit, EditTask, PlusSign, Save } from "./Icons";
+import "./Icons.mdx.css";
+
+<Meta title="Global/UI/Icons" />
+
+# Icons Library
+
+Those are the icons used in the application, they are svg components that can be imported to be used.
+
+## **Icons**
+
+<IconGallery>
+  <IconItem name="Delete Category">
+    <Delete name="delete" />
+  </IconItem>
+  <IconItem name="Delete Task">
+    <DeleteTask name="delete-task" />
+  </IconItem>
+  <IconItem name="Edit Category">
+    <Edit name="edit" />
+  </IconItem>
+  <IconItem name="Edit Task">
+    <EditTask name="edit-task" />
+  </IconItem>
+  <IconItem name="Add Category">
+    <div className="icon-item-dark">
+      <PlusSign name="Plus-sign" />
+    </div>
+  </IconItem>
+  <IconItem name="Save Changes">
+    <Save name="save" />
+  </IconItem>
+  <IconItem name="Check from Checkbox" className="icon-item-dark">
+    <Check name="check" />
+  </IconItem>
+</IconGallery>
+
+## Files
+
+All the icons components should live inside `/src/global/ui/Icons`
+
+There, you can create a file with the component name, like Save.tsx or Delete.tsx.
+
+### Storybook
+
+`/src/global/ui/icons.mdx` → This file contains the informations laid in this page and the icons for display. Also, in case more icons are added in the future is advised to add them here to the "gallery".
+
+### Exporting and Importing
+
+- In case you are creating an icon:
+
+1. Create the Icon with a export. Like:
+
+```tsx
+export const IconName()=>{}
+```
+
+2. Add a export for the svg component in `src/global/ui/Icons/index.ts` like:
+
+```js
+export * from "./Save";
+```
+
+- In case you just want to import an Icon to your component:
+
+1. Import the Icon where you want to use like:
+
+```js
+import { Save } from "@global/ui/Icons";
+```
+
+2. Add the svg component tag where you want it to be. Like:
+
+```tsx
+<div>
+  <Save />
+</div>
+```
+
+- In case you are importing a new Icon in this page:
+
+1. import the icon like
+
+   :
+
+```js
+import { Save } from "@global/ui/Icons";
+```
+
+2. Add another IconItem inside the already existing IconGallery tag like:
+
+```tsx
+<IconItem name="Save Changes">
+  <Save name="save" />
+</IconItem>
+```
