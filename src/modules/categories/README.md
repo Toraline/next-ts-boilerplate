@@ -116,7 +116,7 @@ function CategoriesPage() {
 #### `useCategory` - Fetch Single Category
 ```typescript
 import { useCategory } from "modules/categories";
-import { ApiError } from "lib/client-errors";
+import { ApiError } from "lib/client/errors";
 
 function CategoryPage({ categoryIdOrSlug }) {
   const { data: category, isLoading, error } = useCategory(categoryIdOrSlug);

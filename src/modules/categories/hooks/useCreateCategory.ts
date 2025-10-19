@@ -1,8 +1,8 @@
 import { useMutation } from "global/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
-import { api } from "lib/api";
+import { api } from "lib/http/api";
 import { API_URL } from "lib/constants";
-import { ApiError } from "lib/client-errors";
+import { ApiError } from "lib/client/errors";
 import { CreateCategory, Category } from "../types";
 
 /**

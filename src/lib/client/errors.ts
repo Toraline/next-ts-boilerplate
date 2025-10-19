@@ -1,4 +1,4 @@
-import { CLIENT_ERROR_MESSAGES } from "./constants/errors";
+import { CLIENT_ERROR_MESSAGES } from "../constants/errors";
 
 export interface ApiErrorResponse {
   error: string;

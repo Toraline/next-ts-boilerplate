@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ReactQueryProvider } from "lib/react-query";
+import { ReactQueryProvider } from "lib/client/react-query";
 import { Sidebar } from "global/components/Sidebar/Sidebar";
 import "global/styles/global.css";
 

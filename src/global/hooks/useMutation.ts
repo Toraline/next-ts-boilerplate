@@ -1,5 +1,5 @@
 import { useMutation as useReactQueryMutation } from "@tanstack/react-query";
-import { ApiError } from "lib/client-errors";
+import { ApiError } from "lib/client/errors";
 
 export interface UseMutationOptions<TData, TError = unknown, TVariables = unknown> {
   mutationFn: (variables: TVariables) => Promise<TData>;

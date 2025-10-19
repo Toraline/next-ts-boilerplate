@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, PropsWithChildren } from "react";
-import { ApiError, handleGenericError } from "./client-errors";
+import { ApiError, handleGenericError } from "./errors";
 
 export function ReactQueryProvider({ children }: PropsWithChildren) {
   const [queryClient] = useState(

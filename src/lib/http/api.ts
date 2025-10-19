@@ -1,4 +1,4 @@
-import { processFetchResponse, ApiError, handleGenericError } from "./client-errors";
+import { processFetchResponse, ApiError, handleGenericError } from "../client/errors";
 
 // Use global fetch types that should be available in browser environment
 export async function api<T>(

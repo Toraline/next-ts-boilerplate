@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
-import { CLIENT_ERROR_MESSAGES } from "./constants/errors";
-import { VALIDATION_MESSAGES } from "./constants/validation";
+import { CLIENT_ERROR_MESSAGES } from "../constants/errors";
+import { VALIDATION_MESSAGES } from "../constants/validation";
 
 export class NotFoundError extends Error {
   constructor(message = CLIENT_ERROR_MESSAGES.NOT_FOUND_DEFAULT) {

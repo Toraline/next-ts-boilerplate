@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createCategory, listCategories } from "modules/categories";
-import { getErrorMessage, getHttpStatus } from "lib/errors";
+import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 
 export const runtime = "nodejs";
 

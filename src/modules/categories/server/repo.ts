@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import prisma from "lib/prisma";
+import prisma from "lib/database/prisma";
 import { listCategoriesQuerySchema } from "../schema";
 
 export const categoryById = (id: string) => prisma.category.findUnique({ where: { id } });

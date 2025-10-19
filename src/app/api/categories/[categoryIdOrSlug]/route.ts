@@ -5,7 +5,7 @@ import {
   updateCategoryByIdOrSlug,
   deleteCategoryByIdOrSlug,
 } from "modules/categories";
-import { getErrorMessage, getHttpStatus } from "lib/errors";
+import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 export const runtime = "nodejs";
 
 type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };

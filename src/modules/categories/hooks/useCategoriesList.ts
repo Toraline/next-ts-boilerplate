@@ -1,5 +1,5 @@
 import { useListQuery } from "global/hooks/useListQuery";
-import { api } from "lib/api";
+import { api } from "lib/http/api";
 import { API_URL } from "lib/constants";
 import { listCategoriesQuerySchema } from "../schema";
 import { ListCategoriesResponse, ListCategoriesQuery } from "../types";

@@ -1,6 +1,6 @@
 import { useMutation } from "global/hooks/useMutation";
 import { useQueryClient } from "@tanstack/react-query";
-import { api } from "lib/api";
+import { api } from "lib/http/api";
 import { API_URL } from "lib/constants";
 
 /**

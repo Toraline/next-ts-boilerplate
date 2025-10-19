@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "lib/api";
+import { api } from "lib/http/api";
 import { API_URL } from "lib/constants";
-import { ApiError } from "lib/client-errors";
+import { ApiError } from "lib/client/errors";
 import { Category } from "../types";
 
 /**

@@ -359,7 +359,7 @@ export const listTagsResponseSchema = z.object({
 });
 
 3) Repo — src/modules/tags/server/repo.ts
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/database/prisma";
 import { Prisma } from "@prisma/client";
 import { listTagsQuerySchema } from "../schemas";
 
@@ -406,7 +406,7 @@ import {
   idSchema,
   slugSchema,
 } from "../schemas";
-import { NotFoundError, ConflictError } from "@/lib/errors";
+import { NotFoundError, ConflictError } from "@/lib/http/errors";
 import { tagFindMany, tagById, tagBySlug, tagCreate, tagUpdate, tagDelete } from "./repo";
 
 function toPublic(row: unknown) {
@@ -482,7 +482,7 @@ export async function deleteTagByIdOrSlug(idOrSlug: string) {
 // route.ts
 import { NextResponse } from "next/server";
 import { listTags, createTag } from "@/modules/tags/server/service";
-import { getErrorMessage, getHttpStatus } from "@/lib/errors";
+import { getErrorMessage, getHttpStatus } from "@/lib/http/errors";
 
 export async function GET(req: Request) {
   try {
@@ -507,7 +507,7 @@ export async function POST(req: Request) {
 // [idOrSlug]/route.ts
 import { NextResponse } from "next/server";
 import { getTagByIdOrSlug, updateTagByIdOrSlug, deleteTagByIdOrSlug } from "@/modules/tags/server/service";
-import { getErrorMessage, getHttpStatus } from "@/lib/errors";
+import { getErrorMessage, getHttpStatus } from "@/lib/http/errors";
 
 export async function GET(_: Request, { params }: { params: { idOrSlug: string } }) {
   try { return NextResponse.json(await getTagByIdOrSlug(params.idOrSlug)); }
