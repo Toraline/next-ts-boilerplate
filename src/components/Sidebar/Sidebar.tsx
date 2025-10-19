@@ -1,13 +1,23 @@
+"use client";
+
 import { Menu } from "components/Menu/Menu";
 import Link from "next/link";
 import { PlusSign } from "ui/Icons/PlusSign";
 import "./Sidebar.style.css";
-import { listCategories } from "modules/categories";
+import { useCategoriesList } from "modules/categories";
 import { Button } from "global/ui";
 
-export const Sidebar = async () => {
-  const categoriesResponse = await listCategories({});
-  const { items } = await categoriesResponse;
+export const Sidebar = () => {
+  const {
+    data: categoriesResponse,
+    isLoading,
+    error,
+  } = useCategoriesList({
+    pageSize: 20,
+  });
+
+  const items = categoriesResponse?.items || [];
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -21,7 +31,9 @@ export const Sidebar = async () => {
         </div>
       </div>
       <nav>
-        <Menu initialState={items} />
+        {isLoading && <div className="menu">Loading categories...</div>}
+        {error && <div className="menu">Error loading categories</div>}
+        {!isLoading && !error && <Menu initialState={items} />}
       </nav>
     </div>
   );
