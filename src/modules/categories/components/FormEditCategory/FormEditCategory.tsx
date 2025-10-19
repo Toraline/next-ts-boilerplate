@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "global/ui";
-import { Field } from "ui/Field";
-import { TextArea } from "ui/TextArea";
+import { Field } from "global/ui/Field";
+import { TextArea } from "global/ui/TextArea";
 import {
   useUpdateCategory,
   createCategorySchema,

@@ -4,9 +4,9 @@ import "./FormNewCategory.css";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Field } from "ui/Field/Field";
+import { Field } from "global/ui/Field/Field";
 import { Button } from "global/ui";
-import { TextArea } from "ui/TextArea";
+import { TextArea } from "global/ui/TextArea";
 import {
   useCreateCategory,
   createCategorySchema,

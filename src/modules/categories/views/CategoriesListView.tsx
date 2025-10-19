@@ -15,7 +15,7 @@ import {
   CATEGORY_ERRORS,
 } from "..";
 import { GLOBAL_UI } from "global/constants";
-import { Field } from "ui/Field/Field";
+import { Field } from "global/ui/Field/Field";
 
 export default function CategoriesListView() {
   // State for filters, pagination, and sorting
