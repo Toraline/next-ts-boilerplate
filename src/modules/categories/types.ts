@@ -4,6 +4,7 @@ import {
   listCategoriesResponseSchema,
   listCategoriesQuerySchema,
   createCategorySchema,
+  updateCategorySchema,
   categoriesListFiltersSchema,
 } from "./schema";
 
@@ -17,3 +18,5 @@ export type ListCategoriesQuery = z.infer<typeof listCategoriesQuerySchema>;
 export type CategoriesListFilters = z.infer<typeof categoriesListFiltersSchema>;
 
 export type CreateCategory = z.infer<typeof createCategorySchema>;
+
+export type UpdateCategory = z.infer<typeof updateCategorySchema>;

@@ -1,88 +1,117 @@
 "use client";
 
-import { Category } from "modules/categories";
-import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "global/ui";
 import { Field } from "ui/Field";
 import { TextArea } from "ui/TextArea";
+import {
+  useUpdateCategory,
+  createCategorySchema,
+  CreateCategory,
+  Category,
+} from "modules/categories";
 import "./FormEditCategory.style.css";
-import { API_URL } from "lib/constants";
 
 export default function FormEditCategory({
   initialState,
   id,
+  onSuccess,
 }: {
   initialState: Category;
   id: string;
+  onSuccess?: () => void;
 }) {
-  const [category, setCategory] = useState(initialState);
-  const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
   const router = useRouter();
+  const updateCategoryMutation = useUpdateCategory();
+  const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
 
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setSaving(true);
-    try {
-      const patch: Record<string, unknown> = {};
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateCategory>({
+    resolver: zodResolver(createCategorySchema),
+    defaultValues: {
+      name: initialState.name,
+      slug: initialState.slug,
+      description: initialState.description || "",
+    },
+  });
 
-      if (category.name.trim().length > 0) patch.name = category.name.trim();
-      patch.slug = category.slug;
-      patch.description = category.description;
+  const onSubmit = (data: CreateCategory) => {
+    // Clear any previous no-changes message
+    setNoChangesMessage(null);
 
-      const res = await fetch(`${API_URL}/categories/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.error);
-      }
-
-      router.push(`/categories/${data.slug}`);
-      setSaving(false);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Unexpected error");
-
-      setSaving(false);
+    // Only send fields that have actually changed
+    const updates: Record<string, unknown> = {};
+    if (data.name !== initialState.name) {
+      updates.name = data.name;
     }
-  }
+    if (data.slug !== initialState.slug) {
+      updates.slug = data.slug;
+    }
+    if (data.description !== (initialState.description || "")) {
+      updates.description = data.description;
+    }
+
+    // If no fields changed, don't make the request and show message
+    if (Object.keys(updates).length === 0) {
+      setNoChangesMessage("No changes detected. Please modify at least one field before saving.");
+      return;
+    }
+
+    updateCategoryMutation.mutate(
+      { categoryIdOrSlug: id, updates },
+      {
+        onSuccess: (updatedCategory) => {
+          onSuccess?.();
+          router.push(`/categories/${updatedCategory.slug}`);
+        },
+        onError: (error) => {
+          console.error("Failed to update category:", error);
+        },
+      },
+    );
+  };
+
+  const isLoading = updateCategoryMutation.isPending || isSubmitting;
 
   return (
     <div className="form-container">
-      {error && <div className="error">{error}</div>}
-      {saving && <div className="saving">Saving...</div>}
-      <form className="form" onSubmit={onSubmit}>
+      {updateCategoryMutation.error && (
+        <div className="error">{updateCategoryMutation.error.message}</div>
+      )}
+      {noChangesMessage && <div className="error">{noChangesMessage}</div>}
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form__header">
           <Field
             label="Name"
+            {...register("name")}
             id="category-name"
             type="text"
-            value={category.name}
-            onChange={(e) => setCategory({ ...category, name: e.target.value })}
+            error={errors.name?.message}
           />
           <Field
             label="Slug"
+            {...register("slug")}
             id="category-slug"
-            name="category-slug"
             type="text"
-            value={category.slug}
-            onChange={(e) => setCategory({ ...category, slug: e.target.value })}
+            error={errors.slug?.message}
           />
         </div>
         <TextArea
-          id={"description"}
+          {...register("description")}
+          id="description"
           label="Description"
-          placeholder={category.name + " description"}
+          placeholder={initialState.name + " description"}
+          error={errors.description?.message}
         />
         <div>
-          <Button type="submit" disabled={saving}>
-            {saving ? "Saving..." : "Save changes"}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save changes"}
           </Button>
         </div>
       </form>
