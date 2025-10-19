@@ -3,16 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Category } from "modules/categories";
 
 type CategoriesTableProps = {
-  items: {
-    id: string;
-    slug: string;
-    name: string;
-    description?: string | null | undefined;
-    createdAt: string;
-    updatedAt: string;
-  }[];
+  items: Category[];
   loading: boolean;
   totalPages: number;
   page: number;

@@ -23,10 +23,13 @@ src/
   modules/
     <feature>/
       schemas.ts               # Zod: inputs, outputs, shared contracts
+      types.ts                 # TypeScript types inferred from Zod schemas
       server/
         repo.ts                # DB access (Prisma only; no business rules)
         service.ts             # Use-cases: validate IO, business rules
-      ui/                      # (Optional now) React components
+      hooks/
+        index.ts               # Barrel export for all hooks
+        use<Feature>List.ts    # React Query hooks for client-side data fetching
   global/
     styles/
 
@@ -112,6 +115,30 @@ Converts DB entities → public payloads (ISO dates).
 Throws typed errors (NotFoundError, ConflictError) for routes to translate into HTTP statuses.
 
 Keeps API routes thin and consistent.
+
+src/modules/<feature>/types.ts
+
+TypeScript types inferred from Zod schemas:
+
+<Feature> = z.infer<typeof <feature>PublicSchema>
+
+List<Feature>Response = z.infer<typeof list<Feature>ResponseSchema>
+
+List<Feature>Query = z.infer<typeof list<Feature>QuerySchema>
+
+Provides type safety for client-side code and React Query hooks.
+
+src/modules/<feature>/hooks/
+
+React Query hooks for client-side data fetching:
+
+use<Feature>List() — fetches paginated list with caching, error handling, and loading states
+
+Each hook file exports a single hook with consistent naming patterns.
+
+index.ts provides barrel exports: export * from "./use<Feature>List"
+
+Hooks use the generic useListQuery pattern from global/hooks for consistency.
 
 src/app/api/<feature>/…/route.ts
 
@@ -388,6 +415,59 @@ export async function DELETE(_: Request, { params }: { params: { idOrSlug: strin
   try { await deleteTagByIdOrSlug(params.idOrSlug); return new Response(null, { status: 204 }); }
   catch (e) { return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) }); }
 }
+
+5.5) Types — src/modules/tags/types.ts
+import { z } from "zod";
+import {
+  tagPublicSchema,
+  listTagsResponseSchema,
+  listTagsQuerySchema,
+} from "./schemas";
+
+// Export types inferred from Zod schemas
+export type Tag = z.infer<typeof tagPublicSchema>;
+export type ListTagsResponse = z.infer<typeof listTagsResponseSchema>;
+export type ListTagsQuery = z.infer<typeof listTagsQuerySchema>;
+
+5.6) Hooks — src/modules/tags/hooks/
+Create src/modules/tags/hooks/index.ts:
+export * from "./useTagsList";
+
+Create src/modules/tags/hooks/useTagsList.ts:
+import { useListQuery } from "global/hooks/useListQuery";
+import { api } from "lib/api";
+import { API_URL } from "lib/constants";
+import { listTagsQuerySchema } from "../schemas";
+import { ListTagsResponse, ListTagsQuery } from "../types";
+
+const fetchTagsList = async (
+  query: Partial<ListTagsQuery> = {},
+): Promise<ListTagsResponse> => {
+  const validatedQuery = listTagsQuerySchema.parse(query);
+  const searchParams = new URLSearchParams();
+  
+  if (validatedQuery.page) searchParams.set("page", validatedQuery.page.toString());
+  if (validatedQuery.pageSize) searchParams.set("pageSize", validatedQuery.pageSize.toString());
+  if (validatedQuery.search) searchParams.set("search", validatedQuery.search);
+  if (validatedQuery.sortBy) searchParams.set("sortBy", validatedQuery.sortBy);
+  if (validatedQuery.sortDir) searchParams.set("sortDir", validatedQuery.sortDir);
+
+  const url = `${API_URL}/tags${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
+  return api<ListTagsResponse>(url);
+};
+
+export const useTagsList = () => {
+  return useListQuery({
+    queryKey: ["tags"],
+    queryFn: () => fetchTagsList({}),
+  });
+};
+
+Update src/modules/tags/index.ts:
+export * from "./schemas";
+export * from "./server/service";
+export * from "./types";
+export * from "./hooks";
 
 6) Pages (copy from categories and adjust)
 

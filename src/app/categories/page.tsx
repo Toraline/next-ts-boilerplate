@@ -1,60 +1,42 @@
+"use client";
+
 import Link from "next/link";
 import CategoriesTable from "./components/CategoriesTable/CategoriesTable";
+import { useCategoriesList } from "modules/categories";
 import "./page.style.css";
-import { API_URL } from "lib/constants";
 
-type ListResponse = {
-  items: {
-    id: string;
-    slug: string;
-    name: string;
-    description?: string | null | undefined;
-    createdAt: string;
-    updatedAt: string;
-  }[];
-  total: number;
-  page: number;
-  pageSize: number;
-};
+export default function Page() {
+  const { data: categoriesResponse, isLoading, error } = useCategoriesList();
 
-async function getCategories(searchParams: Record<string, string | string[] | undefined>) {
-  const qs = new URLSearchParams();
-  if (typeof searchParams.search === "string") qs.set("search", searchParams.search);
-  if (typeof searchParams.page === "string") qs.set("page", searchParams.page);
-  if (typeof searchParams.pageSize === "string") qs.set("pageSize", searchParams.pageSize);
-  // defaults handled by server schema
-  const res = await fetch(`${API_URL}/categories?${qs.toString()}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("Failed to load categories");
-  return (await res.json()) as ListResponse;
-}
-
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const searchParamsResolved = await searchParams;
-  const categoriesResponse = await getCategories(searchParamsResolved);
-
-  const { items, total, page, pageSize } = categoriesResponse;
+  const items = categoriesResponse?.items || [];
+  const total = categoriesResponse?.total || 0;
+  const page = categoriesResponse?.page || 1;
+  const pageSize = categoriesResponse?.pageSize || 20;
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const loading = !categoriesResponse;
+  const loading = isLoading;
+
+  // Show error state
+  if (error) {
+    return (
+      <span className="page">
+        <h1>Error loading categories</h1>
+        <p>Something went wrong. Please try again later.</p>
+      </span>
+    );
+  }
 
   return (
     <span className="page">
-      {items.length > 0 ? (
+      {loading ? (
+        <div>Loading categories...</div>
+      ) : items.length > 0 ? (
         <>
           <h1>Categories</h1>
           Pages: {page} of {totalPages}
           <form action="/categories" className="flex gap-2">
             <input
               name="search"
-              defaultValue={
-                typeof searchParamsResolved?.search === "string" ? searchParamsResolved?.search : ""
-              }
               placeholder="Search by name/slug/description"
               className="border rounded p-2 w-full"
             />

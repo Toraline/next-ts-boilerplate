@@ -55,20 +55,47 @@ The system automatically detects whether a parameter is a CUID or slug and queri
 2. **Service Layer** (`src/modules/categories/server/service.ts`): Business logic and validation
 3. **Repository Layer** (`src/modules/categories/server/repo.ts`): Database operations with Prisma
 4. **Schema Layer** (`src/modules/categories/schema.ts`): Zod validation schemas
+5. **Hooks Layer** (`src/modules/categories/hooks/`): React Query hooks for client-side data fetching
 
 ### File Structure
 ```
 src/modules/categories/
 ├── schema.ts                    # Zod validation schemas
+├── types.ts                     # TypeScript types inferred from Zod schemas
 ├── server/
 │   ├── service.ts              # Business logic layer
 │   └── repo.ts                 # Database repository layer
+├── hooks/
+│   ├── index.ts                # Barrel export for all hooks
+│   └── useCategoriesList.ts    # React Query hook for categories list
 ├── components/                 # Category-specific UI components
 ├── views/                      # Category views/pages
 └── README.md                   # This documentation
 ```
 
 ## Usage Examples
+
+### React Query Hooks (Client-side)
+
+```typescript
+import { useCategoriesList } from "modules/categories";
+
+// In a React component
+function CategoriesPage() {
+  const { data, isLoading, error } = useCategoriesList();
+  
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading categories</div>;
+  
+  return (
+    <div>
+      {data?.items.map(category => (
+        <div key={category.id}>{category.name}</div>
+      ))}
+    </div>
+  );
+}
+```
 
 ### Create Category
 ```typescript
@@ -108,8 +135,12 @@ The module includes comprehensive error handling:
 
 ## Type Definitions
 
-The module exports several TypeScript types via Zod schemas:
-- `Category`: Basic category type
+The module exports TypeScript types from `types.ts` (inferred from Zod schemas):
+- `Category`: Category entity type (from `categoryPublicSchema`)
+- `ListCategoriesResponse`: Response type for categories list
+- `ListCategoriesQuery`: Query parameters type for categories list
+
+And Zod schemas from `schema.ts`:
 - `categoryPublicSchema`: Public API response format
 - `createCategorySchema`: Category creation validation
 - `updateCategorySchema`: Category update validation

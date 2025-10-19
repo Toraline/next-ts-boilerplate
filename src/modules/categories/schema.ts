@@ -73,5 +73,3 @@ export const listCategoriesResponseSchema = z.object({
   page: z.number().int(),
   pageSize: z.number().int(),
 });
-
-export type Category = z.infer<typeof createCategorySchema>;
