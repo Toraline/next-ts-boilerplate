@@ -20,17 +20,32 @@ src/
   lib/
     prisma.ts                  # Prisma client singleton
     errors.ts                  # Typed HttpError, helpers (status + message)
+    client-errors.ts           # Client-side error handling with ApiError class
+    constants/                 # Global constants organized by purpose
+      ├── index.ts             # Barrel export for all constants
+      ├── api.ts               # API_URL and related constants
+      ├── errors.ts            # Generic client error messages (CLIENT_ERROR_MESSAGES)
+      └── validation.ts        # Schema validation messages (VALIDATION_MESSAGES)
   modules/
     <feature>/
-      schemas.ts               # Zod: inputs, outputs, shared contracts
+      schema.ts                # Zod: inputs, outputs, shared contracts (uses lib constants)
       types.ts                 # TypeScript types inferred from Zod schemas
+      constants/               # Feature-specific constants
+        ├── index.ts           # Barrel export: <FEATURE>_UI, <FEATURE>_ERRORS
+        ├── errors.ts          # Feature error messages (<FEATURE>_ERRORS)
+        └── ui.ts              # Feature UI text (<FEATURE>_UI)
       server/
         repo.ts                # DB access (Prisma only; no business rules)
         service.ts             # Use-cases: validate IO, business rules
       hooks/
         index.ts               # Barrel export for all hooks
         use<Feature>List.ts    # React Query hooks for client-side data fetching
+      components/              # Feature-specific UI components
+      views/                   # Feature views/pages
   global/
+    constants/                 # Global UI constants
+      ├── index.ts             # Barrel export
+      └── ui.ts                # Generic UI text (GLOBAL_UI)
     styles/
 
 💡 Philosophy
@@ -64,9 +79,9 @@ getErrorMessage(err) → user-friendly message
 
 Centralizes error mapping from Zod/Prisma/custom to HTTP.
 
-src/modules/<feature>/schemas.ts
+src/modules/<feature>/schema.ts
 
-Zod contracts for this feature:
+Zod contracts for this feature (uses constants from lib/constants/validation.ts):
 
 Inputs:
 
@@ -88,9 +103,20 @@ Shared:
 
 idSchema = z.cuid()
 
-slugSchema with Option A rule: forbid CUID-shaped slugs
+slugSchema with Option A rule: forbid CUID-shaped slugs (uses VALIDATION_MESSAGES)
 
 idOrSlugSchema = z.union([idSchema, slugSchema]) (collision-free)
+
+All validation messages now use constants from lib/constants/validation.ts:
+```typescript
+import { VALIDATION_MESSAGES } from "lib/constants";
+
+export const slugSchema = z
+  .string()
+  .min(3, VALIDATION_MESSAGES.SLUG_MIN_LENGTH)
+  .max(60, VALIDATION_MESSAGES.SLUG_MAX_LENGTH)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, VALIDATION_MESSAGES.SLUG_FORMAT);
+```
 
 src/modules/<feature>/server/repo.ts
 
@@ -150,6 +176,29 @@ Features include:
 - Proper TypeScript typing with ApiError handling
 - Loading states and error boundaries
 
+src/modules/<feature>/constants/
+
+Feature-specific constants organized for i18n readiness:
+
+- index.ts — Barrel export for <FEATURE>_UI and <FEATURE>_ERRORS
+- errors.ts — Error messages (<FEATURE>_ERRORS) with UPPERCASE naming
+- ui.ts — UI text and labels (<FEATURE>_UI) with organized nested structure
+
+Constants follow UPPERCASE naming convention and are organized alphabetically:
+```typescript
+export const CATEGORIES_UI = {
+  EMPTY_STATES: {
+    CATEGORY_NOT_FOUND: "Category not found",
+    NO_CATEGORIES_FOUND: "No categories found",
+  },
+  HEADERS: {
+    CATEGORIES: "Categories",
+    NEW_CATEGORY: "New Category",
+  },
+  // ... more organized alphabetically
+} as const;
+```
+
 src/app/api/<feature>/…/route.ts
 
 Calls service functions.
@@ -183,6 +232,45 @@ Detail page ([idOrSlug]/page.tsx): server component showing one item.
 
 Edit page ([idOrSlug]/edit/page.tsx): client form that PATCHes JSON (no-op tolerant, see below).
 
+## Constants & Text Management
+
+This project follows a comprehensive constants strategy for i18n readiness:
+
+### Global Constants (`src/lib/constants/`)
+- **api.ts**: API_URL and related constants
+- **errors.ts**: Generic client-side error messages (CLIENT_ERROR_MESSAGES)
+- **validation.ts**: Schema validation messages (VALIDATION_MESSAGES)
+
+### Module Constants (`src/modules/<feature>/constants/`)
+- **errors.ts**: Feature-specific error messages (<FEATURE>_ERRORS)
+- **ui.ts**: Feature-specific UI text (<FEATURE>_UI)
+- **index.ts**: Barrel exports for all constants
+
+### Global UI Constants (`src/global/constants/`)
+- **ui.ts**: Generic UI elements that appear across modules (GLOBAL_UI)
+
+### Usage Patterns
+```typescript
+// Import constants
+import { CATEGORIES_UI, CATEGORY_ERRORS } from "modules/categories";
+import { GLOBAL_UI } from "global/constants";
+import { VALIDATION_MESSAGES } from "lib/constants";
+
+// Use in components
+<h1>{CATEGORIES_UI.HEADERS.CATEGORIES}</h1>
+<button>{GLOBAL_UI.BUTTONS.SAVE}</button>
+
+// Schema validation
+export const slugSchema = z
+  .string()
+  .min(3, VALIDATION_MESSAGES.SLUG_MIN_LENGTH);
+
+// Error handling
+throw new Error(CATEGORY_ERRORS.CATEGORY_NOT_FOUND_ERROR);
+```
+
+All constants use UPPERCASE naming and are organized alphabetically for consistency.
+
 🛠️ How to create a new module (step-by-step)
 
 Assume a new module: tags
@@ -199,23 +287,24 @@ model Tag {
 
 npx prisma migrate dev -n "tags"
 
-2) Zod schemas — src/modules/tags/schemas.ts
+2) Zod schemas — src/modules/tags/schema.ts
 import { z } from "zod";
+import { VALIDATION_MESSAGES } from "lib/constants";
 
 // IDs & slugs
 const isCuid = (s: string) => z.cuid().safeParse(s).success;
 export const idSchema = z.cuid();
 export const slugSchema = z
   .string()
-  .min(3)
-  .max(60)
-  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-  .refine((s) => !isCuid(s), "Slug cannot be a CUID");
+  .min(3, VALIDATION_MESSAGES.SLUG_MIN_LENGTH)
+  .max(60, VALIDATION_MESSAGES.SLUG_MAX_LENGTH)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, VALIDATION_MESSAGES.SLUG_FORMAT)
+  .refine((s) => !isCuid(s), VALIDATION_MESSAGES.SLUG_CUID_ERROR);
 export const idOrSlugSchema = z.union([idSchema, slugSchema]);
 
 // Inputs
-const nameSchema = z.string().min(2).max(80).trim();
-export const descriptionSchema = z.string().max(500).optional();
+const nameSchema = z.string().min(2, VALIDATION_MESSAGES.NAME_TOO_SHORT).max(80, VALIDATION_MESSAGES.NAME_TOO_LONG).trim();
+export const descriptionSchema = z.string().max(500, VALIDATION_MESSAGES.DESCRIPTION_MAX_LENGTH).optional();
 
 export const createTagSchema = z.object({
   name: nameSchema,
@@ -232,7 +321,7 @@ export const updateTagSchema = z.object({
     typeof v.name !== "undefined" ||
     typeof v.slug !== "undefined" ||
     typeof v.description !== "undefined",
-  { message: "At least one field to update is required" }
+  { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED }
 );
 
 export const listTagsQuerySchema = z.object({
@@ -445,14 +534,63 @@ import {
   tagPublicSchema,
   listTagsResponseSchema,
   listTagsQuerySchema,
-} from "./schemas";
+} from "./schema";
 
 // Export types inferred from Zod schemas
 export type Tag = z.infer<typeof tagPublicSchema>;
 export type ListTagsResponse = z.infer<typeof listTagsResponseSchema>;
 export type ListTagsQuery = z.infer<typeof listTagsQuerySchema>;
 
-5.6) Hooks — src/modules/tags/hooks/
+5.6) Constants — src/modules/tags/constants/
+Create src/modules/tags/constants/index.ts:
+```typescript
+export * from "./errors";
+export * from "./ui";
+```
+
+Create src/modules/tags/constants/errors.ts:
+```typescript
+export const TAG_ERRORS = {
+  CREATE_TAG_ERROR: "Failed to create tag",
+  DELETE_TAG_ERROR: "Failed to delete tag",
+  GET_TAGS_ERROR: "Failed to get tags",
+  UPDATE_TAG_ERROR: "Failed to update tag",
+  TAG_EXISTS_ERROR: "Tag with this slug already exists",
+  TAG_NOT_FOUND_ERROR: "Tag not found",
+  ERROR_LOADING_TAGS: "Error loading tags",
+  ERROR_LOADING_TAG: "Error loading tag",
+  VALIDATION_ERROR: "Validation error",
+} as const;
+```
+
+Create src/modules/tags/constants/ui.ts:
+```typescript
+export const TAGS_UI = {
+  HEADERS: {
+    TAGS: "Tags",
+    NEW_TAG: "New Tag",
+  },
+  LABELS: {
+    NAME: "Name",
+    SLUG: "Slug",
+    DESCRIPTION: "Description",
+  },
+  PLACEHOLDERS: {
+    NAME: "Enter the name of the tag",
+    SLUG: "Enter the slug of the tag",
+    DESCRIPTION: "Enter the tag description",
+  },
+  EMPTY_STATES: {
+    NO_TAGS_FOUND: "No tags found",
+    TAG_NOT_FOUND: "Tag not found",
+  },
+  LINKS: {
+    CREATE_TAG: "Create Tag",
+  },
+} as const;
+```
+
+5.7) Hooks — src/modules/tags/hooks/
 Create src/modules/tags/hooks/index.ts:
 export * from "./useTagsList";
 export * from "./useTag";
@@ -471,10 +609,11 @@ Each hook should include proper error handling, TypeScript typing, and React Que
 See src/modules/categories/hooks/ for complete examples.
 
 Update src/modules/tags/index.ts:
-export * from "./schemas";
+export * from "./schema";
 export * from "./server/service";
 export * from "./types";
 export * from "./hooks";
+export * from "./constants";
 
 6) Pages (copy from categories and adjust)
 

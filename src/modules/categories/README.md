@@ -60,7 +60,7 @@ The system automatically detects whether a parameter is a CUID or slug and queri
 ### File Structure
 ```
 src/modules/categories/
-├── schema.ts                    # Zod validation schemas
+├── schema.ts                    # Zod validation schemas (uses lib constants)
 ├── types.ts                     # TypeScript types inferred from Zod schemas
 ├── server/
 │   ├── service.ts              # Business logic layer
@@ -72,6 +72,10 @@ src/modules/categories/
 │   ├── useCreateCategory.ts    # React Query mutation for creating categories
 │   ├── useUpdateCategory.ts    # React Query mutation for updating categories
 │   └── useDeleteCategory.ts    # React Query mutation for deleting categories
+├── constants/
+│   ├── index.ts                # Barrel export for constants
+│   ├── errors.ts               # Category-specific error messages (CATEGORY_ERRORS)
+│   └── ui.ts                   # Category-specific UI text (CATEGORIES_UI)
 ├── components/                 # Category-specific UI components
 ├── views/                      # Category views/pages
 └── README.md                   # This documentation
@@ -284,13 +288,65 @@ The module exports TypeScript types from `types.ts` (inferred from Zod schemas):
 - `categoriesListFiltersSchema`: Filter validation (derived from `listCategoriesQuerySchema`)
 - `listCategoriesResponseSchema`: Paginated list response format
 
+## Constants & Text Management
+
+The categories module follows a comprehensive text constants strategy for i18n readiness:
+
+### Constants Structure
+```
+src/modules/categories/constants/
+├── index.ts                # Barrel export: CATEGORIES_UI, CATEGORY_ERRORS
+├── errors.ts              # Category error messages (CATEGORY_ERRORS)
+└── ui.ts                  # Category UI text (CATEGORIES_UI)
+```
+
+### Global Constants (`src/lib/constants/`)
+```
+src/lib/constants/
+├── index.ts               # Barrel export for all lib constants
+├── api.ts                 # API_URL and related constants
+├── errors.ts              # Generic client-side error messages (CLIENT_ERROR_MESSAGES)
+└── validation.ts          # Schema validation messages (VALIDATION_MESSAGES)
+```
+
+### Constants Usage Examples
+```typescript
+// Import from categories module
+import { CATEGORIES_UI, CATEGORY_ERRORS } from "modules/categories";
+import { GLOBAL_UI } from "global/constants";
+
+// Use in components
+<h1>{CATEGORIES_UI.HEADERS.CATEGORIES}</h1>
+<div>{CATEGORIES_UI.LOADING.LOADING_CATEGORIES}</div>
+<button>{GLOBAL_UI.BUTTONS.SAVE}</button>
+
+// Error handling
+if (error instanceof ApiError && error.status === 404) {
+  return <div>{CATEGORIES_UI.EMPTY_STATES.CATEGORY_NOT_FOUND}</div>;
+}
+```
+
+### Schema Integration
+All validation messages in `schema.ts` now use constants from `lib/constants/validation.ts`:
+```typescript
+import { VALIDATION_MESSAGES } from "lib/constants";
+
+export const slugSchema = z
+  .string()
+  .min(3, VALIDATION_MESSAGES.SLUG_MIN_LENGTH)
+  .max(60, VALIDATION_MESSAGES.SLUG_MAX_LENGTH)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, VALIDATION_MESSAGES.SLUG_FORMAT);
+```
+
 ## Recent Improvements
 
-### Complete React Query Implementation (2024)
+### Complete React Query Implementation & Constants Organization (2024)
 - **Full CRUD Operations**: All category operations now use React Query hooks
 - **Proper 404 Handling**: Fixed API routes and client-side handling for non-existent categories
 - **User Feedback**: Added clear messaging when no changes are made during updates
 - **Schema Optimization**: Removed duplicate `editCategoryFormSchema` in favor of reusing `createCategorySchema`
+- **Constants Standardization**: All hardcoded text moved to organized constant files with UPPERCASE naming
+- **lib/constants Structure**: Created proper folder structure for global constants (API, validation, errors)
 
 ### Key Features Added:
 1. **Smart Error Handling**: 404 errors are properly detected and don't trigger retries
@@ -298,7 +354,9 @@ The module exports TypeScript types from `types.ts` (inferred from Zod schemas):
 3. **Cache Management**: Automatic cache invalidation and updates across all components
 4. **Loading States**: Proper loading and error states for all operations
 5. **Type Safety**: Complete TypeScript coverage with inferred types from Zod schemas
+6. **Text Constants**: All UI text and error messages externalized for i18n preparation
 
 ### Breaking Changes:
 - Removed `editCategoryFormSchema` and `EditCategoryForm` type - use `createCategorySchema` and `CreateCategory` instead
 - Category detail pages now require proper error handling for 404 cases
+- All constant imports updated: `categoriesUI` → `CATEGORIES_UI`, `categoryErrors` → `CATEGORY_ERRORS`
