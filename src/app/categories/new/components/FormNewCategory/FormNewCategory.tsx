@@ -1,98 +1,80 @@
 "use client";
 
 import "./FormNewCategory.css";
-import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "ui/Field/Field";
 import { Button } from "global/ui";
 import { TextArea } from "ui/TextArea";
-import { errorMessages } from "constants/errors";
+import { useCreateCategory, createCategorySchema, CreateCategory } from "modules/categories";
 
 export default function FormNewCategory() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [slug, setSlug] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState<string | null>(null);
+  const createCategoryMutation = useCreateCategory();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-    setSuccess(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateCategory>({
+    resolver: zodResolver(createCategorySchema),
+    defaultValues: {
+      name: "",
+      slug: "",
+      description: "",
+    },
+  });
 
-    const newCategory = { name, slug, description };
-
-    try {
-      const response = await fetch("/api/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newCategory),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error);
-        setIsSubmitting(false);
-        return;
-      }
-
-      setSuccess(data.message);
-      setIsSubmitting(false);
-      setName("");
-      setDescription("");
-      setSlug("");
-      router.push(`/categories/${slug}`);
-    } catch (error) {
-      console.error(error);
-      setError(errorMessages.CREATE_CATEGORY_ERROR);
-      setIsSubmitting(false);
-    }
+  const onSubmit = (data: CreateCategory) => {
+    createCategoryMutation.mutate(data, {
+      onSuccess: (createdCategory) => {
+        // Navigate immediately without clearing form state to prevent freezing
+        router.push(`/categories/${createdCategory.slug}`);
+      },
+      onError: (error) => {
+        // Error handling is done by the global error handler
+        console.error("Failed to create category:", error);
+      },
+    });
   };
+
+  const isLoading = createCategoryMutation.isPending || isSubmitting;
 
   return (
     <div className="form-container">
       <h1 className="title">New Category</h1>
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
-      <form className="form-new-category" onSubmit={handleSubmit}>
+      {createCategoryMutation.error && (
+        <p className="error">{createCategoryMutation.error.message}</p>
+      )}
+      <form className="form-new-category" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-new-category__header">
           <Field
             label="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            name="category-name"
+            {...register("name")}
             id="category-name"
             type="text"
             placeholder="Enter the name of the category"
-            required
+            error={errors.name?.message}
           />
           <Field
             label="Slug"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            name="category-slug"
+            {...register("slug")}
             id="category-slug"
             type="text"
             placeholder="Enter the slug of the category"
-            required
+            error={errors.slug?.message}
           />
         </div>
         <TextArea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          name="category-description"
+          {...register("description")}
           id="category-description"
           placeholder="Enter the category description"
+          error={errors.description?.message}
         />
         <div>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save changes"}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save changes"}
           </Button>
         </div>
       </form>

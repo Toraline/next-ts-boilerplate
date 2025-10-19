@@ -5,6 +5,7 @@ import clsx from "clsx";
 type FieldProps = ComponentProps<"input"> & {
   variant?: "primary" | "nolabel" | "noborder";
   label?: string;
+  error?: string;
 };
 
 export const Field = ({
@@ -12,10 +13,12 @@ export const Field = ({
   type = "text",
   variant = "primary",
   label,
+  error,
   ...inputProps
 }: FieldProps) => {
   const classes = clsx("input", {
     "input--noborder": variant === "noborder",
+    "input--error": error,
   });
   return (
     <div className="field__container">
@@ -25,6 +28,7 @@ export const Field = ({
         </label>
       )}
       <input className={classes} id={id} type={type} {...inputProps} />
+      {error && <p className="field-error">{error}</p>}
     </div>
   );
 };

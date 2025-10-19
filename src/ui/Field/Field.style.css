@@ -28,3 +28,14 @@
   border: none;
   outline: none;
 }
+
+.input--error {
+  border-color: #dc2626;
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 4px;
+  margin-left: 4px;
+}
