@@ -130,21 +130,44 @@ Provides type safety for client-side code and React Query hooks.
 
 src/modules/<feature>/hooks/
 
-React Query hooks for client-side data fetching:
+React Query hooks for complete CRUD operations with caching, error handling, and loading states:
 
-use<Feature>List() — fetches paginated list with caching, error handling, and loading states
+- use<Feature>List() — fetches paginated list with search, sort, and pagination
+- use<Feature>() — fetches single item by ID or slug  
+- useCreate<Feature>() — mutation for creating new items
+- useUpdate<Feature>() — mutation for updating existing items
+- useDelete<Feature>() — mutation for deleting items
 
 Each hook file exports a single hook with consistent naming patterns.
 
-index.ts provides barrel exports: export * from "./use<Feature>List"
+index.ts provides barrel exports: export * from "./use<Feature>List", etc.
 
-Hooks use the generic useListQuery pattern from global/hooks for consistency.
+Hooks use the generic useListQuery and useMutation patterns from global/hooks for consistency.
+
+Features include:
+- Smart retry logic (no retries on 404s)
+- Automatic cache invalidation
+- Proper TypeScript typing with ApiError handling
+- Loading states and error boundaries
 
 src/app/api/<feature>/…/route.ts
 
 Calls service functions.
 
-On error: uses getHttpStatus + getErrorMessage.
+On error: uses getHttpStatus + getErrorMessage for consistent error handling.
+
+All routes should use this pattern for proper HTTP status codes:
+```typescript
+try {
+  const result = await serviceFunction(params);
+  return NextResponse.json(result);
+} catch (error) {
+  return NextResponse.json(
+    { error: getErrorMessage(error) }, 
+    { status: getHttpStatus(error) }
+  );
+}
+```
 
 DELETE returns new Response(null, { status: 204 }) (no body).
 
@@ -432,36 +455,20 @@ export type ListTagsQuery = z.infer<typeof listTagsQuerySchema>;
 5.6) Hooks — src/modules/tags/hooks/
 Create src/modules/tags/hooks/index.ts:
 export * from "./useTagsList";
+export * from "./useTag";
+export * from "./useCreateTag";
+export * from "./useUpdateTag";
+export * from "./useDeleteTag";
 
-Create src/modules/tags/hooks/useTagsList.ts:
-import { useListQuery } from "global/hooks/useListQuery";
-import { api } from "lib/api";
-import { API_URL } from "lib/constants";
-import { listTagsQuerySchema } from "../schemas";
-import { ListTagsResponse, ListTagsQuery } from "../types";
+Create all hook files following the categories module pattern:
+- useTagsList.ts (similar to above)
+- useTag.ts (single item fetch)
+- useCreateTag.ts (create mutation)
+- useUpdateTag.ts (update mutation) 
+- useDeleteTag.ts (delete mutation)
 
-const fetchTagsList = async (
-  query: Partial<ListTagsQuery> = {},
-): Promise<ListTagsResponse> => {
-  const validatedQuery = listTagsQuerySchema.parse(query);
-  const searchParams = new URLSearchParams();
-  
-  if (validatedQuery.page) searchParams.set("page", validatedQuery.page.toString());
-  if (validatedQuery.pageSize) searchParams.set("pageSize", validatedQuery.pageSize.toString());
-  if (validatedQuery.search) searchParams.set("search", validatedQuery.search);
-  if (validatedQuery.sortBy) searchParams.set("sortBy", validatedQuery.sortBy);
-  if (validatedQuery.sortDir) searchParams.set("sortDir", validatedQuery.sortDir);
-
-  const url = `${API_URL}/tags${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
-  return api<ListTagsResponse>(url);
-};
-
-export const useTagsList = () => {
-  return useListQuery({
-    queryKey: ["tags"],
-    queryFn: () => fetchTagsList({}),
-  });
-};
+Each hook should include proper error handling, TypeScript typing, and React Query integration.
+See src/modules/categories/hooks/ for complete examples.
 
 Update src/modules/tags/index.ts:
 export * from "./schemas";
