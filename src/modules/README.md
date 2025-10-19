@@ -18,9 +18,18 @@ src/
       [idOrSlug]/page.tsx      # Detail page (server component)
       [idOrSlug]/edit/page.tsx # Edit page (client component)
   lib/
-    prisma.ts                  # Prisma client singleton
-    errors.ts                  # Typed HttpError, helpers (status + message)
-    client-errors.ts           # Client-side error handling with ApiError class
+    client/                    # Client-side utilities
+      ├── errors.ts            # Client-side error handling with ApiError class
+      └── react-query.tsx      # React Query provider
+    database/                  # Database utilities
+      └── prisma.ts            # Prisma client singleton
+    http/                      # HTTP/API utilities
+      ├── api.ts               # Fetch wrapper
+      └── errors.ts            # Server-side error handling with HttpError classes
+    validation/                # Validation utilities
+      └── form-validation.ts   # Form validation helpers
+    utils/                     # General utilities
+      └── getUrl.ts            # URL construction utility
     constants/                 # Global constants organized by purpose
       ├── index.ts             # Barrel export for all constants
       ├── api.ts               # API_URL and related constants
@@ -41,7 +50,10 @@ src/
         index.ts               # Barrel export for all hooks
         use<Feature>List.ts    # React Query hooks for client-side data fetching
       components/              # Feature-specific UI components
+        └── <Component>/        # Component folder with .tsx and .css files
       views/                   # Feature views/pages
+        ├── <View>.tsx         # View component
+        └── <View>.style.css   # View-specific styles (imported by the view)
   global/
     constants/                 # Global UI constants
       ├── index.ts             # Barrel export
@@ -65,19 +77,21 @@ Deterministic Routing: Dynamic routes accept id or slug. We use Option A: forbid
 Safer Errors: Custom HttpError subclasses carry status, and helpers convert unknown errors into messages + HTTP codes.
 
 🧩 What each file does
-src/lib/prisma.ts
 
-Prisma client singleton with dev-friendly logging.
+**Database Layer**
+`src/lib/database/prisma.ts` - Prisma client singleton with dev-friendly logging.
 
-src/lib/errors.ts
+**HTTP Layer**
+`src/lib/http/api.ts` - Generic fetch wrapper with error handling and TypeScript support.
+`src/lib/http/errors.ts` - Server-side HTTP error handling: HttpError (base), NotFoundError, ConflictError, BadRequestError, getHttpStatus(err) → number, getErrorMessage(err) → user-friendly message. Centralizes error mapping from Zod/Prisma/custom to HTTP.
 
-HttpError (base), NotFoundError, ConflictError, BadRequestError
+**Client Layer**
+`src/lib/client/errors.ts` - Client-side error handling with ApiError class and generic error processing.
+`src/lib/client/react-query.tsx` - React Query provider with global error handling and retry logic.
 
-getHttpStatus(err) → number
-
-getErrorMessage(err) → user-friendly message
-
-Centralizes error mapping from Zod/Prisma/custom to HTTP.
+**Utilities**
+`src/lib/utils/getUrl.ts` - URL construction utility with environment detection.
+`src/lib/validation/form-validation.ts` - Form validation helpers for Zod error processing.
 
 src/modules/<feature>/schema.ts
 

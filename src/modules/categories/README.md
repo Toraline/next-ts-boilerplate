@@ -78,6 +78,8 @@ src/modules/categories/
 │   └── ui.ts                   # Category-specific UI text (CATEGORIES_UI)
 ├── components/                 # Category-specific UI components
 ├── views/                      # Category views/pages
+│   ├── CategoriesListView.tsx  # Main categories list view
+│   └── CategoriesListView.style.css # Styles for the list view
 └── README.md                   # This documentation
 ```
 
