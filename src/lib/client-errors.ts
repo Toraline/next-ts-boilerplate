@@ -1,3 +1,5 @@
+import { CLIENT_ERROR_MESSAGES } from "./constants/errors";
+
 export interface ApiErrorResponse {
   error: string;
 }
@@ -22,7 +24,7 @@ export function handleGenericError(error: unknown): never {
   // Network errors and fetch failures
   if (error instanceof TypeError && error.message.includes("fetch")) {
     console.error("Network error:", error);
-    throw new ApiError("Network error. Please check your connection.", 0);
+    throw new ApiError(CLIENT_ERROR_MESSAGES.NETWORK_ERROR, 0);
   }
 
   // API errors from our backend
@@ -34,12 +36,12 @@ export function handleGenericError(error: unknown): never {
   // Generic errors
   if (error instanceof Error) {
     console.error("Unexpected error:", error);
-    throw new ApiError("An unexpected error occurred. Please try again.", 500);
+    throw new ApiError(CLIENT_ERROR_MESSAGES.UNEXPECTED_ERROR, 500);
   }
 
   // Fallback for unknown error types
   console.error("Unknown error type:", error);
-  throw new ApiError("An unexpected error occurred. Please try again.", 500);
+  throw new ApiError(CLIENT_ERROR_MESSAGES.UNEXPECTED_ERROR, 500);
 }
 
 /**
@@ -47,7 +49,7 @@ export function handleGenericError(error: unknown): never {
  */
 export async function processFetchResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    let errorMessage = `Request failed with status ${response.status}`;
+    let errorMessage = CLIENT_ERROR_MESSAGES.REQUEST_FAILED(response.status);
 
     try {
       const errorData = (await response.json()) as ApiErrorResponse;
@@ -70,6 +72,6 @@ export async function processFetchResponse<T>(response: Response): Promise<T> {
   try {
     return await response.json();
   } catch {
-    throw new ApiError("Invalid response format", response.status, response);
+    throw new ApiError(CLIENT_ERROR_MESSAGES.INVALID_RESPONSE_FORMAT, response.status, response);
   }
 }

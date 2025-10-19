@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { VALIDATION_MESSAGES } from "lib/constants";
 
 export const isCuid = (value: string) => z.cuid().safeParse(value).success;
 
@@ -7,16 +8,23 @@ export const idSchema = z.cuid();
 
 export const slugSchema = z
   .string()
-  .min(3, "Slug must have at least 3 characters")
-  .max(60, "Slug must be at most 60 characters")
-  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and dashes")
-  .refine((value) => !isCuid(value), "Slug cannot be a cuid");
+  .min(3, VALIDATION_MESSAGES.SLUG_MIN_LENGTH)
+  .max(60, VALIDATION_MESSAGES.SLUG_MAX_LENGTH)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, VALIDATION_MESSAGES.SLUG_FORMAT)
+  .refine((value) => !isCuid(value), VALIDATION_MESSAGES.SLUG_CUID_ERROR);
 
 export const idOrSlugSchema = z.union([idSchema, slugSchema]);
 
-export const nameSchema = z.string().min(2, "Name too short").max(80, "Name too long").trim();
+export const nameSchema = z
+  .string()
+  .min(2, VALIDATION_MESSAGES.NAME_TOO_SHORT)
+  .max(80, VALIDATION_MESSAGES.NAME_TOO_LONG)
+  .trim();
 
-export const descriptionSchema = z.string().max(500, "Max 500 chars").optional();
+export const descriptionSchema = z
+  .string()
+  .max(500, VALIDATION_MESSAGES.DESCRIPTION_MAX_LENGTH)
+  .optional();
 
 /** Actions Schemas */
 export const createCategorySchema = z.object({
@@ -27,16 +35,21 @@ export const createCategorySchema = z.object({
 
 export const updateCategorySchema = z
   .object({
-    name: z.string().min(2).max(80).trim().optional(),
+    name: z
+      .string()
+      .min(2, VALIDATION_MESSAGES.NAME_TOO_SHORT)
+      .max(80, VALIDATION_MESSAGES.NAME_TOO_LONG)
+      .trim()
+      .optional(),
     slug: slugSchema.optional(),
-    description: z.string().max(500).optional(),
+    description: z.string().max(500, VALIDATION_MESSAGES.DESCRIPTION_MAX_LENGTH).optional(),
   })
   .refine(
     (v) =>
       typeof v.name !== "undefined" ||
       typeof v.slug !== "undefined" ||
       typeof v.description !== "undefined",
-    { message: "At least one field to update is required" },
+    { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
 
 export const listCategoriesQuerySchema = z.object({
