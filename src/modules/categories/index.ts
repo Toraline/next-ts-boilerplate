@@ -1,3 +1,3 @@
-export * from "./categories.schema";
-export * from "./categories.service";
+export * from "./schema";
+export * from "./server/service";
 // export * from "./categories.api";

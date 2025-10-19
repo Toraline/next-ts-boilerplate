@@ -5,24 +5,32 @@ import { useRouter } from "next/navigation";
 import { deleteCategory } from "modules/categories/categories.api";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
-import { Category } from "modules/categories";
 import { Edit } from "ui/Icons/Edit";
 import { Delete } from "ui/Icons/Delete";
 import "./EditState.style.css";
+
+type CategoryPublic = {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string | null;
+  createdAt: string; // ISO
+  updatedAt: string; // ISO
+};
 
 export default function EditState({
   initialState,
   id,
   slug,
 }: {
-  initialState: Category;
+  initialState: CategoryPublic;
   id: string;
   slug: string;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setIsEditing(false);
+    // setIsEditing(false);
   };
   const router = useRouter();
 
@@ -54,7 +62,14 @@ export default function EditState({
           <div>
             <h1 className="title"> {initialState.name}</h1>
           </div>
-          <FormEditCategory initialState={initialState} id={id} />
+          <FormEditCategory
+            initialState={{
+              name: initialState.name,
+              slug: initialState.slug,
+              description: initialState.description ?? undefined,
+            }}
+            id={id}
+          />
         </div>
       )}
     </div>

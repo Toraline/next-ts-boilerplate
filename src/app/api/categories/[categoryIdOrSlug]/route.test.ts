@@ -6,7 +6,7 @@ import {
   emptyNameError,
   emptySlugError,
 } from "tests/fixtures/categories";
-import prisma from "infra/database";
+import prisma from "lib/prisma";
 import { errorMessages } from "constants/errors";
 import { resetDb } from "tests/utils/reset-db";
 
