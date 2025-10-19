@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "ui/Field/Field";
 import { Button } from "global/ui";
 import { TextArea } from "ui/TextArea";
-import { useCreateCategory, createCategorySchema, CreateCategory } from "modules/categories";
+import { useCreateCategory, createCategorySchema, CreateCategory } from "../..";
 
 export default function FormNewCategory() {
   const router = useRouter();

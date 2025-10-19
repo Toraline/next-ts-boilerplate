@@ -1,0 +1,21 @@
+.no-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 32px;
+  padding: 16px 0;
+  flex-grow: 1;
+}
+
+.no-content__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--dark-gray);
+}
+
+.no-content__subtitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--dark-gray);
+}

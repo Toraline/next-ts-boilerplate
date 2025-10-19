@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Category, useDeleteCategory } from "modules/categories";
+import { Category, useDeleteCategory } from "../..";
 import { Table, TableColumn } from "global/ui";
 
 type CategoriesTableProps = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCategory } from "modules/categories";
+import { useCategory } from "../..";
 import { ApiError } from "lib/client-errors";
 import EditState from "../EditState/EditState";
 import { Tasks } from "../Tasks/Tasks";

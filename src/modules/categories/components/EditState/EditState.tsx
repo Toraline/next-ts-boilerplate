@@ -2,7 +2,7 @@
 
 import { Button } from "global/ui";
 import { useRouter } from "next/navigation";
-import { useDeleteCategory, useCategory } from "modules/categories";
+import { useDeleteCategory, useCategory } from "../..";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
 import { Edit } from "ui/Icons/Edit";

@@ -7,12 +7,7 @@ import { useState } from "react";
 import { Button } from "global/ui";
 import { Field } from "ui/Field";
 import { TextArea } from "ui/TextArea";
-import {
-  useUpdateCategory,
-  createCategorySchema,
-  CreateCategory,
-  Category,
-} from "modules/categories";
+import { useUpdateCategory, createCategorySchema, CreateCategory, Category } from "../..";
 import "./FormEditCategory.style.css";
 
 export default function FormEditCategory({

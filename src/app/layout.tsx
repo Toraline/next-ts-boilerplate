@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { ReactQueryProvider } from "lib/react-query";
-import { Sidebar } from "components/Sidebar/Sidebar";
+import { Sidebar } from "global/components/Sidebar/Sidebar";
 import "global/styles/global.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {

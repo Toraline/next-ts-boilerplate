@@ -1,4 +1,4 @@
-import CategoryContent from "./components/CategoryContent/CategoryContent";
+import { CategoryContent } from "modules/categories";
 import "./page.style.css";
 
 export default async function Page({

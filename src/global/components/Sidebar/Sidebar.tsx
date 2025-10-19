@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "components/Menu/Menu";
+import { Menu } from "global/components/Menu/Menu";
 import Link from "next/link";
 import { PlusSign } from "ui/Icons/PlusSign";
 import "./Sidebar.style.css";
