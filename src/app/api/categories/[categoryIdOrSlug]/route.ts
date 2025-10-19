@@ -5,8 +5,7 @@ import {
   updateCategoryByIdOrSlug,
   deleteCategoryByIdOrSlug,
 } from "modules/categories";
-import { errorMessages } from "constants/errors";
-import { getErrorMessage, getHttpStatus } from "lib/errors";
+import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 export const runtime = "nodejs";
 
 type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };
@@ -18,8 +17,7 @@ export async function GET(_r: Request, { params }: RouteParams) {
 
     return NextResponse.json(category);
   } catch (error) {
-    console.error(errorMessages.GET_CATEGORIES_ERROR, error);
-    return NextResponse.json({ error: errorMessages.GET_CATEGORIES_ERROR }, { status: 500 });
+    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
   }
 }
 

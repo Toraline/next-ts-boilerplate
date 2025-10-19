@@ -1,4 +1,4 @@
-import { NotFoundError } from "lib/errors";
+import { NotFoundError } from "lib/http/errors";
 import {
   categoryEntitySchema,
   categoryPublicSchema,

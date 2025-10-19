@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "lib/prisma";
+import prisma from "lib/database/prisma";
 import { RowVersion, RowMaxConnections } from "./status.types";
 
 export async function GET() {

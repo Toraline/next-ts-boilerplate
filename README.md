@@ -1,34 +1,174 @@
-# next-ts-todo
+# Next.js TypeScript Todo Boilerplate
 
-## Stack
+A production-ready Next.js boilerplate built with modern architecture patterns, designed for scalability and maintainability.
 
-- Next.js (app router)
-- Typescript
-- Jest + React Testing Library
+## 🎯 Main Goal
 
-## Running locally
+This boilerplate serves as a **foundation for building scalable, maintainable web applications** with Next.js. It demonstrates best practices for:
 
-- First run
+- **Modular Architecture**: Feature-based organization that scales with your team
+- **Type Safety**: End-to-end TypeScript with Zod validation
+- **Modern Data Fetching**: React Query integration with proper error handling
+- **Clean Separation of Concerns**: Clear boundaries between UI, business logic, and data access
+- **Developer Experience**: Comprehensive tooling, testing, and development workflows
 
-    ```bash
-    npm ci
+## 🏗️ Architecture & Issues Solved
 
-    npm run services:up
+### Problems This Boilerplate Addresses
 
-    npm run prisma:migrate
-    npm run prisma:generate
+1. **Complex Monolithic Codebases**: As applications grow, they become hard to navigate and maintain
+2. **Tight Coupling**: Components, business logic, and data access all mixed together
+3. **Poor Developer Experience**: Lack of proper tooling, testing, and development workflows
+4. **Type Safety Issues**: Runtime errors due to lack of proper validation and typing
+5. **Inconsistent Error Handling**: Different approaches across the application
+6. **Hard to Scale**: Teams struggle to work on large applications without clear boundaries
 
-    npm run dev
-    ```
+### Our Solution: Modular Feature-Based Architecture
 
-- See the database
+```
+src/
+├── lib/                    # Shared utilities organized by domain
+│   ├── client/            # Client-side utilities (errors, react-query)
+│   ├── database/          # Database layer (Prisma)
+│   ├── http/              # HTTP layer (API client, server errors)
+│   ├── validation/        # Validation utilities
+│   └── utils/             # General utilities
+├── modules/               # Feature modules (self-contained)
+│   └── categories/        # Example feature module
+│       ├── schema.ts      # Zod validation schemas
+│       ├── types.ts       # TypeScript types
+│       ├── server/        # Business logic & data access
+│       ├── hooks/         # React Query hooks
+│       ├── components/    # UI components
+│       ├── views/         # Page views
+│       └── constants/     # Feature-specific constants
+└── global/                # Global UI components & constants
+```
 
-    ```bash
-    npx prisma studio
-    ```
+### Key Architecture Principles
 
-- Run tests with watch (server needs to be up)
+1. **Feature Isolation**: Each feature (module) is self-contained with its own schemas, business logic, and UI
+2. **Layered Architecture**: Clear separation between UI, business logic, and data access layers
+3. **Type Safety**: Zod schemas as single source of truth, inferred TypeScript types
+4. **Centralized Error Handling**: Consistent error handling across client and server
+5. **Modern Data Fetching**: React Query with caching, optimistic updates, and proper loading states
 
-    ```bash
-    npm run test:watch
-    ```
+## 🔧 Tech Stack
+
+### Core Framework
+- **Next.js 15+** (App Router) - React framework with server-side rendering
+- **TypeScript** - End-to-end type safety
+- **React 18+** - Modern React with concurrent features
+
+### Data & State Management
+- **Prisma** - Type-safe database ORM with PostgreSQL
+- **React Query** - Server state management with caching and synchronization
+- **Zod** - Runtime validation and type inference
+
+### Development & Testing
+- **Jest + React Testing Library** - Unit and integration testing
+- **ESLint + Prettier** - Code quality and formatting
+- **Storybook** - Component documentation and testing
+
+### Styling & UI
+- **CSS Modules** - Scoped styling approach
+- **Global UI Components** - Reusable component library
+
+## 🚀 Getting Started
+
+### First Run
+
+```bash
+# Install dependencies
+npm ci
+
+# Start database and services
+npm run services:up
+
+# Set up database
+npm run prisma:migrate
+npm run prisma:generate
+
+# Start development server
+npm run dev
+```
+
+### Development Workflow
+
+```bash
+# View database in browser
+npx prisma studio
+
+# Run tests in watch mode (server needs to be up)
+npm run test:watch
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+## 🔄 Decoupling & Library Agnostic Design
+
+This boilerplate is designed to be **easily adaptable** to different libraries and tools:
+
+### Swap-Out Points
+
+1. **State Management**
+   - Currently: React Query (`@tanstack/react-query`)
+   - Easy to swap with: Redux Toolkit, Zustand, Jotai, or SWR
+
+2. **Database ORM**
+   - Currently: Prisma
+   - Easy to swap with: Drizzle, TypeORM, or raw SQL
+
+3. **Validation**
+   - Currently: Zod
+   - Easy to swap with: Yup, Joi, or custom validators
+
+4. **Styling**
+   - Currently: CSS Modules
+   - Easy to swap with: Tailwind CSS, Styled Components, or Emotion
+
+5. **Testing**
+   - Currently: Jest + React Testing Library
+   - Easy to swap with: Vitest, Testing Library, or Playwright
+
+### How Decoupling Works
+
+The architecture ensures that **business logic and UI are separate**, making it easy to:
+
+- **Change UI Libraries**: Components are pure and only handle presentation
+- **Replace Data Layers**: Business logic in `server/` layer is framework-agnostic
+- **Switch State Management**: Hooks in `hooks/` folder can be easily adapted
+- **Update Validation**: Schema layer is isolated and independently testable
+
+### Example: Switching from React Query to SWR
+
+```typescript
+// Before (React Query)
+export const useCategoriesList = (query) => {
+  return useQuery({
+    queryKey: ["categories", query],
+    queryFn: () => fetchCategoriesList(query),
+  });
+};
+
+// After (SWR) - Same interface, different implementation
+export const useCategoriesList = (query) => {
+  return useSWR(["categories", query], () => fetchCategoriesList(query));
+};
+```
+
+The component using this hook remains unchanged because the interface is consistent.
+
+## 📚 Learn More
+
+- **Module Architecture**: See `src/modules/README.md` for detailed guidelines
+- **Categories Example**: Check `src/modules/categories/README.md` for implementation details
+- **Adding Features**: Follow the step-by-step guide in the modules documentation
+
+---
+
+Built with ❤️ for scalable, maintainable applications.
