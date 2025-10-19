@@ -1,5 +1,5 @@
 import retry from "async-retry";
-import { getUrl } from "utils/getUrl";
+import { getUrl } from "lib/getUrl";
 
 const waitForAllServices = async () => {
   const waitForWebServer = async () => {
