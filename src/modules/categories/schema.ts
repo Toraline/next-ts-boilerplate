@@ -47,6 +47,15 @@ export const listCategoriesQuerySchema = z.object({
   sortDir: z.enum(["asc", "desc"]).default("desc"),
 });
 
+// Extract only the filter fields for form validation (not pagination)
+export const categoriesListFiltersSchema = listCategoriesQuerySchema
+  .pick({
+    search: true,
+    sortBy: true,
+    sortDir: true,
+  })
+  .partial();
+
 /** Entities Schemas */
 export const categoryEntitySchema = z.object({
   id: idSchema,

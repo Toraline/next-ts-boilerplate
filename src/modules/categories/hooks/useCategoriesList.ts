@@ -26,11 +26,11 @@ const fetchCategoriesList = async (
 
 /**
  * React Query hook for fetching categories list
- * Uses empty query object - defaults are handled by Zod schema
+ * Accepts optional query parameters for search, pagination, and sorting
  */
-export const useCategoriesList = () => {
+export const useCategoriesList = (query: Partial<ListCategoriesQuery> = {}) => {
   return useListQuery({
-    queryKey: ["categories"],
-    queryFn: () => fetchCategoriesList({}), // Empty object, defaults from Zod schema
+    queryKey: ["categories", query],
+    queryFn: () => fetchCategoriesList(query),
   });
 };
