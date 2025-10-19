@@ -2,7 +2,8 @@
 
 import { Button } from "global/ui";
 import { useRouter } from "next/navigation";
-import { useDeleteCategory, useCategory } from "../..";
+import { useDeleteCategory, useCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
+import { GLOBAL_UI } from "global/constants";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
 import { Edit } from "ui/Icons/Edit";
@@ -21,28 +22,32 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
   };
 
   const onDelete = async () => {
-    if (!category || !confirm("Are you sure you want to delete this category?")) return;
+    if (!category || !confirm(CATEGORIES_UI.CONFIRMATIONS.DELETE_CATEGORY)) return;
 
     deleteCategoryMutation.mutate(category.slug, {
       onSuccess: () => {
         router.push("/categories");
       },
       onError: (error) => {
-        console.error("Failed to delete category:", error);
+        console.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
       },
     });
   };
 
   if (isLoading) {
-    return <div className="category-content">Loading category...</div>;
+    return <div className="category-content">{CATEGORIES_UI.LOADING.LOADING_CATEGORY}</div>;
   }
 
   if (error) {
-    return <div className="category-content">Error loading category: {error.message}</div>;
+    return (
+      <div className="category-content">
+        {CATEGORY_ERRORS.ERROR_LOADING_CATEGORY}: {error.message}
+      </div>
+    );
   }
 
   if (!category) {
-    return <div className="category-content">Category not found</div>;
+    return <div className="category-content">{CATEGORIES_UI.EMPTY_STATES.CATEGORY_NOT_FOUND}</div>;
   }
 
   return (
@@ -64,7 +69,7 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
               disabled={deleteCategoryMutation.isPending}
             >
               <Delete />
-              {deleteCategoryMutation.isPending && "Deleting..."}
+              {deleteCategoryMutation.isPending && GLOBAL_UI.BUTTONS.DELETING}
             </Button>
           </div>
         </div>

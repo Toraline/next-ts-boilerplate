@@ -1,6 +1,6 @@
 "use client";
 
-import { useCategory } from "../..";
+import { useCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
 import { ApiError } from "lib/client-errors";
 import EditState from "../EditState/EditState";
 import { Tasks } from "../Tasks/Tasks";
@@ -15,7 +15,7 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
   if (isLoading) {
     return (
       <div className="category-wrapper">
-        <div>Loading category...</div>
+        <div>{CATEGORIES_UI.LOADING.LOADING_CATEGORY}</div>
       </div>
     );
   }
@@ -25,14 +25,16 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
     if (error instanceof ApiError && error.status === 404) {
       return (
         <div className="category-wrapper">
-          <div>Category not found</div>
+          <div>{CATEGORIES_UI.EMPTY_STATES.CATEGORY_NOT_FOUND}</div>
         </div>
       );
     }
 
     return (
       <div className="category-wrapper">
-        <div>Error loading category: {error.message}</div>
+        <div>
+          {CATEGORY_ERRORS.ERROR_LOADING_CATEGORY}: {error.message}
+        </div>
       </div>
     );
   }
@@ -40,7 +42,7 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
   if (!category) {
     return (
       <div className="category-wrapper">
-        <div>Category not found</div>
+        <div>{CATEGORIES_UI.EMPTY_STATES.CATEGORY_NOT_FOUND}</div>
       </div>
     );
   }

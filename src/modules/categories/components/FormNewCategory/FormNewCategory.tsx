@@ -7,7 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "ui/Field/Field";
 import { Button } from "global/ui";
 import { TextArea } from "ui/TextArea";
-import { useCreateCategory, createCategorySchema, CreateCategory } from "../..";
+import {
+  useCreateCategory,
+  createCategorySchema,
+  CreateCategory,
+  CATEGORIES_UI,
+  CATEGORY_ERRORS,
+} from "../..";
+import { GLOBAL_UI } from "global/constants";
 
 export default function FormNewCategory() {
   const router = useRouter();
@@ -34,7 +41,7 @@ export default function FormNewCategory() {
       },
       onError: (error) => {
         // Error handling is done by the global error handler
-        console.error("Failed to create category:", error);
+        console.error(CATEGORY_ERRORS.CREATE_CATEGORY_ERROR, error);
       },
     });
   };
@@ -43,38 +50,38 @@ export default function FormNewCategory() {
 
   return (
     <div className="form-container">
-      <h1 className="title">New Category</h1>
+      <h1 className="title">{CATEGORIES_UI.HEADERS.NEW_CATEGORY}</h1>
       {createCategoryMutation.error && (
         <p className="error">{createCategoryMutation.error.message}</p>
       )}
       <form className="form-new-category" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-new-category__header">
           <Field
-            label="Name"
+            label={CATEGORIES_UI.LABELS.NAME}
             {...register("name")}
             id="category-name"
             type="text"
-            placeholder="Enter the name of the category"
+            placeholder={CATEGORIES_UI.PLACEHOLDERS.NAME}
             error={errors.name?.message}
           />
           <Field
-            label="Slug"
+            label={CATEGORIES_UI.LABELS.SLUG}
             {...register("slug")}
             id="category-slug"
             type="text"
-            placeholder="Enter the slug of the category"
+            placeholder={CATEGORIES_UI.PLACEHOLDERS.SLUG}
             error={errors.slug?.message}
           />
         </div>
         <TextArea
           {...register("description")}
           id="category-description"
-          placeholder="Enter the category description"
+          placeholder={CATEGORIES_UI.PLACEHOLDERS.DESCRIPTION}
           error={errors.description?.message}
         />
         <div>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save changes"}
+            {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
           </Button>
         </div>
       </form>

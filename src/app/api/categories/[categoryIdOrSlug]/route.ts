@@ -5,7 +5,6 @@ import {
   updateCategoryByIdOrSlug,
   deleteCategoryByIdOrSlug,
 } from "modules/categories";
-import { errorMessages } from "constants/errors";
 import { getErrorMessage, getHttpStatus } from "lib/errors";
 export const runtime = "nodejs";
 

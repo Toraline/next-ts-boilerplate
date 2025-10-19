@@ -10,7 +10,10 @@ import {
   categoriesListFiltersSchema,
   CategoriesListFilters,
   ListCategoriesQuery,
+  CATEGORIES_UI,
+  CATEGORY_ERRORS,
 } from "..";
+import { GLOBAL_UI } from "global/constants";
 import { Field } from "ui/Field/Field";
 
 export default function CategoriesListView() {
@@ -77,43 +80,43 @@ export default function CategoriesListView() {
   if (error) {
     return (
       <div className="page">
-        <h1>Error loading categories</h1>
-        <p className="error">Something went wrong. Please try again later.</p>
+        <h1>{CATEGORY_ERRORS.ERROR_LOADING_CATEGORIES}</h1>
+        <p className="error">{GLOBAL_UI.MESSAGES.SOMETHING_WENT_WRONG}</p>
       </div>
     );
   }
 
   return (
     <div className="page">
-      <h1>Categories</h1>
+      <h1>{CATEGORIES_UI.HEADERS.CATEGORIES}</h1>
 
       {/* Search and Sort Form */}
       <form onSubmit={handleSubmit(onFiltersSubmit)} className="flex gap-2 mb-4">
         <Field
           {...register("search")}
-          placeholder="Search by name/slug/description"
+          placeholder={CATEGORIES_UI.PLACEHOLDERS.SEARCH}
           id="search-categories"
           error={errors.search?.message}
         />
         <select {...register("sortBy")} className="border rounded p-2">
-          <option value="createdAt">Created Date</option>
-          <option value="name">Name</option>
-          <option value="slug">Slug</option>
-          <option value="updatedAt">Updated Date</option>
+          <option value="createdAt">{CATEGORIES_UI.SORT_OPTIONS.CREATED_AT}</option>
+          <option value="name">{CATEGORIES_UI.SORT_OPTIONS.NAME}</option>
+          <option value="slug">{CATEGORIES_UI.SORT_OPTIONS.SLUG}</option>
+          <option value="updatedAt">{CATEGORIES_UI.SORT_OPTIONS.UPDATED_AT}</option>
         </select>
         <select {...register("sortDir")} className="border rounded p-2">
-          <option value="desc">Descending</option>
-          <option value="asc">Ascending</option>
+          <option value="desc">{GLOBAL_UI.SORT.DESCENDING}</option>
+          <option value="asc">{GLOBAL_UI.SORT.ASCENDING}</option>
         </select>
         <button type="submit" className="border rounded px-3">
-          Apply Filters
+          {GLOBAL_UI.BUTTONS.APPLY_FILTERS}
         </button>
       </form>
 
       {/* Page Size Selector */}
       <div className="flex gap-2 items-center mb-4">
         <label htmlFor="pageSize" className="text-sm font-medium">
-          Items per page:
+          {GLOBAL_UI.PAGINATION.ITEMS_PER_PAGE}
         </label>
         <select
           id="pageSize"
@@ -131,13 +134,15 @@ export default function CategoriesListView() {
       {/* Results information */}
       <div className="mb-4">
         <p>
-          Showing {items.length} of {total} categories • Page {page} of {totalPages}
+          {GLOBAL_UI.PAGINATION.SHOWING} {items.length} {GLOBAL_UI.PAGINATION.OF} {total}{" "}
+          {CATEGORIES_UI.PAGINATION.CATEGORIES} • {GLOBAL_UI.PAGINATION.PAGE} {page}{" "}
+          {GLOBAL_UI.PAGINATION.OF} {totalPages}
         </p>
       </div>
 
       {/* Categories Table */}
       {isLoading ? (
-        <div>Loading categories...</div>
+        <div>{CATEGORIES_UI.LOADING.LOADING_CATEGORIES}</div>
       ) : items.length > 0 ? (
         <>
           <CategoriesTable
@@ -155,18 +160,18 @@ export default function CategoriesListView() {
         </>
       ) : (
         <div className="no-content">
-          <h1 className="no-content__title">No categories found</h1>
+          <h1 className="no-content__title">{CATEGORIES_UI.EMPTY_STATES.NO_CATEGORIES_FOUND}</h1>
           <h3 className="no-content__subtitle">
             {Object.keys(filters).length > 0
-              ? "Try adjusting your search or filters"
-              : "Create your first category"}
+              ? CATEGORIES_UI.EMPTY_STATES.TRY_ADJUSTING_FILTERS
+              : CATEGORIES_UI.EMPTY_STATES.CREATE_FIRST_CATEGORY}
           </h3>
         </div>
       )}
 
       {/* Create Category Link */}
       <div className="mt-4">
-        <Link href="/categories/new">Create Category</Link>
+        <Link href="/categories/new">{CATEGORIES_UI.LINKS.CREATE_CATEGORY}</Link>
       </div>
     </div>
   );

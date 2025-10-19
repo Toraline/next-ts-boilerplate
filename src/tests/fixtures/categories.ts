@@ -1,4 +1,4 @@
-import { errorMessages } from "constants/errors";
+import { CATEGORY_ERRORS } from "modules/categories";
 
 export const categoryComplete = {
   name: "Category Complete",
@@ -14,37 +14,37 @@ export const categoryRequiredData = {
 export const categories = [categoryComplete, categoryRequiredData];
 
 export const missingSlugError = {
-  error: errorMessages.VALIDATION_ERROR,
+  error: CATEGORY_ERRORS.VALIDATION_ERROR,
   issues: {
     slug: {
-      errors: [errorMessages.SLUG_TYPE_ERROR],
+      errors: [CATEGORY_ERRORS.SLUG_TYPE_ERROR],
     },
   },
 };
 
 export const emptySlugError = {
-  error: errorMessages.VALIDATION_ERROR,
+  error: CATEGORY_ERRORS.VALIDATION_ERROR,
   issues: {
     slug: {
-      errors: [errorMessages.SLUG_EMPTY_ERROR],
+      errors: [CATEGORY_ERRORS.SLUG_EMPTY_ERROR],
     },
   },
 };
 
 export const missingNameError = {
-  error: errorMessages.VALIDATION_ERROR,
+  error: CATEGORY_ERRORS.VALIDATION_ERROR,
   issues: {
     name: {
-      errors: [errorMessages.NAME_TYPE_ERROR],
+      errors: [CATEGORY_ERRORS.NAME_TYPE_ERROR],
     },
   },
 };
 
 export const emptyNameError = {
-  error: errorMessages.VALIDATION_ERROR,
+  error: CATEGORY_ERRORS.VALIDATION_ERROR,
   issues: {
     name: {
-      errors: [errorMessages.NAME_EMPTY_ERROR],
+      errors: [CATEGORY_ERRORS.NAME_EMPTY_ERROR],
     },
   },
 };

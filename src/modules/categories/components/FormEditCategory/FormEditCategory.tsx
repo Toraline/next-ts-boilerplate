@@ -7,7 +7,15 @@ import { useState } from "react";
 import { Button } from "global/ui";
 import { Field } from "ui/Field";
 import { TextArea } from "ui/TextArea";
-import { useUpdateCategory, createCategorySchema, CreateCategory, Category } from "../..";
+import {
+  useUpdateCategory,
+  createCategorySchema,
+  CreateCategory,
+  Category,
+  CATEGORIES_UI,
+  CATEGORY_ERRORS,
+} from "../..";
+import { GLOBAL_UI } from "global/constants";
 import "./FormEditCategory.style.css";
 
 export default function FormEditCategory({
@@ -54,7 +62,7 @@ export default function FormEditCategory({
 
     // If no fields changed, don't make the request and show message
     if (Object.keys(updates).length === 0) {
-      setNoChangesMessage("No changes detected. Please modify at least one field before saving.");
+      setNoChangesMessage(CATEGORIES_UI.FORM_MESSAGES.NO_CHANGES_DETECTED);
       return;
     }
 
@@ -66,7 +74,7 @@ export default function FormEditCategory({
           router.push(`/categories/${updatedCategory.slug}`);
         },
         onError: (error) => {
-          console.error("Failed to update category:", error);
+          console.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR, error);
         },
       },
     );
@@ -83,14 +91,14 @@ export default function FormEditCategory({
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form__header">
           <Field
-            label="Name"
+            label={CATEGORIES_UI.LABELS.NAME}
             {...register("name")}
             id="category-name"
             type="text"
             error={errors.name?.message}
           />
           <Field
-            label="Slug"
+            label={CATEGORIES_UI.LABELS.SLUG}
             {...register("slug")}
             id="category-slug"
             type="text"
@@ -100,13 +108,13 @@ export default function FormEditCategory({
         <TextArea
           {...register("description")}
           id="description"
-          label="Description"
-          placeholder={initialState.name + " description"}
+          label={CATEGORIES_UI.LABELS.DESCRIPTION}
+          placeholder={CATEGORIES_UI.PLACEHOLDERS.descriptionWithName(initialState.name)}
           error={errors.description?.message}
         />
         <div>
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save changes"}
+            {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
           </Button>
         </div>
       </form>

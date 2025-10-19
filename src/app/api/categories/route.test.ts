@@ -7,7 +7,7 @@ import {
   emptyNameError,
 } from "tests/fixtures/categories";
 import prisma from "lib/prisma";
-import { errorMessages } from "constants/errors";
+import { CATEGORY_ERRORS } from "modules/categories";
 import { resetDb } from "tests/utils/reset-db";
 
 describe("API Categories", () => {
@@ -114,7 +114,7 @@ describe("API Categories", () => {
 
       const data = await response.json();
       expect(data).toEqual({
-        error: errorMessages.CATEGORY_EXISTS_ERROR,
+        error: CATEGORY_ERRORS.CATEGORY_EXISTS_ERROR,
       });
     });
 

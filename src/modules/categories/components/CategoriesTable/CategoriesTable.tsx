@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Category, useDeleteCategory } from "../..";
+import { Category, useDeleteCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
+import { GLOBAL_UI } from "global/constants";
 import { Table, TableColumn } from "global/ui";
 
 type CategoriesTableProps = {
@@ -27,11 +28,11 @@ export default function CategoriesTable({
 
   const onDelete = async (slug: string) => {
     // eslint-disable-next-line
-    if (!confirm("Are you sure you want to delete this category?")) return;
+    if (!confirm(CATEGORIES_UI.CONFIRMATIONS.DELETE_CATEGORY)) return;
 
     deleteCategoryMutation.mutate(slug, {
       onError: (error) => {
-        console.error("Failed to delete category:", error);
+        console.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
         // Global error handler will handle this, but we can add specific UI feedback if needed
       },
     });
@@ -40,39 +41,41 @@ export default function CategoriesTable({
   const columns: TableColumn<Category>[] = [
     {
       key: "name",
-      label: "Name",
+      label: CATEGORIES_UI.TABLE_COLUMNS.NAME,
       sortable: true,
     },
     {
       key: "slug",
-      label: "Slug",
+      label: CATEGORIES_UI.TABLE_COLUMNS.SLUG,
       sortable: true,
     },
     {
       key: "description",
-      label: "Description",
+      label: CATEGORIES_UI.TABLE_COLUMNS.DESCRIPTION,
       render: (item) =>
-        item.description || <span className="text-gray-500 italic">No description</span>,
+        item.description || (
+          <span className="text-gray-500 italic">{CATEGORIES_UI.EMPTY_STATES.NO_DESCRIPTION}</span>
+        ),
     },
     {
       key: "createdAt",
-      label: "Created",
+      label: CATEGORIES_UI.TABLE_COLUMNS.CREATED,
       sortable: true,
       render: (item) => new Date(item.createdAt).toLocaleDateString(),
     },
     {
       key: "updatedAt",
-      label: "Updated",
+      label: CATEGORIES_UI.TABLE_COLUMNS.UPDATED,
       sortable: true,
       render: (item) => new Date(item.updatedAt).toLocaleDateString(),
     },
     {
       key: "actions",
-      label: "Actions",
+      label: CATEGORIES_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
           <Link href={`/categories/${item.slug}`} className="text-blue-500 hover:underline">
-            Edit
+            {GLOBAL_UI.ACTIONS.EDIT}
           </Link>
           <button
             id="delete-button"
@@ -81,7 +84,9 @@ export default function CategoriesTable({
             disabled={deleteCategoryMutation.isPending}
             className="text-red-500 hover:underline disabled:opacity-50"
           >
-            {deleteCategoryMutation.isPending ? "Deleting..." : "Delete"}
+            {deleteCategoryMutation.isPending
+              ? GLOBAL_UI.BUTTONS.DELETING
+              : GLOBAL_UI.ACTIONS.DELETE}
           </button>
           {deleteCategoryMutation.error && (
             <p className="error text-sm">{deleteCategoryMutation.error.message}</p>

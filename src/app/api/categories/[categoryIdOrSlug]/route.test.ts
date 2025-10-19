@@ -7,7 +7,7 @@ import {
   emptySlugError,
 } from "tests/fixtures/categories";
 import prisma from "lib/prisma";
-import { errorMessages } from "constants/errors";
+import { CATEGORY_ERRORS } from "modules/categories";
 import { resetDb } from "tests/utils/reset-db";
 
 describe("API Categories", () => {
@@ -41,7 +41,7 @@ describe("API Categories", () => {
       expect(response.status).toBe(404);
 
       const data = await response.json();
-      expect(data).toEqual({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR });
+      expect(data).toEqual({ error: CATEGORY_ERRORS.CATEGORY_NOT_FOUND_ERROR });
     });
   });
 
@@ -122,7 +122,7 @@ describe("API Categories", () => {
       expect(response.status).toBe(400);
 
       const data = await response.json();
-      expect(data).toEqual({ error: errorMessages.NO_FIELDS_TO_UPDATE_ERROR });
+      expect(data).toEqual({ error: CATEGORY_ERRORS.NO_FIELDS_TO_UPDATE_ERROR });
     });
 
     test("should return error when name is not a string", async () => {
@@ -215,7 +215,7 @@ describe("API Categories", () => {
       expect(response.status).toBe(404);
 
       const data = await response.json();
-      expect(data).toEqual({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR });
+      expect(data).toEqual({ error: CATEGORY_ERRORS.CATEGORY_NOT_FOUND_ERROR });
     });
 
     test("should return error if updating slug to an existing one", async () => {
@@ -280,7 +280,7 @@ describe("API Categories", () => {
       expect(response.status).toBe(404);
 
       const data = await response.json();
-      expect(data).toEqual({ error: errorMessages.CATEGORY_NOT_FOUND_ERROR });
+      expect(data).toEqual({ error: CATEGORY_ERRORS.CATEGORY_NOT_FOUND_ERROR });
     });
   });
 });
