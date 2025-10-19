@@ -27,7 +27,6 @@ export default function CategoriesTable({
   const deleteCategoryMutation = useDeleteCategory();
 
   const onDelete = async (slug: string) => {
-    // eslint-disable-next-line
     if (!confirm(CATEGORIES_UI.CONFIRMATIONS.DELETE_CATEGORY)) return;
 
     deleteCategoryMutation.mutate(slug, {
