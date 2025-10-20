@@ -3,23 +3,23 @@ import { Item } from "./Item";
 
 describe("Item", () => {
   //tests if the Item is initially checked when loaded.
-  it("should be checked when rendered", () => {
+  it("should be checked when is done", () => {
     render(<Item isDone={true} />);
     expect(screen.getByLabelText("check")).toBeVisible();
   });
 
-  it("should call onIsDoneChange", () => {
+  it("should complete the item when clicked", () => {
     //creates a mock function responsible for the visual changes on check state.
-    const onIsDoneChange = jest.fn();
+    const onComplete = jest.fn();
     //renders the component with the prop to be tested.
-    render(<Item onIsDoneChange={onIsDoneChange} />);
+    render(<Item onComplete={onComplete} />);
     //simulates the event trigger "checking" the checkbox.
     fireEvent.click(screen.getByTestId("checkbox"));
     //tests if the mock function is being called.
-    expect(onIsDoneChange).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
-  it("shows input and save button, calls onContentChange", () => {
+  it("should handle content edit properly", () => {
     //creates a mock function responsible for the content change on the input.
     const onContentChange = jest.fn();
     //creates a mock function responsible for "opening" and "closing" the editing state

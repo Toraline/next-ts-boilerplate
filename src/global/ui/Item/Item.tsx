@@ -6,27 +6,24 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
-  save?: boolean;
   onlyEditing?: boolean;
   editButton?: boolean;
   checkbox?: boolean;
   content?: string;
-  contentPlaceholder?: string;
   isDone?: boolean;
   onContentChange?: (content: string) => void;
-  onIsDoneChange?: (isDone: boolean) => void;
+  onComplete?: (isDone: boolean) => void;
   onDelete?: () => void;
   onEdit?: () => void;
 };
 
 export const Item = ({
-  save,
   editButton,
   checkbox,
   content,
   isDone,
   onContentChange,
-  onIsDoneChange,
+  onComplete,
   onDelete,
   onEdit,
 }: ItemProps) => {
@@ -48,7 +45,7 @@ export const Item = ({
       className={`item${itemIsDoneClass}`}
       onClick={(e) => {
         e.stopPropagation();
-        onIsDoneChange?.(!isDone);
+        onComplete?.(!isDone);
       }}
     >
       {isEditing ? (
@@ -56,7 +53,6 @@ export const Item = ({
           onChange={(e) => onContentChange?.(e.target.value)}
           value={content}
           onClick={handleEdit}
-          save={save}
         />
       ) : (
         <NotEditing
