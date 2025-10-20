@@ -13,7 +13,7 @@ export const Editing = ({ save = true, value, onClick, ...fieldProps }: EditingP
   return (
     <Fragment>
       <Field
-        variant="noborder"
+        variant="borderless"
         value={value}
         onClick={(e) => e.stopPropagation()}
         {...fieldProps}
