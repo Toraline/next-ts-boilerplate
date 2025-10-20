@@ -3,8 +3,8 @@
 import { TextArea } from "global/ui/TextArea/TextArea";
 import "./styles/page.style.css";
 import { useState } from "react";
-import { Field } from "ui/Field";
-import { Item } from "ui/Item";
+import { Field } from "global/ui/Field";
+import { Item } from "global/ui/Item";
 import { Button } from "global/ui";
 import "global/styles/global.css";
 

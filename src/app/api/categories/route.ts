@@ -1,45 +1,29 @@
-import * as z from "zod";
 import { NextResponse } from "next/server";
-
-import { CategorySchema, createCategory, listCategories } from "modules/categories";
-import { errorMessages } from "constants/errors";
-import { revalidatePath } from "next/cache";
+import { createCategory, listCategories } from "modules/categories";
+import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 
 export const runtime = "nodejs";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const items = await listCategories();
+    const url = new URL(req.url);
+    const params = Object.fromEntries(url.searchParams.entries());
 
-    return NextResponse.json({ items });
-  } catch (error) {
-    console.error(errorMessages.GET_CATEGORIES_ERROR, error);
-    return NextResponse.json({ error: errorMessages.GET_CATEGORIES_ERROR }, { status: 500 });
+    const data = await listCategories(params);
+
+    return NextResponse.json(data);
+  } catch (e) {
+    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const parsed = CategorySchema.safeParse(body);
-
-    if (!parsed.success) {
-      const errorsTree = z.treeifyError(parsed.error);
-      const issues = errorsTree.properties;
-      return NextResponse.json({ error: errorMessages.VALIDATION_ERROR, issues }, { status: 400 });
-    }
-
-    const created = await createCategory(parsed.data);
-
-    revalidatePath("/categories");
+    const json = await req.json();
+    const created = await createCategory(json);
 
     return NextResponse.json(created, { status: 201 });
-  } catch (error) {
-    if (error?.code === "P2002") {
-      return NextResponse.json({ error: errorMessages.CATEGORY_EXISTS_ERROR }, { status: 409 });
-    }
-
-    console.error(errorMessages.CREATE_CATEGORY_ERROR, error);
-    return NextResponse.json({ error: errorMessages.CREATE_CATEGORY_ERROR }, { status: 500 });
+  } catch (e) {
+    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
   }
 }
