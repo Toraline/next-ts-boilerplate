@@ -1,5 +1,5 @@
-import { Category } from "./categories.schema";
-import { getUrl } from "utils/getUrl";
+import { Category } from "./types";
+import { getUrl } from "lib/utils/getUrl";
 
 const postCategory = async (newCategory: Category) => {
   const url = getUrl("api/categories");

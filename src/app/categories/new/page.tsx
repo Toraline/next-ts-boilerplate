@@ -1,4 +1,4 @@
-import FormNewCategory from "./components/FormNewCategory/FormNewCategory";
+import { FormNewCategory } from "modules/categories";
 import "./page.style.css";
 
 export default function Page() {
