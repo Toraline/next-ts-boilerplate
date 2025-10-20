@@ -1,9 +1,8 @@
 import { Meta, IconGallery, IconItem } from "@storybook/addon-docs/blocks";
 
-import { Check, Delete, DeleteTask, Edit, EditTask, PlusSign, Save } from "./Icons";
-import "./Icons.mdx.css";
+import { Check, Delete, DeleteTask, Edit, EditTask, PlusSign, Save } from "./icons";
 
-<Meta title="Global/UI/Icons" />
+<Meta title="Global/UI/icons" />
 
 # Icons Library
 
@@ -25,9 +24,9 @@ Those are the icons used in the application, they are svg components that can be
     <EditTask name="edit-task" />
   </IconItem>
   <IconItem name="Add Category">
-    <div className="icon-item-dark">
-      <PlusSign name="Plus-sign" />
-    </div>
+
+    <PlusSign name="Plus-sign" />
+
   </IconItem>
   <IconItem name="Save Changes">
     <Save name="save" />
@@ -54,7 +53,7 @@ There, you can create a file with the component name, like Save.tsx or Delete.ts
 1. Create the Icon with a export. Like:
 
 ```tsx
-export const IconName()=>{}
+export const IconName = () => {};
 ```
 
 2. Add a export for the svg component in `src/global/ui/Icons/index.ts` like:

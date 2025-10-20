@@ -6,8 +6,8 @@ import { deleteCategory } from "modules/categories/categories.api";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
 import { Category } from "modules/categories";
-import { Edit } from "global/ui/Icons/Edit";
-import { Delete } from "global/ui/Icons/Delete";
+import { Edit } from "global/ui/icons/Edit";
+import { Delete } from "global/ui/icons/Delete";
 import "./EditState.style.css";
 
 export default function EditState({

@@ -1,6 +1,6 @@
 import { Menu } from "components/Menu/Menu";
 import Link from "next/link";
-import { PlusSign } from "global/ui/Icons/PlusSign";
+import { PlusSign } from "global/ui/icons/PlusSign";
 import "./Sidebar.style.css";
 import { listCategories } from "modules/categories";
 import { Button } from "global/ui";
@@ -15,7 +15,7 @@ export const Sidebar = async () => {
         </Link>
         <div className="sidebar__button-container">
           <Button href="/categories/new" size="sm">
-            <PlusSign />
+            <PlusSign className="plus-icon" />
           </Button>
         </div>
       </div>
