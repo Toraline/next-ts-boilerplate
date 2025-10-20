@@ -10,9 +10,12 @@ type TextAreaProps = ComponentProps<"textarea"> & {
 export const TextArea = ({ label, id, ...textareaProps }: TextAreaProps) => {
   return (
     <div className="text-area">
-      <label htmlFor={id} className="label">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="label">
+          {label}
+        </label>
+      )}
+
       <textarea id={id} className="textarea" {...textareaProps} />
     </div>
   );
