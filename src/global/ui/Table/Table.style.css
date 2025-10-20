@@ -1,0 +1,75 @@
+.table-container {
+  width: 100%;
+}
+
+.table-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--light-gray, #e0e0e0);
+}
+
+.table-header {
+  padding: 12px 16px;
+  border: 1px solid var(--light-gray, #e0e0e0);
+  background-color: var(--light-gray, #f5f5f5);
+  font-weight: 600;
+  text-align: left;
+}
+
+.table-header--sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.table-header--sortable:hover {
+  background-color: var(--gray, #e0e0e0);
+}
+
+.table-row:hover {
+  background-color: var(--light-gray, #f9f9f9);
+}
+
+.table-cell {
+  padding: 12px 16px;
+  border: 1px solid var(--light-gray, #e0e0e0);
+  vertical-align: top;
+}
+
+.table-pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.table-pagination-button {
+  padding: 8px 12px;
+  border: 1px solid var(--light-gray, #e0e0e0);
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.table-pagination-button:hover:not(:disabled) {
+  background-color: var(--light-gray, #f5f5f5);
+}
+
+.table-pagination-button--active {
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  border-color: var(--primary-color, #007bff);
+}
+
+.table-pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
