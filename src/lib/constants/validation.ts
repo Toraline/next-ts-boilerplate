@@ -14,6 +14,7 @@ export const VALIDATION_MESSAGES = {
 
   // Description validation
   DESCRIPTION_MAX_LENGTH: "Max 500 chars",
+  DESCRIPTION_REQUIRED: "Description is required",
 
   // Update validation
   AT_LEAST_ONE_FIELD_REQUIRED: "At least one field to update is required",
