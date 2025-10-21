@@ -19,7 +19,7 @@ export default function Page() {
         content={content}
         isDone={isDone}
         onContentChange={setContent}
-        onIsDoneChange={setIsDone}
+        onComplete={setIsDone}
         onDelete={() => console.log("deletou")}
         onEdit={() => console.log("editou")}
       />
@@ -36,7 +36,7 @@ export default function Page() {
         editButton={false}
         content={content}
         isDone={isDone}
-        onIsDoneChange={setIsDone}
+        onComplete={setIsDone}
         onDelete={() => console.log("deletou")}
       />
       <h3>Item sem o botão de delete</h3>
@@ -44,16 +44,7 @@ export default function Page() {
         content={content}
         isDone={isDone}
         onContentChange={setContent}
-        onIsDoneChange={setIsDone}
-        onEdit={() => console.log("editou")}
-      />
-      <h3>Item só com content</h3>
-      <Item
-        onlyEditing={true}
-        checkbox={false}
-        editButton={false}
-        onContentChange={setContent}
-        onIsDoneChange={setIsDone}
+        onComplete={setIsDone}
         onEdit={() => console.log("editou")}
       />
 
