@@ -2,7 +2,7 @@
 
 import { Menu } from "global/components/Menu/Menu";
 import Link from "next/link";
-import { PlusSign } from "global/ui/Icons/PlusSign";
+import { PlusSign } from "global/ui/icons/PlusSign";
 import "./Sidebar.style.css";
 import { useCategoriesList } from "modules/categories";
 import { Button } from "global/ui";
