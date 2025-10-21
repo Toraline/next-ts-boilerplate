@@ -21,6 +21,24 @@ export const createTaskSchema = z.object({
   categoryId: categoryIdSchema,
 });
 
+export const updateTaskSchema = z
+  .object({
+    description: descriptionSchema.optional(),
+    checked: checkedSchema.optional(),
+  })
+  .refine((v) => typeof v.description !== "undefined" || typeof v.checked !== "undefined", {
+    message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED,
+  });
+
+export const listTasksQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().trim().optional(),
+  checked: z.coerce.boolean().optional(),
+  sortBy: z.enum(["createdAt", "updatedAt", "description"]).default("createdAt"),
+  sortDir: z.enum(["asc", "desc"]).default("desc"),
+});
+
 /** Entities Schemas */
 export const taskEntitySchema = z.object({
   id: idSchema,
@@ -39,4 +57,11 @@ export const taskPublicSchema = z.object({
   categoryId: categoryIdSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
+});
+
+export const listTasksResponseSchema = z.object({
+  items: z.array(taskPublicSchema),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageSize: z.number().int(),
 });
