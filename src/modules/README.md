@@ -1,127 +1,126 @@
-🚀 Boilerplate Guide — Modules, Files, and How to Add a New Feature
+# 🚀 Boilerplate Guide — Modules, Files, and How to Add a New Feature
 
-This repo uses Next.js (App Router) + PostgreSQL + Prisma + Zod with a module-per-feature architecture.
-Each feature (e.g. categories) is a self-contained module with schemas, server code (service/repo), and UI.
-APIs (App Router) are thin wrappers that call the service layer.
+This repo uses **Next.js (App Router)** + **PostgreSQL** + **Prisma** + **Zod** with a module-per-feature architecture. Each feature (e.g., categories, tasks) is a self-contained module with schemas, server code (service/repo), and UI. APIs (App Router) are thin wrappers that call the service layer.
 
-🗂️ Folder structure (overview)
+## 🗂️ Folder Structure Overview
+
+```
 src/
-  app/
-    api/
-      <feature>/
-        route.ts               # GET list, POST create
-      <feature>/[idOrSlug]/
-        route.ts               # GET one, PATCH update, DELETE delete
-    <feature>/
-      page.tsx                 # List page (server component)
-      new/page.tsx             # Create page (client component)
-      [idOrSlug]/page.tsx      # Detail page (server component)
-      [idOrSlug]/edit/page.tsx # Edit page (client component)
-  lib/
-    client/                    # Client-side utilities
-      ├── errors.ts            # Client-side error handling with ApiError class
-      └── react-query.tsx      # React Query provider
-    database/                  # Database utilities
-      └── prisma.ts            # Prisma client singleton
-    http/                      # HTTP/API utilities
-      ├── api.ts               # Fetch wrapper
-      └── errors.ts            # Server-side error handling with HttpError classes
-    validation/                # Validation utilities
-      └── form-validation.ts   # Form validation helpers
-    utils/                     # General utilities
-      └── getUrl.ts            # URL construction utility
-    constants/                 # Global constants organized by purpose
-      ├── index.ts             # Barrel export for all constants
-      ├── api.ts               # API_URL and related constants
-      ├── errors.ts            # Generic client error messages (CLIENT_ERROR_MESSAGES)
-      └── validation.ts        # Schema validation messages (VALIDATION_MESSAGES)
-  modules/
-    <feature>/
-      schema.ts                # Zod: inputs, outputs, shared contracts (uses lib constants)
-      types.ts                 # TypeScript types inferred from Zod schemas
-      constants/               # Feature-specific constants
-        ├── index.ts           # Barrel export: <FEATURE>_UI, <FEATURE>_ERRORS
-        ├── errors.ts          # Feature error messages (<FEATURE>_ERRORS)
-        └── ui.ts              # Feature UI text (<FEATURE>_UI)
-      server/
-        repo.ts                # DB access (Prisma only; no business rules)
-        service.ts             # Use-cases: validate IO, business rules
-      hooks/
-        index.ts               # Barrel export for all hooks
-        use<Feature>List.ts    # React Query hooks for client-side data fetching
-      components/              # Feature-specific UI components
-        └── <Component>/        # Component folder with .tsx and .css files
-      views/                   # Feature views/pages
-        ├── <View>.tsx         # View component
-        └── <View>.style.css   # View-specific styles (imported by the view)
-  global/
-    constants/                 # Global UI constants
-      ├── index.ts             # Barrel export
-      └── ui.ts                # Generic UI text (GLOBAL_UI)
-    styles/
+├── app/
+│   ├── api/
+│   │   └── <feature>/
+│   │       ├── route.ts               # GET list, POST create
+│   │       └── [idOrSlug]/
+│   │           └── route.ts           # GET one, PATCH update, DELETE delete
+│   └── <feature>/
+│       ├── page.tsx                   # List page (server component)
+│       ├── new/
+│       │   └── page.tsx               # Create page (client component)
+│       └── [idOrSlug]/
+│           ├── page.tsx               # Detail page (server component)
+│           └── edit/
+│               └── page.tsx           # Edit page (client component)
+├── lib/
+│   ├── client/                        # Client-side utilities
+│   │   ├── errors.ts                  # Client-side error handling with ApiError class
+│   │   └── react-query.tsx            # React Query provider
+│   ├── database/                      # Database utilities
+│   │   └── prisma.ts                  # Prisma client singleton
+│   ├── http/                          # HTTP/API utilities
+│   │   ├── api.ts                     # Fetch wrapper
+│   │   └── errors.ts                  # Server-side error handling with HttpError classes
+│   ├── validation/                    # Validation utilities
+│   │   └── form-validation.ts         # Form validation helpers
+│   ├── utils/                         # General utilities
+│   │   └── getUrl.ts                  # URL construction utility
+│   └── constants/                     # Global constants organized by purpose
+│       ├── index.ts                   # Barrel export for all constants
+│       ├── api.ts                     # API_URL and related constants
+│       ├── errors.ts                  # Generic client error messages (CLIENT_ERROR_MESSAGES)
+│       └── validation.ts              # Schema validation messages (VALIDATION_MESSAGES)
+├── modules/
+│   └── <feature>/
+│       ├── schema.ts                  # Zod: inputs, outputs, shared contracts (uses lib constants)
+│       ├── types.ts                   # TypeScript types inferred from Zod schemas
+│       ├── constants/                 # Feature-specific constants
+│       │   ├── index.ts               # Barrel export: <FEATURE>_UI, <FEATURE>_ERRORS
+│       │   ├── errors.ts              # Feature error messages (<FEATURE>_ERRORS)
+│       │   └── ui.ts                  # Feature UI text (<FEATURE>_UI)
+│       ├── server/
+│       │   ├── repo.ts                # DB access (Prisma only; no business rules)
+│       │   └── service.ts             # Use-cases: validate IO, business rules
+│       ├── hooks/
+│       │   ├── index.ts               # Barrel export for all hooks
+│       │   └── use<Feature>List.ts    # React Query hooks for client-side data fetching
+│       ├── components/                # Feature-specific UI components
+│       │   └── <Component>/           # Component folder with .tsx and .css files
+│       └── views/                     # Feature views/pages
+│           ├── <View>.tsx             # View component
+│           └── <View>.style.css       # View-specific styles (imported by the view)
+└── global/
+    ├── constants/                     # Global UI constants
+    │   ├── index.ts                   # Barrel export
+    │   └── ui.ts                      # Generic UI text (GLOBAL_UI)
+    └── styles/
+```
 
-💡 Philosophy
+## 💡 Philosophy
 
-Single Source of Truth: Zod schemas define inputs (API payloads, form data) and outputs (API responses).
+### Single Source of Truth
+Zod schemas define inputs (API payloads, form data) and outputs (API responses).
 
-Separation of Concerns:
+### Separation of Concerns
 
-repo: DB-only queries (Prisma). No business rules or validation.
+- **repo**: DB-only queries (Prisma). No business rules or validation.
+- **service**: Business rules, Zod validation/parsing, formatting outputs (e.g., Date → ISO), error throwing.
+- **route.ts**: HTTP boundary. Parse query string into a plain object and call the service. Return responses with correct status codes.
 
-service: Business rules, Zod validation/parsing, formatting outputs (e.g., Date → ISO), error throwing.
+### Deterministic Routing
+Dynamic routes accept id or slug. We use **Option A**: forbid slugs that look like IDs to remove ambiguity.
 
-route.ts: HTTP boundary. Parse query string into a plain object and call the service. Return responses with correct status codes.
+### Safer Errors
+Custom HttpError subclasses carry status, and helpers convert unknown errors into messages + HTTP codes.
 
-Deterministic Routing: Dynamic routes accept id or slug. We use Option A: forbid slugs that look like IDs to remove ambiguity.
+## 🧩 What Each File Does
 
-Safer Errors: Custom HttpError subclasses carry status, and helpers convert unknown errors into messages + HTTP codes.
+### Database Layer
+- **`src/lib/database/prisma.ts`** - Prisma client singleton with dev-friendly logging.
 
-🧩 What each file does
+### HTTP Layer
+- **`src/lib/http/api.ts`** - Generic fetch wrapper with error handling and TypeScript support.
+- **`src/lib/http/errors.ts`** - Server-side HTTP error handling: HttpError (base), NotFoundError, ConflictError, BadRequestError, getHttpStatus(err) → number, getErrorMessage(err) → user-friendly message. Centralizes error mapping from Zod/Prisma/custom to HTTP.
 
-**Database Layer**
-`src/lib/database/prisma.ts` - Prisma client singleton with dev-friendly logging.
+### Client Layer
+- **`src/lib/client/errors.ts`** - Client-side error handling with ApiError class and generic error processing.
+- **`src/lib/client/react-query.tsx`** - React Query provider with global error handling and retry logic.
 
-**HTTP Layer**
-`src/lib/http/api.ts` - Generic fetch wrapper with error handling and TypeScript support.
-`src/lib/http/errors.ts` - Server-side HTTP error handling: HttpError (base), NotFoundError, ConflictError, BadRequestError, getHttpStatus(err) → number, getErrorMessage(err) → user-friendly message. Centralizes error mapping from Zod/Prisma/custom to HTTP.
+### Utilities
+- **`src/lib/utils/getUrl.ts`** - URL construction utility with environment detection.
+- **`src/lib/validation/form-validation.ts`** - Form validation helpers for Zod error processing.
 
-**Client Layer**
-`src/lib/client/errors.ts` - Client-side error handling with ApiError class and generic error processing.
-`src/lib/client/react-query.tsx` - React Query provider with global error handling and retry logic.
+## 📋 Module Structure Details
 
-**Utilities**
-`src/lib/utils/getUrl.ts` - URL construction utility with environment detection.
-`src/lib/validation/form-validation.ts` - Form validation helpers for Zod error processing.
+### `src/modules/<feature>/schema.ts`
 
-src/modules/<feature>/schema.ts
+Zod contracts for this feature (uses constants from `lib/constants/validation.ts`):
 
-Zod contracts for this feature (uses constants from lib/constants/validation.ts):
+#### Inputs:
+- `create<Feature>Schema`
+- `update<Feature>Schema` (PATCH: fields optional, refine ensures at least one present)
+- `list<Feature>QuerySchema` (page, pageSize, search, sort)
 
-Inputs:
+#### Outputs:
+- `<feature>EntitySchema` (Prisma row with Date)
+- `<feature>PublicSchema` (API response with ISO strings via `z.iso.datetime()`)
+- `list<Feature>ResponseSchema` (items, total, page, pageSize)
 
-create<Feature>Schema
+#### Shared:
+- `idSchema = z.cuid()`
+- `slugSchema` with Option A rule: forbid CUID-shaped slugs (uses VALIDATION_MESSAGES)
+- `idOrSlugSchema = z.union([idSchema, slugSchema])` (collision-free)
 
-update<Feature>Schema (PATCH: fields optional, refine ensures at least one present)
+All validation messages now use constants from `lib/constants/validation.ts`:
 
-list<Feature>QuerySchema (page, pageSize, search, sort)
-
-Outputs:
-
-<feature>EntitySchema (Prisma row with Date)
-
-<feature>PublicSchema (API response with ISO strings via z.iso.datetime())
-
-list<Feature>ResponseSchema (items, total, page, pageSize)
-
-Shared:
-
-idSchema = z.cuid()
-
-slugSchema with Option A rule: forbid CUID-shaped slugs (uses VALIDATION_MESSAGES)
-
-idOrSlugSchema = z.union([idSchema, slugSchema]) (collision-free)
-
-All validation messages now use constants from lib/constants/validation.ts:
 ```typescript
 import { VALIDATION_MESSAGES } from "lib/constants";
 
@@ -132,73 +131,64 @@ export const slugSchema = z
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, VALIDATION_MESSAGES.SLUG_FORMAT);
 ```
 
-src/modules/<feature>/server/repo.ts
+### `src/modules/<feature>/server/repo.ts`
 
 Pure Prisma queries:
-
-findMany (with filters/sort/pagination)
-
-findById / findBySlug
-
-create, update, delete
+- `findMany` (with filters/sort/pagination)
+- `findById` / `findBySlug`
+- `create`, `update`, `delete`
 
 Receives already-validated arguments (or well-typed primitives).
 
-src/modules/<feature>/server/service.ts
+### `src/modules/<feature>/server/service.ts`
 
-Validates all inputs with Zod (never trust raw).
+- Validates all inputs with Zod (never trust raw).
+- Applies business rules (e.g., unique slug check).
+- Converts DB entities → public payloads (ISO dates).
+- Throws typed errors (NotFoundError, ConflictError) for routes to translate into HTTP statuses.
+- Keeps API routes thin and consistent.
 
-Applies business rules (e.g., unique slug check).
-
-Converts DB entities → public payloads (ISO dates).
-
-Throws typed errors (NotFoundError, ConflictError) for routes to translate into HTTP statuses.
-
-Keeps API routes thin and consistent.
-
-src/modules/<feature>/types.ts
+### `src/modules/<feature>/types.ts`
 
 TypeScript types inferred from Zod schemas:
-
-<Feature> = z.infer<typeof <feature>PublicSchema>
-
-List<Feature>Response = z.infer<typeof list<Feature>ResponseSchema>
-
-List<Feature>Query = z.infer<typeof list<Feature>QuerySchema>
+- `<Feature> = z.infer<typeof <feature>PublicSchema>`
+- `List<Feature>Response = z.infer<typeof list<Feature>ResponseSchema>`
+- `List<Feature>Query = z.infer<typeof list<Feature>QuerySchema>`
 
 Provides type safety for client-side code and React Query hooks.
 
-src/modules/<feature>/hooks/
+### `src/modules/<feature>/hooks/`
 
 React Query hooks for complete CRUD operations with caching, error handling, and loading states:
 
-- use<Feature>List() — fetches paginated list with search, sort, and pagination
-- use<Feature>() — fetches single item by ID or slug  
-- useCreate<Feature>() — mutation for creating new items
-- useUpdate<Feature>() — mutation for updating existing items
-- useDelete<Feature>() — mutation for deleting items
+- **`use<Feature>List()`** — fetches paginated list with search, sort, and pagination
+- **`use<Feature>()`** — fetches single item by ID or slug  
+- **`useCreate<Feature>()`** — mutation for creating new items
+- **`useUpdate<Feature>()`** — mutation for updating existing items
+- **`useDelete<Feature>()`** — mutation for deleting items
 
 Each hook file exports a single hook with consistent naming patterns.
 
-index.ts provides barrel exports: export * from "./use<Feature>List", etc.
+`index.ts` provides barrel exports: `export * from "./use<Feature>List"`, etc.
 
-Hooks use the generic useListQuery and useMutation patterns from global/hooks for consistency.
+Hooks use the generic `useListQuery` and `useMutation` patterns from `global/hooks` for consistency.
 
-Features include:
+**Features include:**
 - Smart retry logic (no retries on 404s)
 - Automatic cache invalidation
 - Proper TypeScript typing with ApiError handling
 - Loading states and error boundaries
 
-src/modules/<feature>/constants/
+### `src/modules/<feature>/constants/`
 
 Feature-specific constants organized for i18n readiness:
 
-- index.ts — Barrel export for <FEATURE>_UI and <FEATURE>_ERRORS
-- errors.ts — Error messages (<FEATURE>_ERRORS) with UPPERCASE naming
-- ui.ts — UI text and labels (<FEATURE>_UI) with organized nested structure
+- **`index.ts`** — Barrel export for `<FEATURE>_UI` and `<FEATURE>_ERRORS`
+- **`errors.ts`** — Error messages (`<FEATURE>_ERRORS`) with UPPERCASE naming
+- **`ui.ts`** — UI text and labels (`<FEATURE>_UI`) with organized nested structure
 
 Constants follow UPPERCASE naming convention and are organized alphabetically:
+
 ```typescript
 export const CATEGORIES_UI = {
   EMPTY_STATES: {
@@ -213,13 +203,14 @@ export const CATEGORIES_UI = {
 } as const;
 ```
 
-src/app/api/<feature>/…/route.ts
+### `src/app/api/<feature>/…/route.ts`
 
 Calls service functions.
 
-On error: uses getHttpStatus + getErrorMessage for consistent error handling.
+On error: uses `getHttpStatus` + `getErrorMessage` for consistent error handling.
 
 All routes should use this pattern for proper HTTP status codes:
+
 ```typescript
 try {
   const result = await serviceFunction(params);
@@ -232,38 +223,35 @@ try {
 }
 ```
 
-DELETE returns new Response(null, { status: 204 }) (no body).
+- **DELETE** returns `new Response(null, { status: 204 })` (no body).
+- Uses Web Response for bodyless statuses; `NextResponse.json()` for JSON bodies.
 
-Uses Web Response for bodyless statuses; NextResponse.json() for JSON bodies.
+### Pages under `src/app/<feature>/…`
 
-Pages under src/app/<feature>/…
+- **List page** (`page.tsx`): server component, fetches `/api/<feature>` with `cache: "no-store"`.
+- **New page** (`new/page.tsx`): client form that POSTs JSON to the API.
+- **Detail page** (`[idOrSlug]/page.tsx`): server component showing one item.
+- **Edit page** (`[idOrSlug]/edit/page.tsx`): client form that PATCHes JSON (no-op tolerant, see below).
 
-List page (page.tsx): server component, fetches /api/<feature> with cache: "no-store".
-
-New page (new/page.tsx): client form that POSTs JSON to the API.
-
-Detail page ([idOrSlug]/page.tsx): server component showing one item.
-
-Edit page ([idOrSlug]/edit/page.tsx): client form that PATCHes JSON (no-op tolerant, see below).
-
-## Constants & Text Management
+## 📝 Constants & Text Management
 
 This project follows a comprehensive constants strategy for i18n readiness:
 
 ### Global Constants (`src/lib/constants/`)
-- **api.ts**: API_URL and related constants
-- **errors.ts**: Generic client-side error messages (CLIENT_ERROR_MESSAGES)
-- **validation.ts**: Schema validation messages (VALIDATION_MESSAGES)
+- **`api.ts`**: API_URL and related constants
+- **`errors.ts`**: Generic client-side error messages (CLIENT_ERROR_MESSAGES)
+- **`validation.ts`**: Schema validation messages (VALIDATION_MESSAGES)
 
 ### Module Constants (`src/modules/<feature>/constants/`)
-- **errors.ts**: Feature-specific error messages (<FEATURE>_ERRORS)
-- **ui.ts**: Feature-specific UI text (<FEATURE>_UI)
-- **index.ts**: Barrel exports for all constants
+- **`errors.ts`**: Feature-specific error messages (`<FEATURE>_ERRORS`)
+- **`ui.ts`**: Feature-specific UI text (`<FEATURE>_UI`)
+- **`index.ts`**: Barrel exports for all constants
 
 ### Global UI Constants (`src/global/constants/`)
-- **ui.ts**: Generic UI elements that appear across modules (GLOBAL_UI)
+- **`ui.ts`**: Generic UI elements that appear across modules (GLOBAL_UI)
 
 ### Usage Patterns
+
 ```typescript
 // Import constants
 import { CATEGORIES_UI, CATEGORY_ERRORS } from "modules/categories";
@@ -285,11 +273,13 @@ throw new Error(CATEGORY_ERRORS.CATEGORY_NOT_FOUND_ERROR);
 
 All constants use UPPERCASE naming and are organized alphabetically for consistency.
 
-🛠️ How to create a new module (step-by-step)
+## 🛠️ How to Create a New Module (Step-by-Step)
 
-Assume a new module: tags
+Assume a new module: **tags**
 
-1) Prisma model
+### 1) Prisma Model
+
+```prisma
 model Tag {
   id          String   @id @default(cuid())
   slug        String   @unique
@@ -298,10 +288,15 @@ model Tag {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+```
 
+```bash
 npx prisma migrate dev -n "tags"
+```
 
-2) Zod schemas — src/modules/tags/schema.ts
+### 2) Zod Schemas — `src/modules/tags/schema.ts`
+
+```typescript
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
 
@@ -371,8 +366,11 @@ export const listTagsResponseSchema = z.object({
   page: z.number().int(),
   pageSize: z.number().int(),
 });
+```
 
-3) Repo — src/modules/tags/server/repo.ts
+### 3) Repo — `src/modules/tags/server/repo.ts`
+
+```typescript
 import { prisma } from "@/lib/database/prisma";
 import { Prisma } from "@prisma/client";
 import { listTagsQuerySchema } from "../schemas";
@@ -408,8 +406,11 @@ export const tagUpdate = (id: string, data: Prisma.TagUpdateInput) =>
   prisma.tag.update({ where: { id }, data });
 export const tagDelete = (id: string) =>
   prisma.tag.delete({ where: { id } });
+```
 
-4) Service — src/modules/tags/server/service.ts
+### 4) Service — `src/modules/tags/server/service.ts`
+
+```typescript
 import {
   tagEntitySchema,
   tagPublicSchema,
@@ -491,9 +492,12 @@ export async function deleteTagByIdOrSlug(idOrSlug: string) {
 
   await tagDelete(current.id);
 }
+```
 
-5) Routes — src/app/api/tags/.../route.ts
-// route.ts
+### 5) Routes — `src/app/api/tags/.../route.ts`
+
+#### `route.ts`
+```typescript
 import { NextResponse } from "next/server";
 import { listTags, createTag } from "@/modules/tags/server/service";
 import { getErrorMessage, getHttpStatus } from "@/lib/http/errors";
@@ -517,8 +521,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
   }
 }
+```
 
-// [idOrSlug]/route.ts
+#### `[idOrSlug]/route.ts`
+```typescript
 import { NextResponse } from "next/server";
 import { getTagByIdOrSlug, updateTagByIdOrSlug, deleteTagByIdOrSlug } from "@/modules/tags/server/service";
 import { getErrorMessage, getHttpStatus } from "@/lib/http/errors";
@@ -541,8 +547,11 @@ export async function DELETE(_: Request, { params }: { params: { idOrSlug: strin
   try { await deleteTagByIdOrSlug(params.idOrSlug); return new Response(null, { status: 204 }); }
   catch (e) { return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) }); }
 }
+```
 
-5.5) Types — src/modules/tags/types.ts
+### 6) Types — `src/modules/tags/types.ts`
+
+```typescript
 import { z } from "zod";
 import {
   tagPublicSchema,
@@ -554,15 +563,17 @@ import {
 export type Tag = z.infer<typeof tagPublicSchema>;
 export type ListTagsResponse = z.infer<typeof listTagsResponseSchema>;
 export type ListTagsQuery = z.infer<typeof listTagsQuerySchema>;
+```
 
-5.6) Constants — src/modules/tags/constants/
-Create src/modules/tags/constants/index.ts:
+### 7) Constants — `src/modules/tags/constants/`
+
+#### `index.ts`
 ```typescript
 export * from "./errors";
 export * from "./ui";
 ```
 
-Create src/modules/tags/constants/errors.ts:
+#### `errors.ts`
 ```typescript
 export const TAG_ERRORS = {
   CREATE_TAG_ERROR: "Failed to create tag",
@@ -577,7 +588,7 @@ export const TAG_ERRORS = {
 } as const;
 ```
 
-Create src/modules/tags/constants/ui.ts:
+#### `ui.ts`
 ```typescript
 export const TAGS_UI = {
   HEADERS: {
@@ -604,31 +615,50 @@ export const TAGS_UI = {
 } as const;
 ```
 
-5.7) Hooks — src/modules/tags/hooks/
-Create src/modules/tags/hooks/index.ts:
+### 8) Hooks — `src/modules/tags/hooks/`
+
+#### `index.ts`
+```typescript
 export * from "./useTagsList";
 export * from "./useTag";
 export * from "./useCreateTag";
 export * from "./useUpdateTag";
 export * from "./useDeleteTag";
+```
 
 Create all hook files following the categories module pattern:
-- useTagsList.ts (similar to above)
-- useTag.ts (single item fetch)
-- useCreateTag.ts (create mutation)
-- useUpdateTag.ts (update mutation) 
-- useDeleteTag.ts (delete mutation)
+- `useTagsList.ts` (similar to above)
+- `useTag.ts` (single item fetch)
+- `useCreateTag.ts` (create mutation)
+- `useUpdateTag.ts` (update mutation) 
+- `useDeleteTag.ts` (delete mutation)
 
 Each hook should include proper error handling, TypeScript typing, and React Query integration.
-See src/modules/categories/hooks/ for complete examples.
+See `src/modules/categories/hooks/` for complete examples.
 
-Update src/modules/tags/index.ts:
+#### `src/modules/tags/index.ts`
+```typescript
 export * from "./schema";
 export * from "./server/service";
 export * from "./types";
 export * from "./hooks";
 export * from "./constants";
+```
 
-6) Pages (copy from categories and adjust)
+### 9) Pages (copy from categories and adjust)
 
-/tags list, /tags/new, /tags/[idOrSlug], /tags/[idOrSlug]/edit
+- `/tags` list
+- `/tags/new`
+- `/tags/[idOrSlug]`
+- `/tags/[idOrSlug]/edit`
+
+---
+
+## 🎯 Key Benefits
+
+- **Type Safety**: End-to-end TypeScript with Zod validation
+- **Consistency**: Standardized patterns across all modules
+- **Maintainability**: Clear separation of concerns
+- **Scalability**: Easy to add new features following the same pattern
+- **Developer Experience**: Comprehensive error handling and validation
+- **i18n Ready**: Organized constants for easy internationalization
