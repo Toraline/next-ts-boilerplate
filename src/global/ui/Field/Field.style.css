@@ -24,7 +24,7 @@
   color: var(--dark-gray);
 }
 
-.input--noborder {
+.input--borderless {
   border: none;
   outline: none;
 }

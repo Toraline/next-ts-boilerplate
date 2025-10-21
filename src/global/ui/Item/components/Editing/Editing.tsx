@@ -1,6 +1,6 @@
 import { ComponentProps, Fragment, MouseEvent } from "react";
 import { Button } from "global/ui";
-import { Save } from "global/ui/Icons/Save";
+import { Save } from "global/ui/icons/Save";
 import { Field } from "global/ui/Field/Field";
 import "./Editing.style.css";
 
@@ -14,7 +14,7 @@ export const Editing = ({ value, onClick, ...fieldProps }: EditingProp) => {
     <Fragment>
       <Field
         aria-label="input"
-        variant="noborder"
+        variant="borderless"
         value={value}
         onClick={(e) => e.stopPropagation()}
         {...fieldProps}

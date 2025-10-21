@@ -1,8 +1,8 @@
 import { MouseEvent } from "react";
 import { Button } from "global/ui";
-import { Check } from "global/ui/Icons/Check";
-import { EditTask } from "global/ui/Icons/EditTask";
-import { DeleteTask } from "global/ui/Icons/DeleteTask";
+import { Check } from "global/ui/icons/Check";
+import { EditTask } from "global/ui/icons/EditTask";
+import { DeleteTask } from "global/ui/icons/DeleteTask";
 import "./NotEditing.style.css";
 
 type NotEditingProps = {
