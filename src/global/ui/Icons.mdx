@@ -38,7 +38,7 @@ Those are the icons used in the application, they are svg components that can be
 
 ## Files
 
-All the icons components should live inside `/src/global/ui/Icons`
+All the icons components should live inside `/src/global/ui/icons`
 
 There, you can create a file with the component name, like Save.tsx or Delete.tsx.
 
@@ -56,7 +56,7 @@ There, you can create a file with the component name, like Save.tsx or Delete.ts
 export const IconName = () => {};
 ```
 
-2. Add a export for the svg component in `src/global/ui/Icons/index.ts` like:
+2. Add a export for the svg component in `src/global/ui/icons/index.ts` like:
 
 ```js
 export * from "./Save";
@@ -67,7 +67,7 @@ export * from "./Save";
 1. Import the Icon where you want to use like:
 
 ```js
-import { Save } from "@global/ui/Icons";
+import { Save } from "@global/ui/icons";
 ```
 
 2. Add the svg component tag where you want it to be. Like:
@@ -85,7 +85,7 @@ import { Save } from "@global/ui/Icons";
    :
 
 ```js
-import { Save } from "@global/ui/Icons";
+import { Save } from "@global/ui/icons";
 ```
 
 2. Add another IconItem inside the already existing IconGallery tag like:
