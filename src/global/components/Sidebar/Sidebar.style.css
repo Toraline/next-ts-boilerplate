@@ -19,3 +19,7 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+.plus-icon {
+  filter: invert(100%);
+}

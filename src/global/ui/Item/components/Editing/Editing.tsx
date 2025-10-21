@@ -1,6 +1,6 @@
 import { ComponentProps, Fragment, MouseEvent } from "react";
 import { Button } from "global/ui";
-import { Save } from "global/ui/Icons/Save";
+import { Save } from "global/ui/icons/Save";
 import { Field } from "global/ui/Field/Field";
 
 type EditingProp = ComponentProps<"input"> & {
