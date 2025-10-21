@@ -24,14 +24,14 @@ export const Button = ({
   });
   if (href) {
     return (
-      <Link className={classes} href={href}>
+      <Link aria-label="button" className={classes} href={href}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button className={classes} type={type} {...buttonProps}>
+    <button aria-label="button" className={classes} type={type} {...buttonProps}>
       {children}
     </button>
   );
