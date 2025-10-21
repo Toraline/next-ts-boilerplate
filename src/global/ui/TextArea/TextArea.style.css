@@ -1,0 +1,33 @@
+.text-area {
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  gap: 8px;
+}
+
+.textarea {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--gray);
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  outline: none;
+}
+.label {
+  color: var(--black);
+  font-weight: 500;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+}
+
+.textarea--error {
+  border-color: #dc2626;
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 4px;
+  margin-left: 4px;
+}

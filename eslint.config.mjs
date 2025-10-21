@@ -22,6 +22,7 @@ export default [
       parser: tsparser,
       globals: {
         ...globals.node,
+        ...globals.browser, // Add browser globals like 'confirm'
       },
     },
     ...js.configs.recommended,
@@ -45,9 +46,12 @@ export default [
       import: importPlugin,
     },
     rules: {
+      ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
     },
-    settings: { react: { version: "detect" } },
+    settings: {
+      react: { version: "detect" },
+    },
   },
   prettier,
   {
