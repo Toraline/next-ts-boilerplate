@@ -1,5 +1,6 @@
-import { createTaskSchema } from "../schema";
-import { taskCreate } from "./repo";
+import { NotFoundError } from "lib/http/errors";
+import { createTaskSchema, idSchema } from "../schema";
+import { taskById, taskCreate } from "./repo";
 
 export async function createTask(raw: unknown) {
   const task = createTaskSchema.parse(raw);
@@ -10,4 +11,15 @@ export async function createTask(raw: unknown) {
     categoryId: task.categoryId,
   });
   return createdTask;
+}
+
+export async function getTaskById(raw: unknown) {
+  const taskId = idSchema.parse(raw);
+  const foundTaskId = await taskById(taskId);
+
+  if (!foundTaskId) {
+    throw new NotFoundError();
+  }
+
+  return foundTaskId;
 }
