@@ -4,6 +4,7 @@ import "./Button.style.css";
 import { ComponentProps, ReactNode } from "react";
 
 type ButtonProps = ComponentProps<"button"> & {
+  "aria-label"?: string;
   href?: string;
   children?: ReactNode;
   size?: "sm" | "md";
@@ -24,14 +25,14 @@ export const Button = ({
   });
   if (href) {
     return (
-      <Link aria-label="button" className={classes} href={href}>
+      <Link className={classes} href={href}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button aria-label="button" className={classes} type={type} {...buttonProps}>
+    <button className={classes} type={type} {...buttonProps}>
       {children}
     </button>
   );
