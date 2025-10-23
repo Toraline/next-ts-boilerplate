@@ -4,6 +4,7 @@ import "./Button.style.css";
 import { ComponentProps, ReactNode } from "react";
 
 type ButtonProps = ComponentProps<"button"> & {
+  "aria-label"?: string;
   href?: string;
   children?: ReactNode;
   size?: "sm" | "md";

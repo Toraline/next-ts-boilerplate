@@ -26,7 +26,7 @@ export const Sidebar = () => {
         </Link>
         <div className="sidebar__button-container">
           <Button href="/categories/new" size="sm">
-            <PlusSign />
+            <PlusSign className="plus-icon" />
           </Button>
         </div>
       </div>
