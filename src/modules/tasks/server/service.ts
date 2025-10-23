@@ -1,6 +1,13 @@
 import { NotFoundError } from "lib/http/errors";
-import { createTaskSchema, idSchema } from "../schema";
-import { taskById, taskCreate } from "./repo";
+import {
+  createTaskSchema,
+  idSchema,
+  listTasksQuerySchema,
+  listTasksResponseSchema,
+  taskEntitySchema,
+  taskPublicSchema,
+} from "../schema";
+import { taskById, taskCreate, taskFindMany } from "./repo";
 
 export async function createTask(raw: unknown) {
   const task = createTaskSchema.parse(raw);
@@ -22,4 +29,24 @@ export async function getTaskById(raw: unknown) {
   }
 
   return foundTaskId;
+}
+
+function toPublic(row: unknown) {
+  const entity = taskEntitySchema.parse(row);
+
+  return taskPublicSchema.parse({
+    ...entity,
+    createdAt: entity.createdAt.toISOString(),
+    updatedAt: entity.updatedAt.toISOString(),
+  });
+}
+
+export async function listTasks(rawQuery: unknown) {
+  const query = listTasksQuerySchema.parse(rawQuery);
+
+  const response = await taskFindMany(query);
+
+  const tasks = response.items.map(toPublic);
+
+  return listTasksResponseSchema.parse({ ...response, items: tasks });
 }
