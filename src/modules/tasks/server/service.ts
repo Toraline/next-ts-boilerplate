@@ -6,8 +6,9 @@ import {
   listTasksResponseSchema,
   taskEntitySchema,
   taskPublicSchema,
+  updateTaskSchema,
 } from "../schema";
-import { taskById, taskCreate, taskFindMany } from "./repo";
+import { taskById, taskCreate, taskFindMany, taskUpdate } from "./repo";
 
 export async function createTask(raw: unknown) {
   const task = createTaskSchema.parse(raw);
@@ -49,4 +50,24 @@ export async function listTasks(rawQuery: unknown) {
   const tasks = response.items.map(toPublic);
 
   return listTasksResponseSchema.parse({ ...response, items: tasks });
+}
+
+export async function updateTaskById(id: string, raw: unknown) {
+  const existingTask = await taskById(id);
+
+  if (!existingTask) throw new NotFoundError();
+
+  const patch = updateTaskSchema.parse(raw);
+
+  const prismaPatch: Record<string, unknown> = {};
+
+  if (typeof patch.description !== "undefined") {
+    prismaPatch.description = patch.description.trim();
+  }
+
+  prismaPatch.checked = patch.checked;
+
+  const updatedTask = await taskUpdate(existingTask.id, prismaPatch);
+
+  return toPublic(updatedTask);
 }

@@ -32,3 +32,6 @@ export async function taskFindMany(raw: unknown) {
 
   return { items, total, page, pageSize };
 }
+
+export const taskUpdate = (id: string, data: Prisma.TaskUpdateInput) =>
+  prisma.task.update({ where: { id }, data });
