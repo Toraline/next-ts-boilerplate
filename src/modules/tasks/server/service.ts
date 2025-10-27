@@ -44,7 +44,6 @@ function toPublic(row: unknown) {
 
 export async function listTasks(rawQuery: unknown) {
   const query = listTasksQuerySchema.parse(rawQuery);
-
   const response = await taskFindMany(query);
 
   const tasks = response.items.map(toPublic);

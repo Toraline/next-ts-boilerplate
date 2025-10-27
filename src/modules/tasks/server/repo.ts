@@ -12,13 +12,20 @@ export async function taskCreate(data: CreateTask) {
 }
 
 export async function taskFindMany(raw: unknown) {
-  const { page, pageSize, search, sortBy, sortDir } = listTasksQuerySchema.parse(raw);
+  const { page, pageSize, search, checked, categoryId, sortBy, sortDir } =
+    listTasksQuerySchema.parse(raw);
 
-  const where: Prisma.TaskWhereInput = search
-    ? {
-        OR: [{ description: { contains: search, mode: "insensitive" } }],
-      }
-    : {};
+  const where: Prisma.TaskWhereInput = {
+    categoryId,
+  };
+
+  if (search) {
+    where.OR = [{ description: { contains: search, mode: "insensitive" } }];
+  }
+
+  if (typeof checked !== "undefined") {
+    where.checked = checked;
+  }
 
   const [items, total] = await Promise.all([
     prisma.task.findMany({
