@@ -35,3 +35,5 @@ export async function taskFindMany(raw: unknown) {
 
 export const taskUpdate = (id: string, data: Prisma.TaskUpdateInput) =>
   prisma.task.update({ where: { id }, data });
+
+export const taskDelete = (id: string) => prisma.task.delete({ where: { id } });
