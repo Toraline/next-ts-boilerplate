@@ -14,7 +14,7 @@ export async function createTask(raw: unknown) {
   const task = createTaskSchema.parse(raw);
 
   const createdTask = await taskCreate({
-    description: task.description.trim(),
+    description: task.description,
     checked: task.checked || false,
     categoryId: task.categoryId,
   });
@@ -44,6 +44,7 @@ function toPublic(row: unknown) {
 
 export async function listTasks(rawQuery: unknown) {
   const query = listTasksQuerySchema.parse(rawQuery);
+
   const response = await taskFindMany(query);
 
   const tasks = response.items.map(toPublic);

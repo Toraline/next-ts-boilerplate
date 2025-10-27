@@ -8,6 +8,12 @@ async function fetchTasksList(query: Partial<ListTasksQuery> = {}): Promise<List
   const validatedQuery = listTasksQuerySchema.parse(query);
   const searchParams = new URLSearchParams();
 
+  if (validatedQuery.page) searchParams.set("page", validatedQuery.page.toString());
+  if (validatedQuery.pageSize) searchParams.set("pageSize", validatedQuery.pageSize.toString());
+  if (validatedQuery.search) searchParams.set("search", validatedQuery.search);
+  if (validatedQuery.sortBy) searchParams.set("sortBy", validatedQuery.sortBy);
+  if (validatedQuery.sortDir) searchParams.set("sortDir", validatedQuery.sortDir);
+
   if (validatedQuery.checked !== undefined)
     searchParams.set("checked", validatedQuery.checked.toString());
   if (validatedQuery.categoryId) searchParams.set("categoryId", validatedQuery.categoryId);
