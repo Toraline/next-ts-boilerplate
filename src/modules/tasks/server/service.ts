@@ -14,7 +14,7 @@ export async function createTask(raw: unknown) {
   const task = createTaskSchema.parse(raw);
 
   const createdTask = await taskCreate({
-    description: task.description.trim(),
+    description: task.description,
     checked: task.checked || false,
     categoryId: task.categoryId,
   });
