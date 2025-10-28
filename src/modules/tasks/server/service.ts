@@ -8,7 +8,7 @@ import {
   taskPublicSchema,
   updateTaskSchema,
 } from "../schema";
-import { taskById, taskCreate, taskFindMany, taskUpdate } from "./repo";
+import { taskById, taskCreate, taskDelete, taskFindMany, taskUpdate } from "./repo";
 
 export async function createTask(raw: unknown) {
   const task = createTaskSchema.parse(raw);
@@ -70,4 +70,14 @@ export async function updateTaskById(id: string, raw: unknown) {
   const updatedTask = await taskUpdate(existingTask.id, prismaPatch);
 
   return toPublic(updatedTask);
+}
+
+export async function deleteTaskById(id: string) {
+  const existingTask = await taskById(id);
+
+  if (!existingTask) throw new NotFoundError();
+
+  await taskDelete(existingTask.id);
+
+  return;
 }
