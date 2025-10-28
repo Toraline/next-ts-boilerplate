@@ -19,7 +19,7 @@ model Category {
 
 model Task {
   id          String   @id @default(cuid())
-  description String
+  description String?
   checked     Boolean  @default(false)
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
