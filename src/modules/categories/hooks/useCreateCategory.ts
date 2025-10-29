@@ -28,7 +28,6 @@ export const useCreateCategory = () => {
   return useMutation<Category, ApiError, CreateCategory>({
     mutationFn: createCategory,
     onSuccess: () => {
-      // Invalidate and refetch categories list to show the new category
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
   });
