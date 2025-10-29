@@ -3,7 +3,7 @@
 import { useCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
 import { ApiError } from "lib/client/errors";
 import EditState from "../EditState/EditState";
-import { Tasks } from "../Tasks/Tasks";
+import { Tasks } from "modules/tasks/components/Tasks";
 
 type CategoryContentProps = {
   categoryIdOrSlug: string;
@@ -50,9 +50,8 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
   return (
     <div className="category-wrapper">
       <EditState categoryIdOrSlug={categoryIdOrSlug} />
-      <div className="task-wrapper">
-        <Tasks />
-      </div>
+
+      <Tasks categoryId={category.id} />
     </div>
   );
 }
