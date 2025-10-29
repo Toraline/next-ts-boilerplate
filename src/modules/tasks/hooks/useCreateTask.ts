@@ -3,6 +3,7 @@ import { CreateTask, Task } from "../types";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "global/hooks/useMutation";
 import { api } from "lib/http/api";
+import { ApiError } from "lib/client/errors";
 
 const fetchCreateTask = async (taskData: CreateTask): Promise<Task> => {
   const url = `${API_URL}/tasks`;
@@ -18,7 +19,7 @@ const fetchCreateTask = async (taskData: CreateTask): Promise<Task> => {
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Task, CreateTask>({
+  return useMutation<Task, ApiError, CreateTask>({
     mutationFn: fetchCreateTask,
     onSuccess: () => {
       queryClient.invalidateQueries({
