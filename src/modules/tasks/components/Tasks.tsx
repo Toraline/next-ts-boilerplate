@@ -24,7 +24,6 @@ export const Tasks = ({ categoryId }: TasksProps) => {
           {data?.items?.map((task) => (
             <div className="task-wrapper">
               <h2 className="subtitle">{task.description}</h2>
-              <Button size="sm">{GLOBAL_UI.BUTTONS.NEW_TASK}</Button>
             </div>
           ))}
         </div>

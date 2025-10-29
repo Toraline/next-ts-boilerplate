@@ -3,7 +3,7 @@
 import { useCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
 import { ApiError } from "lib/client/errors";
 import EditState from "../EditState/EditState";
-import { Tasks } from "../../../tasks/components/Tasks";
+import { Tasks } from "modules/tasks/components/Tasks";
 
 type CategoryContentProps = {
   categoryIdOrSlug: string;
