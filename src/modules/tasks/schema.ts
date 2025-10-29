@@ -6,10 +6,10 @@ export const idSchema = z.cuid();
 
 export const descriptionSchema = z
   .string()
-  .min(1, "Description is required")
   .max(1000, VALIDATION_MESSAGES.DESCRIPTION_MAX_LENGTH)
   .trim()
   .optional();
+
 export const checkedSchema = z.boolean();
 
 export const categoryIdSchema = z.cuid();
@@ -43,7 +43,7 @@ export const listTasksQuerySchema = z.object({
 /** Entities Schemas */
 export const taskEntitySchema = z.object({
   id: idSchema,
-  description: descriptionSchema,
+  description: descriptionSchema.optional(),
   checked: checkedSchema,
   categoryId: categoryIdSchema,
   createdAt: z.date(),
