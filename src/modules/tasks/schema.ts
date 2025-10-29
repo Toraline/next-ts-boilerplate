@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { TASK_ERRORS } from "./constants/errors";
 
 /** Fields Schemas */
 export const idSchema = z.cuid();
 
 export const descriptionSchema = z
   .string()
-  .max(1000, VALIDATION_MESSAGES.DESCRIPTION_MAX_LENGTH)
+  .max(1000, TASK_ERRORS.DESCRIPTION_MAX_LENGTH)
   .trim()
   .optional();
 
