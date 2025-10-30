@@ -8,8 +8,17 @@ import { useForm } from "react-hook-form";
 import { TASK_ERRORS } from "modules/tasks/constants/errors";
 import { GLOBAL_UI } from "global/constants";
 import { useState } from "react";
+import React from "react";
 
-export default function FormEditTask({ initialState, id }: { initialState: Task; id: string }) {
+export default function FormEditTask({
+  initialState,
+  taskId,
+}: {
+  initialState: Task;
+  taskId: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  checked?: boolean;
+}) {
   const updateTaskMutation = useUpdateTask();
 
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
@@ -44,7 +53,7 @@ export default function FormEditTask({ initialState, id }: { initialState: Task;
 
     updateTaskMutation.mutate(
       {
-        taskById: id,
+        taskById: taskId,
         updates,
       },
       {
@@ -70,6 +79,8 @@ export default function FormEditTask({ initialState, id }: { initialState: Task;
             type="text"
             error={errors.description?.message}
           />
+          <input type="checkbox" {...register("checked")} />
+
           <Button type="submit" disabled={isLoading}>
             {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
           </Button>

@@ -26,7 +26,7 @@ export const Tasks = ({ categoryId }: TasksProps) => {
           {data?.items.map((task) => (
             <div className="task-wrapper">
               <h2 className="subtitle">{task.description}</h2>
-              <FormEditTask id={task.id} initialState={task} />
+              <FormEditTask taskId={task.id} initialState={task} />
             </div>
           ))}
           <FormNewTask categoryId={categoryId} />
