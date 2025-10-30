@@ -4,6 +4,7 @@ import { GLOBAL_UI } from "global/constants";
 import { useTasksList } from "../hooks/useTasksList";
 import "./Tasks.style.css";
 import { FormNewTask } from "./FormNewTask/FormNewTask";
+import FormEditTask from "./FormEditTask/FormEditTask";
 
 type TasksProps = {
   categoryId: string;
@@ -11,6 +12,7 @@ type TasksProps = {
 
 export const Tasks = ({ categoryId }: TasksProps) => {
   const { data, isLoading, error } = useTasksList({ categoryId });
+
   return (
     <>
       <div className="task-wrapper">
@@ -21,9 +23,10 @@ export const Tasks = ({ categoryId }: TasksProps) => {
       {error && <p>{error.message}</p>}
       {data?.items && (
         <div>
-          {data?.items?.map((task) => (
+          {data?.items.map((task) => (
             <div className="task-wrapper">
               <h2 className="subtitle">{task.description}</h2>
+              <FormEditTask id={task.id} initialState={task} />
             </div>
           ))}
           <FormNewTask categoryId={categoryId} />
