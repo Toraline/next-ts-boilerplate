@@ -5,6 +5,10 @@ import { useTasksList } from "../hooks/useTasksList";
 import "./Tasks.style.css";
 import { FormNewTask } from "./FormNewTask/FormNewTask";
 import FormEditTask from "./FormEditTask/FormEditTask";
+import { DeleteTask } from "global/ui/icons/DeleteTask";
+import { useDeleteTask } from "../hooks/useDeleteTask";
+import { TASKS_UI } from "../constants/ui";
+import { TASK_ERRORS } from "../constants/errors";
 
 type TasksProps = {
   categoryId: string;
@@ -12,6 +16,22 @@ type TasksProps = {
 
 export const Tasks = ({ categoryId }: TasksProps) => {
   const { data, isLoading, error } = useTasksList({ categoryId });
+
+  const deleteTaskMutation = useDeleteTask();
+
+  const onDelete = async () => {
+    const taskId = data?.items.find((task) => task.id)?.id;
+    if (!taskId || !confirm(TASKS_UI.CONFIRMATIONS.DELETE_TASK)) return;
+
+    deleteTaskMutation.mutate(taskId, {
+      onSuccess: () => {
+        console.log("Task deleted");
+      },
+      onError: (error) => {
+        console.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
+      },
+    });
+  };
 
   return (
     <>
@@ -27,6 +47,9 @@ export const Tasks = ({ categoryId }: TasksProps) => {
             <div className="task-wrapper">
               <h2 className="subtitle">{task.description}</h2>
               <FormEditTask taskId={task.id} initialState={task} />
+              <Button variant="transparent" onClick={onDelete}>
+                <DeleteTask />
+              </Button>
             </div>
           ))}
           <FormNewTask categoryId={categoryId} />
