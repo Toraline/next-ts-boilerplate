@@ -3,6 +3,7 @@ import {
   listTasksResponseSchema,
   listTasksQuerySchema,
   taskPublicSchema,
+  updateTaskSchema,
 } from "./schema";
 import { z } from "zod";
 
@@ -13,3 +14,5 @@ export type Task = z.infer<typeof taskPublicSchema>;
 export type ListTasksResponse = z.infer<typeof listTasksResponseSchema>;
 
 export type ListTasksQuery = z.infer<typeof listTasksQuerySchema>;
+
+export type UpdateTask = z.infer<typeof updateTaskSchema>;
