@@ -1,6 +1,14 @@
-@import "variables.css";
-@import "_reset.css";
-@import "_typography";
+@import "./tokens.css";
+
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+}
+
 
 .header {
   height: 100vh;

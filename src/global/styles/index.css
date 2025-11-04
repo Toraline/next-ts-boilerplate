@@ -1,0 +1,16 @@
+/* 1) Your design tokens */
+@import "./tokens.css";
+
+/* 2) Tailwind v4 tokens derived from your tokens */
+@import "./tailwind.theme.css";
+
+/* 3) Tailwind v4 core layers */
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+
+/* Optional baseline to visualize */
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+}

@@ -1,0 +1,40 @@
+@import "tailwindcss/theme";
+
+/* Map your CSS variables -> Tailwind v4 tokens */
+@theme {
+  /* Colors */
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+
+  --color-border: var(--border);
+  --color-divider: var(--divider);
+  --color-ring: var(--ring);
+
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-inverse: var(--fg-inverse);
+
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+
+  --color-success: var(--success);
+  --color-success-fg: var(--success-fg);
+
+  --color-warning: var(--warning);
+  --color-warning-fg: var(--warning-fg);
+
+  --color-danger: var(--danger);
+  --color-danger-fg: var(--danger-fg);
+
+  /* expose radius, shadow, spacing if you want custom names */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --shadow-soft: var(--shadow-soft);
+  /* spacing defaults come from Tailwind; only add custom ones if needed */
+}
