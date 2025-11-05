@@ -1,5 +1,8 @@
 @import "tailwindcss/theme";
 
+/* React Aria Components plugin - must be loaded before theme processes */
+@plugin "tailwindcss-react-aria-components";
+
 /* Map your CSS variables -> Tailwind v4 tokens */
 @theme {
   /* Colors */
@@ -31,10 +34,12 @@
   --color-danger: var(--danger);
   --color-danger-fg: var(--danger-fg);
 
-  /* expose radius, shadow, spacing if you want custom names */
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
+  /* Border radius - use actual values instead of CSS variable references */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  
+  /* Shadow */
   --shadow-soft: var(--shadow-soft);
   /* spacing defaults come from Tailwind; only add custom ones if needed */
 }

@@ -1,10 +1,6 @@
-/* 1) Your design tokens */
+/* All @import statements must come first (CSS spec requirement) */
 @import "./tokens.css";
-
-/* 2) Tailwind v4 tokens derived from your tokens */
 @import "./tailwind.theme.css";
-
-/* 3) Tailwind v4 core layers */
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 
