@@ -27,7 +27,6 @@ export const Sidebar = () => {
           Categories
         </Link>
         <div className="sidebar__button-container">
-          <ThemeSelect />
           <Button href="/categories/new" size="sm">
             <PlusSign className="plus-icon" />
           </Button>
