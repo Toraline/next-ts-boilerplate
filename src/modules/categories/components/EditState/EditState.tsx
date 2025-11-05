@@ -2,7 +2,13 @@
 
 import { Button } from "global/ui";
 import { useRouter } from "next/navigation";
-import { useDeleteCategory, useCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
+import {
+  useDeleteCategory,
+  useCategory,
+  CATEGORIES_UI,
+  CATEGORY_ERRORS,
+  CATEGORY_SUCCESSES,
+} from "../..";
 import { GLOBAL_UI } from "global/constants";
 import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
@@ -27,12 +33,11 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
 
     deleteCategoryMutation.mutate(category.slug, {
       onSuccess: () => {
-        toast.success("Categoria deletada");
+        toast.success(CATEGORY_SUCCESSES.DELETE_CATEGORY_SUCCESS);
         router.push("/categories");
       },
       onError: (error) => {
-        console.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
-        toast.error("Erro ao deletar categoria");
+        toast.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
       },
     });
   };

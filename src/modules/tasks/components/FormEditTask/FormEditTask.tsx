@@ -10,6 +10,7 @@ import { GLOBAL_UI } from "global/constants";
 import { useState } from "react";
 import React from "react";
 import { toast } from "sonner";
+import { TASK_SUCCESSES } from "modules/tasks/constants/successes";
 
 export default function FormEditTask({
   initialState,
@@ -61,16 +62,17 @@ export default function FormEditTask({
       {
         onSuccess: () => {
           onSuccess?.();
-          toast.success("Task editada com sucesso", { duration: 5000 });
-          if (data.checked == true) {
-            toast.success("Task concluida", { duration: 3000 });
-          } else {
-            toast.success("Task em andamento", { duration: 3000 });
+          toast.success(TASK_SUCCESSES.EDIT_TASK_SUCCESS, { duration: 5000 });
+          if (data.checked !== initialState.checked) {
+            if (data.checked == true) {
+              toast.success(TASK_SUCCESSES.CHECKED_TRUE_TASK, { duration: 3000 });
+            } else {
+              toast.success(TASK_SUCCESSES.CHECKED_FALSE_TASK, { duration: 3000 });
+            }
           }
         },
         onError: (error) => {
-          toast.error("Erro ao editar a task");
-          console.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
+          toast.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
         },
       },
     );

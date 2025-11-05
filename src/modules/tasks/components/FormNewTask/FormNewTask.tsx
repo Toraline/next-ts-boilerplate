@@ -8,6 +8,7 @@ import { createTaskSchema } from "modules/tasks/schema";
 import { useForm } from "react-hook-form";
 import { TASK_ERRORS } from "modules/tasks/constants/errors";
 import { toast } from "sonner";
+import { TASK_SUCCESSES } from "modules/tasks/constants/successes";
 
 type TasksProps = {
   categoryId: string;
@@ -18,11 +19,10 @@ export const FormNewTask = ({ categoryId }: TasksProps) => {
   const onSubmit = (data: CreateTask) => {
     createTaskMutation.mutate(data, {
       onSuccess: () => {
-        toast.success("Task criada");
+        toast.success(TASK_SUCCESSES.CREATE_TASK_SUCCESS);
       },
       onError: (error) => {
-        toast.error("Erro ao criar a task");
-        console.error(TASK_ERRORS.CREATE_TASK_ERROR, error);
+        toast.error(TASK_ERRORS.CREATE_TASK_ERROR, error);
       },
     });
   };

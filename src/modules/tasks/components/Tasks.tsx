@@ -10,6 +10,7 @@ import { useDeleteTask } from "../hooks/useDeleteTask";
 import { TASKS_UI } from "../constants/ui";
 import { TASK_ERRORS } from "../constants/errors";
 import { toast } from "sonner";
+import { TASK_SUCCESS } from "../constants/successes";
 
 type TasksProps = {
   categoryId: string;
@@ -26,11 +27,10 @@ export const Tasks = ({ categoryId }: TasksProps) => {
 
     deleteTaskMutation.mutate(taskId, {
       onSuccess: () => {
-        toast.success("Task deletada com sucesso");
+        toast.success(TASK_SUCCESS.DELETE_TASK_SUCCESS);
       },
       onError: (error) => {
-        toast.error("Erro ao deletar a task");
-        console.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
+        toast.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
       },
     });
   };

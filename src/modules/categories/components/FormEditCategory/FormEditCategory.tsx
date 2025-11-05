@@ -18,6 +18,7 @@ import {
 import { GLOBAL_UI } from "global/constants";
 import "./FormEditCategory.style.css";
 import { toast } from "sonner";
+import { CATEGORY_SUCCESSES } from "modules/categories/constants";
 
 export default function FormEditCategory({
   initialState,
@@ -72,12 +73,11 @@ export default function FormEditCategory({
       {
         onSuccess: (updatedCategory) => {
           onSuccess?.();
-          toast.success("Categoria editada com sucesso");
+          toast.success(CATEGORY_SUCCESSES.EDIT_CATEGORY_SUCCESS);
           router.push(`/categories/${updatedCategory.slug}`);
         },
         onError: (error) => {
-          console.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR, error);
-          toast.error("Erro ao editar categoria");
+          toast.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR, error);
         },
       },
     );
