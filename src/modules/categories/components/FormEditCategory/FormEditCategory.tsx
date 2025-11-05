@@ -17,6 +17,7 @@ import {
 } from "../..";
 import { GLOBAL_UI } from "global/constants";
 import "./FormEditCategory.style.css";
+import { toast } from "sonner";
 
 export default function FormEditCategory({
   initialState,
@@ -71,10 +72,16 @@ export default function FormEditCategory({
       {
         onSuccess: (updatedCategory) => {
           onSuccess?.();
+          toast.success("Categoria editada com sucesso", {
+            description: "Asdfgh",
+            duration: 5000,
+            position: "bottom-right",
+          });
           router.push(`/categories/${updatedCategory.slug}`);
         },
         onError: (error) => {
           console.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR, error);
+          toast.error("Erro ao editar categoria");
         },
       },
     );

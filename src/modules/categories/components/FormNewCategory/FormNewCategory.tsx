@@ -15,6 +15,7 @@ import {
   CATEGORY_ERRORS,
 } from "../..";
 import { GLOBAL_UI } from "global/constants";
+import { toast } from "sonner";
 
 export default function FormNewCategory() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function FormNewCategory() {
   const onSubmit = (data: CreateCategory) => {
     createCategoryMutation.mutate(data, {
       onSuccess: (createdCategory) => {
+        toast.success("Categoria criada");
         // Navigate immediately without clearing form state to prevent freezing
         router.push(`/categories/${createdCategory.slug}`);
       },

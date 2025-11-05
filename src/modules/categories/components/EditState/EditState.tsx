@@ -9,6 +9,7 @@ import { FormEvent, useState } from "react";
 import { Edit } from "global/ui/icons/Edit";
 import { Delete } from "global/ui/icons/Delete";
 import "./EditState.style.css";
+import { toast } from "sonner";
 
 export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: string }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,10 +27,12 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
 
     deleteCategoryMutation.mutate(category.slug, {
       onSuccess: () => {
+        toast.success("Categoria deletada");
         router.push("/categories");
       },
       onError: (error) => {
         console.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
+        toast.error("Erro ao deletar categoria");
       },
     });
   };
