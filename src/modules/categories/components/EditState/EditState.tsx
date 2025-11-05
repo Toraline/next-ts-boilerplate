@@ -36,8 +36,8 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
         toast.success(CATEGORY_SUCCESSES.DELETE_CATEGORY_SUCCESS);
         router.push("/categories");
       },
-      onError: (error) => {
-        toast.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
+      onError: () => {
+        toast.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR);
       },
     });
   };
