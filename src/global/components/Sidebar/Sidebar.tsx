@@ -6,6 +6,7 @@ import { PlusSign } from "global/ui/icons/PlusSign";
 import "./Sidebar.style.css";
 import { useCategoriesList } from "modules/categories";
 import { Button } from "global/ui";
+import { ThemeSelect } from "../ThemeSelect";
 
 export const Sidebar = () => {
   const {
@@ -20,6 +21,7 @@ export const Sidebar = () => {
 
   return (
     <div className="sidebar">
+      <ThemeSelect />
       <div className="sidebar-header">
         <Link className="subtitle" href="/categories">
           Categories

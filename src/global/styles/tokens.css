@@ -1,0 +1,85 @@
+:root {
+  /* non-color tokens */
+  --radius-sm: .375rem;
+  --radius-md: .5rem;
+  --radius-lg: .75rem;
+  --shadow-soft: 0 2px 8px 0 oklch(0.85 0 0 / 0.12);
+
+  /* Base palette (theme-agnostic) */
+  --neutral-0:  oklch(0.98 0 0);
+  --neutral-25: oklch(0.96 0 0);
+  --neutral-50: oklch(0.94 0 0);
+  --neutral-100: oklch(0.90 0 0);
+  --neutral-200: oklch(0.80 0 0);
+  --neutral-300: oklch(0.70 0 0);
+  --neutral-800: oklch(0.25 0 0);
+  --neutral-900: oklch(0.18 0 0);
+
+  --brand-100: oklch(0.70 0.12 260);
+  --brand-200: oklch(0.65 0.12 260);
+  --brand-900: oklch(0.45 0.12 260);
+
+  --green-100: oklch(0.75 0.12 155);
+  --green-900: oklch(0.35 0.12 155);
+  --amber-100: oklch(0.85 0.14 85);
+  --amber-900: oklch(0.45 0.14 85);
+  --red-100:   oklch(0.65 0.15 25);
+  --red-900:   oklch(0.40 0.15 25);
+
+  /* Semantic (LIGHT defaults) */
+  --bg: var(--neutral-0);
+  --bg-subtle: var(--neutral-25);
+
+  --surface-1: var(--neutral-50);
+  --surface-2: var(--neutral-100);
+  --surface-3: var(--neutral-200);
+
+  --border: var(--neutral-200);
+  --divider: var(--neutral-100);
+  --ring: var(--brand-100);
+
+  --fg: var(--neutral-900);
+  --fg-muted: var(--neutral-300);
+  --fg-subtle: var(--neutral-200);
+  --fg-inverse: var(--neutral-0);
+
+  --primary: var(--brand-200);
+  --primary-fg: var(--neutral-0);
+
+  --success: var(--green-100);
+  --success-fg: var(--neutral-0);
+  --warning: var(--amber-100);
+  --warning-fg: var(--neutral-900);
+  --danger: var(--red-100);
+  --danger-fg: var(--neutral-0);
+
+}
+
+/* DARK overrides only */
+[data-theme="dark"] {
+  --bg: var(--neutral-900);
+  --bg-subtle: var(--neutral-800);
+
+  --surface-1: var(--neutral-800);
+  --surface-2: var(--neutral-800);
+  --surface-3: var(--neutral-800);
+
+  --border: var(--neutral-300);
+  --divider: var(--neutral-800);
+  --ring: var(--brand-100);
+
+  --fg: var(--neutral-0);
+  --fg-muted: var(--neutral-200);
+  --fg-subtle: var(--neutral-300);
+  --fg-inverse: var(--neutral-0);
+
+  --primary: var(--brand-900);
+  --primary-fg: var(--neutral-0);
+
+  --success: var(--green-900);
+  --success-fg: var(--neutral-0);
+  --warning: var(--amber-900);
+  --warning-fg: var(--neutral-0);
+  --danger: var(--red-900);
+  --danger-fg: var(--neutral-0);
+}

@@ -43,6 +43,10 @@ src/
 │       ├── views/         # Page views
 │       └── constants/     # Feature-specific constants
 └── global/                # Global UI components & constants
+│        └── components/   # Components that are being used in multiple places
+│        └── constants/    # UI generic constants
+│        └── hooks/        # Shared hooks 
+│        └── styles/       # Shared/global styles. Variables, globals, reset, typography
 ```
 
 ### Key Architecture Principles
