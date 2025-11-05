@@ -21,12 +21,12 @@ export const Sidebar = () => {
 
   return (
     <div className="sidebar">
+      <ThemeSelect />
       <div className="sidebar-header">
         <Link className="subtitle" href="/categories">
           Categories
         </Link>
         <div className="sidebar__button-container">
-          <ThemeSelect />
           <Button href="/categories/new" size="sm">
             <PlusSign className="plus-icon" />
           </Button>
