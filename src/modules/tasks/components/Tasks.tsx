@@ -29,8 +29,8 @@ export const Tasks = ({ categoryId }: TasksProps) => {
       onSuccess: () => {
         toast.success(TASK_SUCCESSES.DELETE_TASK_SUCCESS);
       },
-      onError: (error) => {
-        toast.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
+      onError: () => {
+        toast.error(TASK_ERRORS.DELETE_TASK_ERROR);
       },
     });
   };

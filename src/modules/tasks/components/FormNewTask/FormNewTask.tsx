@@ -21,8 +21,8 @@ export const FormNewTask = ({ categoryId }: TasksProps) => {
       onSuccess: () => {
         toast.success(TASK_SUCCESSES.CREATE_TASK_SUCCESS);
       },
-      onError: (error) => {
-        toast.error(TASK_ERRORS.CREATE_TASK_ERROR, error);
+      onError: () => {
+        toast.error(TASK_ERRORS.CREATE_TASK_ERROR);
       },
     });
   };

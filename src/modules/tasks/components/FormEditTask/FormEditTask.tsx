@@ -71,8 +71,8 @@ export default function FormEditTask({
             }
           }
         },
-        onError: (error) => {
-          toast.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
+        onError: () => {
+          toast.error(TASK_ERRORS.UPDATE_TASK_ERROR);
         },
       },
     );
