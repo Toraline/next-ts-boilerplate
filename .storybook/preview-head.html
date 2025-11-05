@@ -1,0 +1,12 @@
+<script>
+  (function () {
+    try {
+      const KEY = "theme";
+      let t = localStorage.getItem(KEY);
+      if (!t || t === "system") {
+        t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", t);
+    } catch {}
+  })();
+</script>

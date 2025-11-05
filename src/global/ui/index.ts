@@ -3,3 +3,4 @@ export * from "./Item/Item";
 export * from "./TextArea/TextArea";
 export * from "./Field/Field";
 export * from "./Table/Table";
+export * from "./Select/Select";
