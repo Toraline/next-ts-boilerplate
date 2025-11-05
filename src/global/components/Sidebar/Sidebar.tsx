@@ -21,6 +21,7 @@ export const Sidebar = () => {
 
   return (
     <div className="sidebar">
+      <ThemeSelect />
       <div className="sidebar-header">
         <Link className="subtitle" href="/categories">
           Categories
