@@ -9,6 +9,7 @@ import { DeleteTask } from "global/ui/icons/DeleteTask";
 import { useDeleteTask } from "../hooks/useDeleteTask";
 import { TASKS_UI } from "../constants/ui";
 import { TASK_ERRORS } from "../constants/errors";
+import { toast } from "sonner";
 
 type TasksProps = {
   categoryId: string;
@@ -25,9 +26,10 @@ export const Tasks = ({ categoryId }: TasksProps) => {
 
     deleteTaskMutation.mutate(taskId, {
       onSuccess: () => {
-        console.log("Task deleted");
+        toast.success("Task deletada com sucesso");
       },
       onError: (error) => {
+        toast.error("Erro ao deletar a task");
         console.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
       },
     });

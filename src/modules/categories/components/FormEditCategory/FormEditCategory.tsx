@@ -72,11 +72,7 @@ export default function FormEditCategory({
       {
         onSuccess: (updatedCategory) => {
           onSuccess?.();
-          toast.success("Categoria editada com sucesso", {
-            description: "Asdfgh",
-            duration: 5000,
-            position: "bottom-right",
-          });
+          toast.success("Categoria editada com sucesso");
           router.push(`/categories/${updatedCategory.slug}`);
         },
         onError: (error) => {

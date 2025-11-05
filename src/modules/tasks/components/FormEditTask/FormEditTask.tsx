@@ -9,15 +9,17 @@ import { TASK_ERRORS } from "modules/tasks/constants/errors";
 import { GLOBAL_UI } from "global/constants";
 import { useState } from "react";
 import React from "react";
+import { toast } from "sonner";
 
 export default function FormEditTask({
   initialState,
   taskId,
+  onSuccess,
 }: {
   initialState: Task;
   taskId: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   checked?: boolean;
+  onSuccess?: () => void;
 }) {
   const updateTaskMutation = useUpdateTask();
 
@@ -57,7 +59,17 @@ export default function FormEditTask({
         updates,
       },
       {
+        onSuccess: () => {
+          onSuccess?.();
+          toast.success("Task editada com sucesso", { duration: 5000 });
+          if (data.checked == true) {
+            toast.success("Task concluida", { duration: 3000 });
+          } else {
+            toast.success("Task em andamento", { duration: 3000 });
+          }
+        },
         onError: (error) => {
+          toast.error("Erro ao editar a task");
           console.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
         },
       },

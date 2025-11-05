@@ -43,6 +43,7 @@ export default function FormNewCategory() {
       },
       onError: (error) => {
         // Error handling is done by the global error handler
+        toast.error("Erro ao criar categoria");
         console.error(CATEGORY_ERRORS.CREATE_CATEGORY_ERROR, error);
       },
     });
