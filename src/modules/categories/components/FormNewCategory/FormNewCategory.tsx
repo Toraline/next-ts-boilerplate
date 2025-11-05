@@ -42,9 +42,9 @@ export default function FormNewCategory() {
         // Navigate immediately without clearing form state to prevent freezing
         router.push(`/categories/${createdCategory.slug}`);
       },
-      onError: (error) => {
+      onError: () => {
         // Error handling is done by the global error handler
-        toast.error(CATEGORY_ERRORS.CREATE_CATEGORY_ERROR, error);
+        toast.error(CATEGORY_ERRORS.CREATE_CATEGORY_ERROR);
       },
     });
   };

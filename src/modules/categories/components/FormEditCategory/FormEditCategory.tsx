@@ -76,8 +76,8 @@ export default function FormEditCategory({
           toast.success(CATEGORY_SUCCESSES.EDIT_CATEGORY_SUCCESS);
           router.push(`/categories/${updatedCategory.slug}`);
         },
-        onError: (error) => {
-          toast.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR, error);
+        onError: () => {
+          toast.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR);
         },
       },
     );
