@@ -80,7 +80,7 @@ export default function CategoriesListView() {
   // Show error state
   if (error) {
     return (
-      <div className="page">
+      <div className="flex flex-col items-center h-lvh">
         <h1>{CATEGORY_ERRORS.ERROR_LOADING_CATEGORIES}</h1>
         <p className="error">{GLOBAL_UI.MESSAGES.SOMETHING_WENT_WRONG}</p>
       </div>
@@ -88,7 +88,7 @@ export default function CategoriesListView() {
   }
 
   return (
-    <div className="page">
+    <div className="flex flex-col items-center h-lvh">
       <h1>{CATEGORIES_UI.HEADERS.CATEGORIES}</h1>
 
       {/* Search and Sort Form */}
