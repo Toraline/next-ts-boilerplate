@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "global/ui";
 import { CATEGORIES_UI } from "../../categories";
 import { GLOBAL_UI } from "global/constants";
@@ -17,22 +19,6 @@ type TasksProps = {
 export const Tasks = ({ categoryId }: TasksProps) => {
   const { data, isLoading, error } = useTasksList({ categoryId });
 
-  const deleteTaskMutation = useDeleteTask();
-
-  const onDelete = async () => {
-    const taskId = data?.items.find((task) => task.id)?.id;
-    if (!taskId || !confirm(TASKS_UI.CONFIRMATIONS.DELETE_TASK)) return;
-
-    deleteTaskMutation.mutate(taskId, {
-      onSuccess: () => {
-        console.log("Task deleted");
-      },
-      onError: (error) => {
-        console.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
-      },
-    });
-  };
-
   return (
     <>
       <div className="task-wrapper">
@@ -45,11 +31,7 @@ export const Tasks = ({ categoryId }: TasksProps) => {
         <div>
           {data?.items.map((task) => (
             <div className="task-wrapper">
-              <h2 className="subtitle">{task.description}</h2>
               <FormEditTask taskId={task.id} initialState={task} />
-              <Button variant="transparent" onClick={onDelete}>
-                <DeleteTask />
-              </Button>
             </div>
           ))}
           <FormNewTask categoryId={categoryId} />

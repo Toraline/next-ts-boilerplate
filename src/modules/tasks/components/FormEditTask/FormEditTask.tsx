@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Field } from "global/ui";
+import { Button, Field, Item } from "global/ui";
 import { TASKS_UI } from "modules/tasks/constants/ui";
 import { useUpdateTask } from "modules/tasks/hooks/useUpdateTask";
 import { createTaskSchema } from "modules/tasks/schema";
@@ -9,6 +9,7 @@ import { TASK_ERRORS } from "modules/tasks/constants/errors";
 import { GLOBAL_UI } from "global/constants";
 import { useState } from "react";
 import React from "react";
+import { useDeleteTask } from "modules/tasks/hooks/useDeleteTask";
 
 export default function FormEditTask({
   initialState,
@@ -36,6 +37,7 @@ export default function FormEditTask({
     },
   });
 
+  const [content, setContent] = useState(initialState.description);
   const onSubmit = (data: CreateTask) => {
     setNoChangesMessage(null);
     const updates: Record<string, unknown> = {};
@@ -64,6 +66,21 @@ export default function FormEditTask({
     );
   };
 
+  const deleteTaskMutation = useDeleteTask();
+
+  const onDelete = async () => {
+    if (!taskId || !confirm(TASKS_UI.CONFIRMATIONS.DELETE_TASK)) return;
+
+    deleteTaskMutation.mutate(taskId, {
+      onSuccess: () => {
+        console.log("Task deleted");
+      },
+      onError: (error) => {
+        console.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
+      },
+    });
+  };
+
   const isLoading = updateTaskMutation.isPending || isSubmitting;
 
   return (
@@ -72,6 +89,13 @@ export default function FormEditTask({
       {noChangesMessage && <div className="error">{noChangesMessage}</div>}
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div>
+          <Item
+            content={content}
+            onContentChange={setContent}
+            {...register("description")}
+            // error={errors.description?.message}
+            onDelete={onDelete}
+          />
           <Field
             label={TASKS_UI.LABELS.DESCRIPTION}
             {...register("description")}

@@ -6,7 +6,6 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
-  onlyEditing?: boolean;
   editButton?: boolean;
   checkbox?: boolean;
   content?: string;
@@ -37,6 +36,7 @@ export const Item = ({
   };
   const toggleEditMode = (e) => {
     e.stopPropagation();
+
     setIsEditing(true);
   };
 
