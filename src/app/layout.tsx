@@ -24,17 +24,17 @@ const THEME_BOOT = `
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="min-h-full bg-surface-1 text-fg">
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
-      <body className="bg-surface-1">
+      <body className="flex min-h-full">
         <ReactQueryProvider>
-          <header className="header">
+          <header className="h-lvh shrink-0 overflow-y-auto">
             <Sidebar />
           </header>
 
-          <main className="main">{children}</main>
+          <main className="grow overflow-y-auto h-lvh">{children}</main>
         </ReactQueryProvider>
       </body>
     </html>
