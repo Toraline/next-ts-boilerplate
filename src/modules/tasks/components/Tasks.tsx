@@ -7,10 +7,6 @@ import { useTasksList } from "../hooks/useTasksList";
 import "./Tasks.style.css";
 import { FormNewTask } from "./FormNewTask/FormNewTask";
 import FormEditTask from "./FormEditTask/FormEditTask";
-import { DeleteTask } from "global/ui/icons/DeleteTask";
-import { useDeleteTask } from "../hooks/useDeleteTask";
-import { TASKS_UI } from "../constants/ui";
-import { TASK_ERRORS } from "../constants/errors";
 
 type TasksProps = {
   categoryId: string;

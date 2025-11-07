@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Field, Item } from "global/ui";
+import { Item } from "global/ui";
 import { TASKS_UI } from "modules/tasks/constants/ui";
 import { useUpdateTask } from "modules/tasks/hooks/useUpdateTask";
 import { createTaskSchema } from "modules/tasks/schema";
 import { CreateTask, Task } from "modules/tasks/types";
 import { useForm } from "react-hook-form";
 import { TASK_ERRORS } from "modules/tasks/constants/errors";
-import { GLOBAL_UI } from "global/constants";
 import { useState } from "react";
 import React from "react";
 import { useDeleteTask } from "modules/tasks/hooks/useDeleteTask";
@@ -23,11 +22,10 @@ export default function FormEditTask({
   const updateTaskMutation = useUpdateTask();
 
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
-
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<CreateTask>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -37,7 +35,6 @@ export default function FormEditTask({
     },
   });
 
-  const [content, setContent] = useState(initialState.description);
   const onSubmit = (data: CreateTask) => {
     setNoChangesMessage(null);
     const updates: Record<string, unknown> = {};
@@ -46,6 +43,7 @@ export default function FormEditTask({
     }
     if (data.checked !== initialState.checked) {
       updates.checked = data.checked;
+      useState();
     }
 
     if (Object.keys(updates).length === 0) {
@@ -65,7 +63,9 @@ export default function FormEditTask({
       },
     );
   };
-
+  const handleSaveEdit = (description: string) => {
+    handleSubmit((data) => onSubmit({ ...data, description }))();
+  };
   const deleteTaskMutation = useDeleteTask();
 
   const onDelete = async () => {
@@ -80,35 +80,22 @@ export default function FormEditTask({
       },
     });
   };
-
   const isLoading = updateTaskMutation.isPending || isSubmitting;
 
   return (
     <div className="form-container">
       {updateTaskMutation.error && <div className="error">{updateTaskMutation.error.message}</div>}
       {noChangesMessage && <div className="error">{noChangesMessage}</div>}
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <Item
-            content={content}
-            onContentChange={setContent}
-            {...register("description")}
-            // error={errors.description?.message}
-            onDelete={onDelete}
-          />
-          <Field
-            label={TASKS_UI.LABELS.DESCRIPTION}
-            {...register("description")}
-            id="task-description"
-            type="text"
-            error={errors.description?.message}
-          />
-          <input type="checkbox" {...register("checked")} />
+      <form className="form">
+        <Item
+          isLoading={isLoading}
+          content={initialState.description}
+          onSaveEdit={handleSaveEdit}
+          onDelete={onDelete}
+          {...register("description")}
+        />
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
-          </Button>
-        </div>
+        <input type="checkbox" {...register("checked")} />
       </form>
     </div>
   );

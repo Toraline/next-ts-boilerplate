@@ -6,38 +6,36 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
+  isLoading: boolean;
   editButton?: boolean;
   checkbox?: boolean;
   content?: string;
   isDone?: boolean;
-  onContentChange?: (content: string) => void;
+  onSaveEdit?: (content: string) => void;
   onComplete?: (isDone: boolean) => void;
   onDelete?: () => void;
-  onEdit?: () => void;
 };
 
 export const Item = ({
+  isLoading,
   editButton,
   checkbox,
   content,
   isDone,
-  onContentChange,
+  onSaveEdit,
   onComplete,
   onDelete,
-  onEdit,
 }: ItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const itemIsDoneClass = isDone ? " item--done" : "";
 
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    onEdit?.();
-    setIsEditing(false);
-  };
   const toggleEditMode = (e) => {
     e.stopPropagation();
-
-    setIsEditing(true);
+    setIsEditing(!isEditing);
+  };
+  const handleSaveEdit = (e, description: string) => {
+    toggleEditMode(e);
+    onSaveEdit?.(description);
   };
 
   return (
@@ -49,11 +47,7 @@ export const Item = ({
       }}
     >
       {isEditing ? (
-        <Editing
-          onChange={(e) => onContentChange?.(e.target.value)}
-          value={content}
-          onClick={handleEdit}
-        />
+        <Editing isLoading={isLoading} initialValue={content} onSaveEdit={handleSaveEdit} />
       ) : (
         <NotEditing
           editButton={editButton}
