@@ -6,28 +6,26 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
+  onComplete?: (checked: boolean) => void;
   isLoading: boolean;
   editButton?: boolean;
   checkbox?: boolean;
   content?: string;
-  isDone?: boolean;
   onSaveEdit?: (content: string) => void;
-  onComplete?: (isDone: boolean) => void;
   onDelete?: () => void;
 };
 
 export const Item = ({
+  onComplete,
   isLoading,
   editButton,
   checkbox,
   content,
-  isDone,
   onSaveEdit,
-  onComplete,
   onDelete,
 }: ItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const itemIsDoneClass = isDone ? " item--done" : "";
+  // const itemIsDoneClass = isDone ? " item--done" : "";
 
   const toggleEditMode = (e) => {
     e.stopPropagation();
@@ -37,14 +35,18 @@ export const Item = ({
     toggleEditMode(e);
     onSaveEdit?.(description);
   };
+  const handleCheckbox = (checked) => {
+    onComplete?.(checked);
+    console.log("clicou");
+  };
 
   return (
     <div
-      className={`item${itemIsDoneClass}`}
-      onClick={(e) => {
-        e.stopPropagation();
-        onComplete?.(!isDone);
-      }}
+    // className={itemIsDoneClass}
+    // onClick={(e) => {
+    //   e.stopPropagation();
+    //   onComplete?.(!isDone);
+    // }}
     >
       {isEditing ? (
         <Editing isLoading={isLoading} initialValue={content} onSaveEdit={handleSaveEdit} />
@@ -55,7 +57,7 @@ export const Item = ({
           onDelete={onDelete}
           onClick={toggleEditMode}
           content={content}
-          isDone={isDone}
+          onComplete={handleCheckbox}
         />
       )}
     </div>

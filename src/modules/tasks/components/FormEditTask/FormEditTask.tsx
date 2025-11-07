@@ -43,7 +43,6 @@ export default function FormEditTask({
     }
     if (data.checked !== initialState.checked) {
       updates.checked = data.checked;
-      useState();
     }
 
     if (Object.keys(updates).length === 0) {
@@ -63,6 +62,10 @@ export default function FormEditTask({
       },
     );
   };
+  const handleCheckbox = (checked: boolean) => {
+    handleSubmit((data) => onSubmit({ ...data, checked }));
+  };
+
   const handleSaveEdit = (description: string) => {
     handleSubmit((data) => onSubmit({ ...data, description }))();
   };
@@ -92,10 +95,11 @@ export default function FormEditTask({
           content={initialState.description}
           onSaveEdit={handleSaveEdit}
           onDelete={onDelete}
+          onComplete={handleCheckbox}
           {...register("description")}
         />
 
-        <input type="checkbox" {...register("checked")} />
+        {/* <input type="checkbox" {...register("checked")} /> */}
       </form>
     </div>
   );

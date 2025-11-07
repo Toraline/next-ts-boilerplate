@@ -4,11 +4,13 @@ import { Check } from "global/ui/icons/Check";
 import { EditTask } from "global/ui/icons/EditTask";
 import { DeleteTask } from "global/ui/icons/DeleteTask";
 import "./NotEditing.style.css";
+import clsx from "clsx";
 
 type NotEditingProps = {
+  checked?: boolean;
+  onComplete: (event: MouseEvent, checked: boolean) => void;
   onClick: (event: MouseEvent) => void;
   content?: string;
-  isDone?: boolean;
   onDelete?: () => void;
   checkbox?: boolean;
   editButton?: boolean;
@@ -18,11 +20,13 @@ const NotEditing = ({
   editButton = true,
   checkbox = true,
   content,
-  isDone,
+  checked = false,
   onDelete,
   onClick,
+  onComplete,
 }: NotEditingProps) => {
-  const contentIsDoneClass = isDone ? " item__content--done" : "";
+  // const contentIsDoneClass = isDone ? " item__content--done" : "";
+
   const handleDelete = (e: MouseEvent) => {
     e.stopPropagation();
     onDelete?.();
@@ -31,12 +35,13 @@ const NotEditing = ({
   return (
     <div className="item__container">
       {checkbox && (
-        <div className="item__checkbox" data-testid="checkbox">
-          {isDone && <Check aria-label="check" />}
+        <div className=" item__checkbox" data-testid="checkbox">
+          <input type="checkbox" id="task-checkbox" onClick={(e) => onComplete(e, checked)} />
+          {/* {isDone && <Check aria-label="check" />} */}
         </div>
       )}
 
-      <p className={`item__content${contentIsDoneClass}`}>{content}</p>
+      <p className={clsx("item__content", { "item_content--done": "" })}>{content}</p>
 
       {editButton && (
         <Button variant="transparent" aria-label="edit" onClick={onClick}>
