@@ -5,7 +5,8 @@
     "services:stop": "docker compose --file=src/infra/compose.yaml stop",
     "services:down": "docker compose --file=src/infra/compose.yaml down",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:generate": "prisma generate dev",
+    "prisma:generate": "prisma generate",
+    "prisma:seed": "prisma db seed",
     "build": "prisma generate && next build",
     "postbuild": "prisma migrate deploy",
     "start": "next start",
@@ -89,10 +90,14 @@
     "tailwindcss": "^4.1.16",
     "tailwindcss-react-aria-components": "^2.0.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "5.8.3",
     "vitest": "^3.2.4"
   },
   "optionalDependencies": {
     "@esbuild/darwin-arm64": "^0.25.12"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

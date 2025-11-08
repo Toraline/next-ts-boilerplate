@@ -92,6 +92,7 @@ npm run services:up
 # Set up database
 npm run prisma:migrate
 npm run prisma:generate
+npm run prisma:seed
 
 # Start development server
 npm run dev
