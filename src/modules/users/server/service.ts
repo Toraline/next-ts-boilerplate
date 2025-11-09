@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { z } from "zod";
 import { ConflictError, NotFoundError } from "lib/http/errors";
 import {
   assignUserRoleSchema,
@@ -6,6 +7,10 @@ import {
   listUsersQuerySchema,
   listUsersResponseSchema,
   listUserRolesResponseSchema,
+  permissionDescriptionSchema,
+  permissionIdSchema,
+  permissionKeySchema,
+  permissionNameSchema,
   roleWithPermissionsSchema,
   updateUserSchema,
   userEntitySchema,
@@ -37,23 +42,28 @@ function mapUserRoleToPublic(raw: unknown) {
 }
 
 function mapRoleWithPermissions(raw: unknown) {
-  const {
-    role,
-    createdAt,
-  }: {
-    role: {
-      id: string;
-      key: string;
-      name: string;
-      description: string | null;
-      permissions: Array<{
-        permission: { id: string; key: string; name: string; description: string | null };
-      }>;
-    };
-    createdAt: Date;
-  } = raw as any;
+  const row = userRoleEntitySchema
+    .extend({
+      role: z.object({
+        id: roleWithPermissionsSchema.shape.id,
+        key: roleWithPermissionsSchema.shape.key,
+        name: roleWithPermissionsSchema.shape.name,
+        description: roleWithPermissionsSchema.shape.description,
+        permissions: z.array(
+          z.object({
+            permission: z.object({
+              id: permissionIdSchema,
+              key: permissionKeySchema,
+              name: permissionNameSchema,
+              description: permissionDescriptionSchema,
+            }),
+          }),
+        ),
+      }),
+    })
+    .parse(raw);
 
-  const permissions = role.permissions.map(({ permission }) => ({
+  const permissions = row.role.permissions.map(({ permission }) => ({
     id: permission.id,
     key: permission.key,
     name: permission.name,
@@ -61,12 +71,12 @@ function mapRoleWithPermissions(raw: unknown) {
   }));
 
   return roleWithPermissionsSchema.parse({
-    id: role.id,
-    key: role.key,
-    name: role.name,
-    description: role.description,
+    id: row.role.id,
+    key: row.role.key,
+    name: row.role.name,
+    description: row.role.description,
     permissions,
-    assignedAt: createdAt.toISOString(),
+    assignedAt: row.createdAt.toISOString(),
   });
 }
 

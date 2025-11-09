@@ -17,6 +17,10 @@ export const permissionKeySchema = z.string().trim().min(1).max(120);
 export const permissionNameSchema = z.string().trim().min(1).max(120);
 export const permissionDescriptionSchema = z.string().trim().max(255).nullable().optional();
 
+const isoDateTimeString = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
+  message: VALIDATION_MESSAGES.INVALID_INPUT,
+});
+
 export const nameSchema = z
   .string()
   .trim()
@@ -104,12 +108,12 @@ export const userPublicSchema = z.object({
   name: nameSchema,
   avatarUrl: avatarUrlSchema.nullable(),
   status: userStatusSchema,
-  lastLoginAt: z.string().datetime().nullable(),
-  deletedAt: z.string().datetime().nullable(),
+  lastLoginAt: isoDateTimeString.nullable(),
+  deletedAt: isoDateTimeString.nullable(),
   clerkUserId: clerkUserIdSchema.nullable(),
   tenantId: tenantIdSchema.nullable(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: isoDateTimeString,
+  updatedAt: isoDateTimeString,
 });
 
 export const listUsersResponseSchema = z.object({
@@ -132,7 +136,7 @@ export const userRoleEntitySchema = z.object({
 export const userRolePublicSchema = z.object({
   userId: userIdSchema,
   roleId: roleIdSchema,
-  createdAt: z.string().datetime(),
+  createdAt: isoDateTimeString,
 });
 
 export const roleWithPermissionsSchema = z.object({
@@ -148,7 +152,7 @@ export const roleWithPermissionsSchema = z.object({
       description: permissionDescriptionSchema,
     }),
   ),
-  assignedAt: z.string().datetime(),
+  assignedAt: isoDateTimeString,
 });
 
 export const listUserRolesResponseSchema = z.object({
