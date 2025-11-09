@@ -6,6 +6,7 @@
     "services:down": "docker compose --file=src/infra/compose.yaml down",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
+    "prisma:reset": "prisma migrate reset",
     "prisma:seed": "prisma db seed",
     "build": "prisma generate && next build",
     "postbuild": "prisma migrate deploy",

@@ -1,6 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { ConflictError, NotFoundError } from "lib/http/errors";
+import { recordAuditLog, resolveAuditActor } from "modules/audit";
+import type { AuditActor } from "modules/audit";
 import {
   assignUserRoleSchema,
   assignUserPermissionSchema,
@@ -115,7 +117,15 @@ function mapPermissionWithAssignment(raw: unknown) {
   });
 }
 
-export async function createUser(raw: unknown) {
+type ServiceOptions = {
+  actor?: AuditActor;
+};
+
+function auditActor(options?: ServiceOptions) {
+  return resolveAuditActor(options?.actor);
+}
+
+export async function createUser(raw: unknown, options?: ServiceOptions) {
   const data = createUserSchema.parse(raw);
 
   if (await userRepo.userByEmail(data.email)) {
@@ -138,7 +148,17 @@ export async function createUser(raw: unknown) {
     clerkUserId: data.clerkUserId ?? null,
   });
 
-  return mapToPublic(created);
+  const user = mapToPublic(created);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.created",
+    targetType: "user",
+    targetId: user.id,
+    metadata: { user },
+  });
+
+  return user;
 }
 
 export async function listUsers(rawQuery: unknown) {
@@ -200,10 +220,12 @@ export async function getUser(raw: { id?: unknown; email?: unknown; clerkUserId?
   return mapToPublic(user);
 }
 
-export async function updateUser(id: string, raw: unknown) {
+export async function updateUser(id: string, raw: unknown, options?: ServiceOptions) {
   const patch = updateUserSchema.parse(raw);
 
   const existing = await resolveUser({ id });
+
+  const before = mapToPublic(existing);
 
   if (patch.email && patch.email !== existing.email) {
     const emailUsed = await userRepo.userByEmail(patch.email);
@@ -232,20 +254,40 @@ export async function updateUser(id: string, raw: unknown) {
 
   const updated = await userRepo.userUpdate(existing.id, data);
 
-  return mapToPublic(updated);
+  const user = mapToPublic(updated);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.updated",
+    targetType: "user",
+    targetId: user.id,
+    metadata: { before, after: user },
+  });
+
+  return user;
 }
 
-export async function deleteUser(id: string) {
+export async function deleteUser(id: string, options?: ServiceOptions) {
   const existing = await resolveUser({ id }, { includeDeleted: true });
 
   if (existing.deletedAt) {
     throw new NotFoundError("User not found");
   }
 
+  const before = mapToPublic(existing);
+
   await userRepo.userDelete(existing.id);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.deleted",
+    targetType: "user",
+    targetId: id,
+    metadata: { user: before },
+  });
 }
 
-export async function assignRoleToUser(userId: string, raw: unknown) {
+export async function assignRoleToUser(userId: string, raw: unknown, options?: ServiceOptions) {
   const payload = assignUserRoleSchema.parse(raw);
 
   const user = await resolveUser({ id: userId });
@@ -258,10 +300,20 @@ export async function assignRoleToUser(userId: string, raw: unknown) {
 
   const created = await userRepo.userRoleCreate(user.id, role.id);
 
-  return mapUserRoleToPublic(created);
+  const assignment = mapUserRoleToPublic(created);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.role.assigned",
+    targetType: "user",
+    targetId: user.id,
+    metadata: { userId: user.id, roleId: role.id },
+  });
+
+  return assignment;
 }
 
-export async function removeRoleFromUser(userId: string, roleId: string) {
+export async function removeRoleFromUser(userId: string, roleId: string, options?: ServiceOptions) {
   const user = await resolveUser({ id: userId });
 
   const role = await userRepo.roleById(roleId);
@@ -271,6 +323,14 @@ export async function removeRoleFromUser(userId: string, roleId: string) {
   if (!existing) throw new NotFoundError("User does not have this role");
 
   await userRepo.userRoleDelete(user.id, role.id);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.role.removed",
+    targetType: "user",
+    targetId: user.id,
+    metadata: { userId: user.id, roleId },
+  });
 }
 
 export async function listUserRoles(userId: string) {
@@ -283,7 +343,11 @@ export async function listUserRoles(userId: string) {
   return listUserRolesResponseSchema.parse({ items });
 }
 
-export async function assignPermissionToUser(userId: string, raw: unknown) {
+export async function assignPermissionToUser(
+  userId: string,
+  raw: unknown,
+  options?: ServiceOptions,
+) {
   const payload = assignUserPermissionSchema.parse(raw);
 
   const user = await resolveUser({ id: userId });
@@ -296,10 +360,24 @@ export async function assignPermissionToUser(userId: string, raw: unknown) {
 
   const created = await userRepo.userPermissionCreate(user.id, permission.id);
 
-  return mapUserPermissionToPublic(created);
+  const assignment = mapUserPermissionToPublic(created);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.permission.assigned",
+    targetType: "user",
+    targetId: user.id,
+    metadata: { userId: user.id, permissionId: permission.id },
+  });
+
+  return assignment;
 }
 
-export async function removePermissionFromUser(userId: string, permissionId: string) {
+export async function removePermissionFromUser(
+  userId: string,
+  permissionId: string,
+  options?: ServiceOptions,
+) {
   const user = await resolveUser({ id: userId });
 
   const permission = await userRepo.permissionById(permissionId);
@@ -309,6 +387,14 @@ export async function removePermissionFromUser(userId: string, permissionId: str
   if (!existing) throw new NotFoundError("User does not have this permission");
 
   await userRepo.userPermissionDelete(user.id, permission.id);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "user.permission.removed",
+    targetType: "user",
+    targetId: user.id,
+    metadata: { userId: user.id, permissionId },
+  });
 }
 
 export async function listUserPermissions(userId: string) {

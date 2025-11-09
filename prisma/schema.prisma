@@ -116,21 +116,30 @@ model Invitation {
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
+  id          String         @id @default(cuid())
   actorUserId String?
+  actorType   AuditActorType @default(SYSTEM)
   action      String
   targetType  String
   targetId    String
   metadata    Json?
   ip          String?
   userAgent   String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime       @default(now())
 
   actor User? @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
 
   @@index([actorUserId])
   @@index([targetType, targetId])
   @@index([createdAt])
+}
+
+enum AuditActorType {
+  USER
+  SYSTEM
+  SERVICE
+  WEBHOOK
+  ANONYMOUS
 }
 
 model Category {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import * as userService from "modules/users/server/service";
 import { getErrorMessage, getHttpStatus } from "lib/http/errors";
+import { getRequestAuditActor } from "lib/http/audit-actor";
 
 export const runtime = "nodejs";
 
@@ -20,7 +21,12 @@ export async function POST(req: Request, { params }: RouteParams) {
   try {
     const { userId } = await params;
     const payload = await req.json();
-    const assignment = await userService.assignPermissionToUser(userId, payload);
+    const actor = getRequestAuditActor(req);
+    const assignment = await userService.assignPermissionToUser(
+      userId,
+      payload,
+      actor ? { actor } : undefined,
+    );
     return NextResponse.json(assignment, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
