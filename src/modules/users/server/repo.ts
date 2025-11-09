@@ -77,3 +77,37 @@ export async function userFindMany(query: ListUsersQuery) {
 
   return { items, total, page, pageSize };
 }
+
+export const roleById = (id: string) => prisma.role.findUnique({ where: { id } });
+
+export const userRoleByIds = (userId: string, roleId: string) =>
+  prisma.userRole.findUnique({
+    where: { userId_roleId: { userId, roleId } },
+  });
+
+export const userRoleCreate = (userId: string, roleId: string) =>
+  prisma.userRole.create({
+    data: { userId, roleId },
+  });
+
+export const userRoleDelete = (userId: string, roleId: string) =>
+  prisma.userRole.delete({
+    where: { userId_roleId: { userId, roleId } },
+  });
+
+export async function userRolesWithPermissions(userId: string) {
+  return prisma.userRole.findMany({
+    where: { userId },
+    include: {
+      role: {
+        include: {
+          permissions: {
+            include: {
+              permission: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}

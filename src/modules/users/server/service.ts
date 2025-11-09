@@ -1,12 +1,17 @@
 import { Prisma } from "@prisma/client";
 import { ConflictError, NotFoundError } from "lib/http/errors";
 import {
+  assignUserRoleSchema,
   createUserSchema,
   listUsersQuerySchema,
   listUsersResponseSchema,
+  listUserRolesResponseSchema,
+  roleWithPermissionsSchema,
   updateUserSchema,
   userEntitySchema,
   userPublicSchema,
+  userRoleEntitySchema,
+  userRolePublicSchema,
 } from "../schema";
 import * as userRepo from "./repo";
 
@@ -19,6 +24,49 @@ function mapToPublic(raw: unknown) {
     updatedAt: entity.updatedAt.toISOString(),
     lastLoginAt: entity.lastLoginAt ? entity.lastLoginAt.toISOString() : null,
     deletedAt: entity.deletedAt ? entity.deletedAt.toISOString() : null,
+  });
+}
+
+function mapUserRoleToPublic(raw: unknown) {
+  const entity = userRoleEntitySchema.parse(raw);
+
+  return userRolePublicSchema.parse({
+    ...entity,
+    createdAt: entity.createdAt.toISOString(),
+  });
+}
+
+function mapRoleWithPermissions(raw: unknown) {
+  const {
+    role,
+    createdAt,
+  }: {
+    role: {
+      id: string;
+      key: string;
+      name: string;
+      description: string | null;
+      permissions: Array<{
+        permission: { id: string; key: string; name: string; description: string | null };
+      }>;
+    };
+    createdAt: Date;
+  } = raw as any;
+
+  const permissions = role.permissions.map(({ permission }) => ({
+    id: permission.id,
+    key: permission.key,
+    name: permission.name,
+    description: permission.description,
+  }));
+
+  return roleWithPermissionsSchema.parse({
+    id: role.id,
+    key: role.key,
+    name: role.name,
+    description: role.description,
+    permissions,
+    assignedAt: createdAt.toISOString(),
   });
 }
 
@@ -150,4 +198,42 @@ export async function deleteUser(id: string) {
   }
 
   await userRepo.userDelete(existing.id);
+}
+
+export async function assignRoleToUser(userId: string, raw: unknown) {
+  const payload = assignUserRoleSchema.parse(raw);
+
+  const user = await resolveUser({ id: userId });
+
+  const role = await userRepo.roleById(payload.roleId);
+  if (!role) throw new NotFoundError("Role not found");
+
+  const existing = await userRepo.userRoleByIds(user.id, role.id);
+  if (existing) throw new ConflictError("User already has this role");
+
+  const created = await userRepo.userRoleCreate(user.id, role.id);
+
+  return mapUserRoleToPublic(created);
+}
+
+export async function removeRoleFromUser(userId: string, roleId: string) {
+  const user = await resolveUser({ id: userId });
+
+  const role = await userRepo.roleById(roleId);
+  if (!role) throw new NotFoundError("Role not found");
+
+  const existing = await userRepo.userRoleByIds(user.id, role.id);
+  if (!existing) throw new NotFoundError("User does not have this role");
+
+  await userRepo.userRoleDelete(user.id, role.id);
+}
+
+export async function listUserRoles(userId: string) {
+  const user = await resolveUser({ id: userId });
+
+  const rows = await userRepo.userRolesWithPermissions(user.id);
+
+  const items = rows.map(mapRoleWithPermissions);
+
+  return listUserRolesResponseSchema.parse({ items });
 }
