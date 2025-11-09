@@ -30,6 +30,7 @@ model User {
   auditLogs   AuditLog[]       @relation("AuditActor")
   roles       UserRole[]
   permissions UserPermission[]
+  sessions    Session[]
 
   @@index([status])
   @@index([tenantId])
@@ -140,6 +141,22 @@ enum AuditActorType {
   SERVICE
   WEBHOOK
   ANONYMOUS
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+  expiresAt DateTime
+  userAgent String?
+  ipHash    String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
 }
 
 model Category {
