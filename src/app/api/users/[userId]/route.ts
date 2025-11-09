@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import * as userService from "modules/users/server/service";
 import { getErrorMessage, getHttpStatus } from "lib/http/errors";
+import { getRequestAuditActor } from "lib/http/audit-actor";
 
 export const runtime = "nodejs";
 
@@ -20,17 +21,19 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const { userId } = await params;
     const payload = await req.json();
-    const updated = await userService.updateUser(userId, payload);
+    const actor = getRequestAuditActor(req);
+    const updated = await userService.updateUser(userId, payload, actor ? { actor } : undefined);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
   }
 }
 
-export async function DELETE(_req: Request, { params }: RouteParams) {
+export async function DELETE(req: Request, { params }: RouteParams) {
   try {
     const { userId } = await params;
-    await userService.deleteUser(userId);
+    const actor = getRequestAuditActor(req);
+    await userService.deleteUser(userId, actor ? { actor } : undefined);
     return new Response(null, { status: 204 });
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });

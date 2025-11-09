@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { deleteRole, getRoleById, updateRole } from "modules/roles";
 import { getErrorMessage, getHttpStatus } from "lib/http/errors";
+import { getRequestAuditActor } from "lib/http/audit-actor";
 
 export const runtime = "nodejs";
 
@@ -20,17 +21,19 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const { roleId } = await params;
     const payload = await req.json();
-    const updated = await updateRole(roleId, payload);
+    const actor = getRequestAuditActor(req);
+    const updated = await updateRole(roleId, payload, actor ? { actor } : undefined);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
   }
 }
 
-export async function DELETE(_req: Request, { params }: RouteParams) {
+export async function DELETE(req: Request, { params }: RouteParams) {
   try {
     const { roleId } = await params;
-    await deleteRole(roleId);
+    const actor = getRequestAuditActor(req);
+    await deleteRole(roleId, actor ? { actor } : undefined);
     return new Response(null, { status: 204 });
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });

@@ -1,5 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { ConflictError, NotFoundError } from "lib/http/errors";
+import { recordAuditLog, resolveAuditActor } from "modules/audit";
+import type { AuditActor } from "modules/audit";
 import {
   createRoleSchema,
   listRolesQuerySchema,
@@ -45,7 +47,15 @@ function mapRoleToPublic(raw: unknown) {
   });
 }
 
-export async function createRole(raw: unknown) {
+type ServiceOptions = {
+  actor?: AuditActor;
+};
+
+function auditActor(options?: ServiceOptions) {
+  return resolveAuditActor(options?.actor);
+}
+
+export async function createRole(raw: unknown, options?: ServiceOptions) {
   const payload = createRoleSchema.parse(raw);
   const key = payload.key.trim();
 
@@ -81,10 +91,20 @@ export async function createRole(raw: unknown) {
 
   const permissions = role.permissions.map(({ permission }) => mapPermissionToPublic(permission));
 
-  return mapRoleToPublic({
+  const publicRole = mapRoleToPublic({
     ...role,
     permissions,
   });
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "role.created",
+    targetType: "role",
+    targetId: publicRole.id,
+    metadata: { role: publicRole },
+  });
+
+  return publicRole;
 }
 
 export async function listRoles(rawQuery: unknown) {
@@ -117,11 +137,16 @@ export async function getRoleById(id: string) {
   });
 }
 
-export async function updateRole(id: string, raw: unknown) {
+export async function updateRole(id: string, raw: unknown, options?: ServiceOptions) {
   const payload = updateRoleSchema.parse(raw);
 
   const role = await roleRepo.roleById(id);
   if (!role) throw new NotFoundError("Role not found");
+
+  const before = mapRoleToPublic({
+    ...role,
+    permissions: role.permissions.map(({ permission }) => mapPermissionToPublic(permission)),
+  });
 
   const updates: Prisma.RoleUpdateInput = {};
 
@@ -157,15 +182,38 @@ export async function updateRole(id: string, raw: unknown) {
     }
   }
 
-  return getRoleById(id);
+  const updated = await getRoleById(id);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "role.updated",
+    targetType: "role",
+    targetId: updated.id,
+    metadata: { before, after: updated },
+  });
+
+  return updated;
 }
 
-export async function deleteRole(id: string) {
+export async function deleteRole(id: string, options?: ServiceOptions) {
   const role = await roleRepo.roleById(id);
   if (!role) throw new NotFoundError("Role not found");
 
+  const before = mapRoleToPublic({
+    ...role,
+    permissions: role.permissions.map(({ permission }) => mapPermissionToPublic(permission)),
+  });
+
   await roleRepo.rolePermissionsDeleteMany(id);
   await roleRepo.roleDelete(id);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "role.deleted",
+    targetType: "role",
+    targetId: id,
+    metadata: { role: before },
+  });
 }
 
 function mapRolePermissionToPublic(raw: unknown) {
@@ -193,7 +241,11 @@ function mapPermissionAssignment(raw: unknown) {
   });
 }
 
-export async function assignPermissionToRole(roleId: string, raw: unknown) {
+export async function assignPermissionToRole(
+  roleId: string,
+  raw: unknown,
+  options?: ServiceOptions,
+) {
   const payload = assignRolePermissionSchema.parse(raw);
 
   const role = await roleRepo.roleById(roleId);
@@ -207,10 +259,24 @@ export async function assignPermissionToRole(roleId: string, raw: unknown) {
 
   const created = await roleRepo.rolePermissionCreate(roleId, payload.permissionId);
 
-  return mapRolePermissionToPublic(created);
+  const assignment = mapRolePermissionToPublic(created);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "role.permission.assigned",
+    targetType: "role",
+    targetId: roleId,
+    metadata: { roleId, permissionId: payload.permissionId },
+  });
+
+  return assignment;
 }
 
-export async function removePermissionFromRole(roleId: string, permissionId: string) {
+export async function removePermissionFromRole(
+  roleId: string,
+  permissionId: string,
+  options?: ServiceOptions,
+) {
   const role = await roleRepo.roleById(roleId);
   if (!role) throw new NotFoundError("Role not found");
 
@@ -218,6 +284,14 @@ export async function removePermissionFromRole(roleId: string, permissionId: str
   if (!assignment) throw new NotFoundError("Role does not have this permission");
 
   await roleRepo.rolePermissionDelete(roleId, permissionId);
+
+  await recordAuditLog({
+    ...auditActor(options),
+    action: "role.permission.removed",
+    targetType: "role",
+    targetId: roleId,
+    metadata: { roleId, permissionId },
+  });
 }
 
 export async function listRolePermissions(roleId: string) {

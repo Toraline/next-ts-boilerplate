@@ -94,6 +94,9 @@ npm run prisma:migrate
 npm run prisma:generate
 npm run prisma:seed
 
+# If you need to reset db
+npm run prisma:reset
+
 # Start development server
 npm run dev
 ```
