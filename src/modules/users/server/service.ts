@@ -3,20 +3,25 @@ import { z } from "zod";
 import { ConflictError, NotFoundError } from "lib/http/errors";
 import {
   assignUserRoleSchema,
+  assignUserPermissionSchema,
   createUserSchema,
   listUsersQuerySchema,
   listUsersResponseSchema,
   listUserRolesResponseSchema,
+  listUserPermissionsResponseSchema,
   permissionDescriptionSchema,
   permissionIdSchema,
   permissionKeySchema,
   permissionNameSchema,
+  permissionWithAssignmentSchema,
   roleWithPermissionsSchema,
   updateUserSchema,
   userEntitySchema,
   userPublicSchema,
   userRoleEntitySchema,
   userRolePublicSchema,
+  userPermissionEntitySchema,
+  userPermissionPublicSchema,
 } from "../schema";
 import * as userRepo from "./repo";
 
@@ -36,6 +41,15 @@ function mapUserRoleToPublic(raw: unknown) {
   const entity = userRoleEntitySchema.parse(raw);
 
   return userRolePublicSchema.parse({
+    ...entity,
+    createdAt: entity.createdAt.toISOString(),
+  });
+}
+
+function mapUserPermissionToPublic(raw: unknown) {
+  const entity = userPermissionEntitySchema.parse(raw);
+
+  return userPermissionPublicSchema.parse({
     ...entity,
     createdAt: entity.createdAt.toISOString(),
   });
@@ -77,6 +91,27 @@ function mapRoleWithPermissions(raw: unknown) {
     description: row.role.description,
     permissions,
     assignedAt: row.createdAt.toISOString(),
+  });
+}
+
+function mapPermissionWithAssignment(raw: unknown) {
+  const entity = userPermissionEntitySchema
+    .extend({
+      permission: z.object({
+        id: permissionIdSchema,
+        key: permissionKeySchema,
+        name: permissionNameSchema,
+        description: permissionDescriptionSchema,
+      }),
+    })
+    .parse(raw);
+
+  return permissionWithAssignmentSchema.parse({
+    id: entity.permission.id,
+    key: entity.permission.key,
+    name: entity.permission.name,
+    description: entity.permission.description,
+    assignedAt: entity.createdAt.toISOString(),
   });
 }
 
@@ -246,4 +281,42 @@ export async function listUserRoles(userId: string) {
   const items = rows.map(mapRoleWithPermissions);
 
   return listUserRolesResponseSchema.parse({ items });
+}
+
+export async function assignPermissionToUser(userId: string, raw: unknown) {
+  const payload = assignUserPermissionSchema.parse(raw);
+
+  const user = await resolveUser({ id: userId });
+
+  const permission = await userRepo.permissionById(payload.permissionId);
+  if (!permission) throw new NotFoundError("Permission not found");
+
+  const existing = await userRepo.userPermissionByIds(user.id, permission.id);
+  if (existing) throw new ConflictError("User already has this permission");
+
+  const created = await userRepo.userPermissionCreate(user.id, permission.id);
+
+  return mapUserPermissionToPublic(created);
+}
+
+export async function removePermissionFromUser(userId: string, permissionId: string) {
+  const user = await resolveUser({ id: userId });
+
+  const permission = await userRepo.permissionById(permissionId);
+  if (!permission) throw new NotFoundError("Permission not found");
+
+  const existing = await userRepo.userPermissionByIds(user.id, permission.id);
+  if (!existing) throw new NotFoundError("User does not have this permission");
+
+  await userRepo.userPermissionDelete(user.id, permission.id);
+}
+
+export async function listUserPermissions(userId: string) {
+  const user = await resolveUser({ id: userId });
+
+  const rows = await userRepo.userPermissionsWithDetails(user.id);
+
+  const items = rows.map(mapPermissionWithAssignment);
+
+  return listUserPermissionsResponseSchema.parse({ items });
 }

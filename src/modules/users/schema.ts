@@ -158,3 +158,31 @@ export const roleWithPermissionsSchema = z.object({
 export const listUserRolesResponseSchema = z.object({
   items: z.array(roleWithPermissionsSchema),
 });
+
+export const assignUserPermissionSchema = z.object({
+  permissionId: permissionIdSchema,
+});
+
+export const userPermissionEntitySchema = z.object({
+  userId: userIdSchema,
+  permissionId: permissionIdSchema,
+  createdAt: z.date(),
+});
+
+export const userPermissionPublicSchema = z.object({
+  userId: userIdSchema,
+  permissionId: permissionIdSchema,
+  createdAt: isoDateTimeString,
+});
+
+export const permissionWithAssignmentSchema = z.object({
+  id: permissionIdSchema,
+  key: permissionKeySchema,
+  name: permissionNameSchema,
+  description: permissionDescriptionSchema,
+  assignedAt: isoDateTimeString,
+});
+
+export const listUserPermissionsResponseSchema = z.object({
+  items: z.array(permissionWithAssignmentSchema),
+});
