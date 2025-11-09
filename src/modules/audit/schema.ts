@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { isoDateTimeStringSchema } from "lib/validation/datetime";
+import { paginationSchema } from "lib/validation/pagination";
 
 export const auditLogIdSchema = z.cuid();
 export const auditActionSchema = z.string().trim().min(1, VALIDATION_MESSAGES.NAME_TOO_SHORT);
@@ -15,10 +17,6 @@ export type AuditActorPayload = {
   actorType: AuditActorType;
   actorUserId?: string;
 };
-
-const isoDateTimeString = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
-  message: VALIDATION_MESSAGES.INVALID_INPUT,
-});
 
 export const createAuditLogSchema = z
   .object({
@@ -71,18 +69,16 @@ export const auditLogPublicSchema = z.object({
   metadata: z.unknown().nullable(),
   ip: z.string().trim().nullable(),
   userAgent: z.string().trim().nullable(),
-  createdAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
 });
 
-export const listAuditLogsQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
-  actorUserId: z.cuid().optional(),
+export const listAuditLogsQuerySchema = paginationSchema.extend({
+  actorUserId: auditActorUserIdSchema,
   actorType: auditActorTypeSchema.optional(),
   targetType: z.string().trim().optional(),
   targetId: z.string().trim().optional(),
-  from: isoDateTimeString.optional(),
-  to: isoDateTimeString.optional(),
+  from: isoDateTimeStringSchema.optional(),
+  to: isoDateTimeStringSchema.optional(),
 });
 
 export const listAuditLogsResponseSchema = z.object({

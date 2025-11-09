@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { isoDateTimeStringSchema } from "lib/validation/datetime";
+import { paginationSchema, sortDirectionSchema } from "lib/validation/pagination";
 
 export const roleIdSchema = z.cuid();
 export const roleKeySchema = z
@@ -21,10 +23,6 @@ export const roleDescriptionSchema = z
 
 export const permissionIdSchema = z.cuid();
 
-const isoDateTimeString = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
-  message: VALIDATION_MESSAGES.INVALID_INPUT,
-});
-
 export const createRoleSchema = z.object({
   key: roleKeySchema,
   name: roleNameSchema,
@@ -32,12 +30,10 @@ export const createRoleSchema = z.object({
   permissionIds: z.array(permissionIdSchema).optional(),
 });
 
-export const listRolesQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+export const listRolesQuerySchema = paginationSchema.extend({
   search: z.string().trim().min(1).optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "key"]).default("createdAt"),
-  sortDir: z.enum(["asc", "desc"]).default("desc"),
+  sortDir: sortDirectionSchema.default("desc"),
 });
 
 export const roleEntitySchema = z.object({
@@ -61,8 +57,8 @@ export const rolePublicSchema = z.object({
   key: roleKeySchema,
   name: roleNameSchema,
   description: roleDescriptionSchema,
-  createdAt: isoDateTimeString,
-  updatedAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
+  updatedAt: isoDateTimeStringSchema,
   permissions: z.array(
     z.object({
       id: permissionIdSchema,
@@ -107,7 +103,7 @@ export const rolePermissionEntitySchema = z.object({
 export const rolePermissionPublicSchema = z.object({
   roleId: roleIdSchema,
   permissionId: permissionIdSchema,
-  createdAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
 });
 
 export const rolePermissionAssignmentSchema = z.object({
@@ -115,7 +111,7 @@ export const rolePermissionAssignmentSchema = z.object({
   key: z.string().trim(),
   name: z.string().trim(),
   description: z.string().nullable(),
-  assignedAt: isoDateTimeString,
+  assignedAt: isoDateTimeStringSchema,
 });
 
 export const listRolePermissionsResponseSchema = z.object({

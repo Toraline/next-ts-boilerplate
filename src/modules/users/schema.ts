@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { isoDateTimeStringSchema } from "lib/validation/datetime";
+import { paginationSchema, sortDirectionSchema } from "lib/validation/pagination";
 
 export const userStatusSchema = z.enum(["ACTIVE", "INVITED", "SUSPENDED"]);
 
@@ -16,10 +18,6 @@ export const permissionIdSchema = z.cuid();
 export const permissionKeySchema = z.string().trim().min(1).max(120);
 export const permissionNameSchema = z.string().trim().min(1).max(120);
 export const permissionDescriptionSchema = z.string().trim().max(255).nullable().optional();
-
-const isoDateTimeString = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
-  message: VALIDATION_MESSAGES.INVALID_INPUT,
-});
 
 export const nameSchema = z
   .string()
@@ -75,9 +73,7 @@ export const updateUserSchema = z
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
 
-export const listUsersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+export const listUsersQuerySchema = paginationSchema.extend({
   status: userStatusSchema.optional(),
   tenantId: tenantIdSchema.optional(),
   email: emailSchema.optional(),
@@ -85,7 +81,7 @@ export const listUsersQuerySchema = z.object({
   includeDeleted: z.coerce.boolean().optional(),
   search: z.string().trim().min(1).optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "email", "lastLoginAt"]).default("createdAt"),
-  sortDir: z.enum(["asc", "desc"]).default("desc"),
+  sortDir: sortDirectionSchema.default("desc"),
 });
 
 export const userEntitySchema = z.object({
@@ -108,12 +104,12 @@ export const userPublicSchema = z.object({
   name: nameSchema,
   avatarUrl: avatarUrlSchema.nullable(),
   status: userStatusSchema,
-  lastLoginAt: isoDateTimeString.nullable(),
-  deletedAt: isoDateTimeString.nullable(),
+  lastLoginAt: isoDateTimeStringSchema.nullable(),
+  deletedAt: isoDateTimeStringSchema.nullable(),
   clerkUserId: clerkUserIdSchema.nullable(),
   tenantId: tenantIdSchema.nullable(),
-  createdAt: isoDateTimeString,
-  updatedAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
+  updatedAt: isoDateTimeStringSchema,
 });
 
 export const listUsersResponseSchema = z.object({
@@ -136,7 +132,7 @@ export const userRoleEntitySchema = z.object({
 export const userRolePublicSchema = z.object({
   userId: userIdSchema,
   roleId: roleIdSchema,
-  createdAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
 });
 
 export const roleWithPermissionsSchema = z.object({
@@ -152,7 +148,7 @@ export const roleWithPermissionsSchema = z.object({
       description: permissionDescriptionSchema,
     }),
   ),
-  assignedAt: isoDateTimeString,
+  assignedAt: isoDateTimeStringSchema,
 });
 
 export const listUserRolesResponseSchema = z.object({
@@ -172,7 +168,7 @@ export const userPermissionEntitySchema = z.object({
 export const userPermissionPublicSchema = z.object({
   userId: userIdSchema,
   permissionId: permissionIdSchema,
-  createdAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
 });
 
 export const permissionWithAssignmentSchema = z.object({
@@ -180,7 +176,7 @@ export const permissionWithAssignmentSchema = z.object({
   key: permissionKeySchema,
   name: permissionNameSchema,
   description: permissionDescriptionSchema,
-  assignedAt: isoDateTimeString,
+  assignedAt: isoDateTimeStringSchema,
 });
 
 export const listUserPermissionsResponseSchema = z.object({

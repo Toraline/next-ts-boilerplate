@@ -1,5 +1,6 @@
 import { NotFoundError } from "lib/http/errors";
 import type { AuditActor, AuditActorPayload } from "../schema";
+import type { AuditLogOptions } from "../types";
 import {
   auditLogEntitySchema,
   auditLogPublicSchema,
@@ -31,6 +32,10 @@ export function resolveAuditActor(actor?: AuditActor): AuditActorPayload {
   }
 
   return { actorType: actor.type };
+}
+
+export function resolveAuditActorFromOptions(options?: AuditLogOptions) {
+  return resolveAuditActor(options?.actor);
 }
 
 export async function recordAuditLog(raw: unknown) {
