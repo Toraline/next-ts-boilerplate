@@ -7,6 +7,20 @@ export const userIdSchema = z.cuid();
 
 export const emailSchema = z.string().trim().email();
 
+export const roleIdSchema = z.cuid();
+export const roleKeySchema = z.string().trim().min(1).max(120);
+export const roleNameSchema = z.string().trim().min(1).max(120);
+export const roleDescriptionSchema = z.string().trim().max(255).nullable().optional();
+
+export const permissionIdSchema = z.cuid();
+export const permissionKeySchema = z.string().trim().min(1).max(120);
+export const permissionNameSchema = z.string().trim().min(1).max(120);
+export const permissionDescriptionSchema = z.string().trim().max(255).nullable().optional();
+
+const isoDateTimeString = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
+  message: VALIDATION_MESSAGES.INVALID_INPUT,
+});
+
 export const nameSchema = z
   .string()
   .trim()
@@ -94,12 +108,12 @@ export const userPublicSchema = z.object({
   name: nameSchema,
   avatarUrl: avatarUrlSchema.nullable(),
   status: userStatusSchema,
-  lastLoginAt: z.string().datetime().nullable(),
-  deletedAt: z.string().datetime().nullable(),
+  lastLoginAt: isoDateTimeString.nullable(),
+  deletedAt: isoDateTimeString.nullable(),
   clerkUserId: clerkUserIdSchema.nullable(),
   tenantId: tenantIdSchema.nullable(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: isoDateTimeString,
+  updatedAt: isoDateTimeString,
 });
 
 export const listUsersResponseSchema = z.object({
@@ -107,4 +121,40 @@ export const listUsersResponseSchema = z.object({
   total: z.number().int(),
   page: z.number().int(),
   pageSize: z.number().int(),
+});
+
+export const assignUserRoleSchema = z.object({
+  roleId: roleIdSchema,
+});
+
+export const userRoleEntitySchema = z.object({
+  userId: userIdSchema,
+  roleId: roleIdSchema,
+  createdAt: z.date(),
+});
+
+export const userRolePublicSchema = z.object({
+  userId: userIdSchema,
+  roleId: roleIdSchema,
+  createdAt: isoDateTimeString,
+});
+
+export const roleWithPermissionsSchema = z.object({
+  id: roleIdSchema,
+  key: roleKeySchema,
+  name: roleNameSchema,
+  description: roleDescriptionSchema,
+  permissions: z.array(
+    z.object({
+      id: permissionIdSchema,
+      key: permissionKeySchema,
+      name: permissionNameSchema,
+      description: permissionDescriptionSchema,
+    }),
+  ),
+  assignedAt: isoDateTimeString,
+});
+
+export const listUserRolesResponseSchema = z.object({
+  items: z.array(roleWithPermissionsSchema),
 });
