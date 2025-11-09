@@ -8,6 +8,11 @@ import {
   roleEntitySchema,
   rolePublicSchema,
   updateRoleSchema,
+  assignRolePermissionSchema,
+  rolePermissionEntitySchema,
+  rolePermissionPublicSchema,
+  listRolePermissionsResponseSchema,
+  rolePermissionAssignmentSchema,
 } from "../schema";
 import * as roleRepo from "./repo";
 
@@ -161,4 +166,66 @@ export async function deleteRole(id: string) {
 
   await roleRepo.rolePermissionsDeleteMany(id);
   await roleRepo.roleDelete(id);
+}
+
+function mapRolePermissionToPublic(raw: unknown) {
+  const entity = rolePermissionEntitySchema.parse(raw);
+
+  return rolePermissionPublicSchema.parse({
+    ...entity,
+    createdAt: entity.createdAt.toISOString(),
+  });
+}
+
+function mapPermissionAssignment(raw: unknown) {
+  const entity = rolePermissionEntitySchema
+    .extend({
+      permission: permissionEntitySchema,
+    })
+    .parse(raw);
+
+  return rolePermissionAssignmentSchema.parse({
+    id: entity.permission.id,
+    key: entity.permission.key,
+    name: entity.permission.name,
+    description: entity.permission.description,
+    assignedAt: entity.createdAt.toISOString(),
+  });
+}
+
+export async function assignPermissionToRole(roleId: string, raw: unknown) {
+  const payload = assignRolePermissionSchema.parse(raw);
+
+  const role = await roleRepo.roleById(roleId);
+  if (!role) throw new NotFoundError("Role not found");
+
+  const permissions = await roleRepo.permissionsByIds([payload.permissionId]);
+  if (!permissions.length) throw new NotFoundError("Permission not found");
+
+  const existing = await roleRepo.rolePermissionByIds(roleId, payload.permissionId);
+  if (existing) throw new ConflictError("Role already has this permission");
+
+  const created = await roleRepo.rolePermissionCreate(roleId, payload.permissionId);
+
+  return mapRolePermissionToPublic(created);
+}
+
+export async function removePermissionFromRole(roleId: string, permissionId: string) {
+  const role = await roleRepo.roleById(roleId);
+  if (!role) throw new NotFoundError("Role not found");
+
+  const assignment = await roleRepo.rolePermissionByIds(roleId, permissionId);
+  if (!assignment) throw new NotFoundError("Role does not have this permission");
+
+  await roleRepo.rolePermissionDelete(roleId, permissionId);
+}
+
+export async function listRolePermissions(roleId: string) {
+  const role = await roleRepo.roleById(roleId);
+  if (!role) throw new NotFoundError("Role not found");
+
+  const rows = await roleRepo.rolePermissionsWithDetails(roleId);
+  const items = rows.map(mapPermissionAssignment);
+
+  return listRolePermissionsResponseSchema.parse({ items });
 }
