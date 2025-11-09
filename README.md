@@ -199,6 +199,20 @@ Each feature module owns a fully validated REST surface, implemented via Next.js
 - `GET /api/permissions`, `POST /api/permissions`
 - `GET /api/permissions/:permissionId`, `PATCH`, `DELETE`
 
+### Categories
+- `GET /api/categories` — paginated list with search support.
+- `POST /api/categories` — creates a category, enforcing unique slugs.
+- `GET /api/categories/:categoryIdOrSlug` — fetch by cuid or slug.
+- `PATCH /api/categories/:categoryIdOrSlug` — updates slug/name/description with conflict checks.
+- `DELETE /api/categories/:categoryIdOrSlug`
+
+### Tasks
+- `GET /api/tasks` — paginated list with filters (done state, category).
+- `POST /api/tasks` — creates a task under a category.
+- `GET /api/tasks/:taskId`
+- `PATCH /api/tasks/:taskId` — toggles completion or updates description.
+- `DELETE /api/tasks/:taskId`
+
 ### Audit Logs
 - `GET /api/audit-logs` — paginated feed filterable by actor, target type/id, and date range.
 - `GET /api/audit-logs/:auditLogId`
