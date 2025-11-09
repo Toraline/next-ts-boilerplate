@@ -111,3 +111,29 @@ export async function userRolesWithPermissions(userId: string) {
     },
   });
 }
+
+export const permissionById = (id: string) => prisma.permission.findUnique({ where: { id } });
+
+export const userPermissionByIds = (userId: string, permissionId: string) =>
+  prisma.userPermission.findUnique({
+    where: { userId_permissionId: { userId, permissionId } },
+  });
+
+export const userPermissionCreate = (userId: string, permissionId: string) =>
+  prisma.userPermission.create({
+    data: { userId, permissionId },
+  });
+
+export const userPermissionDelete = (userId: string, permissionId: string) =>
+  prisma.userPermission.delete({
+    where: { userId_permissionId: { userId, permissionId } },
+  });
+
+export async function userPermissionsWithDetails(userId: string) {
+  return prisma.userPermission.findMany({
+    where: { userId },
+    include: {
+      permission: true,
+    },
+  });
+}

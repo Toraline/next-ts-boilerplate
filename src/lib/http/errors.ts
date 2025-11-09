@@ -18,8 +18,15 @@ export class ConflictError extends Error {
 }
 export function getErrorMessage(err: unknown): string {
   if (err instanceof ZodError) {
-    const msg = err.issues.map((i) => i.message).join("; ");
-    return msg || VALIDATION_MESSAGES.INVALID_INPUT;
+    if (!err.issues.length) return VALIDATION_MESSAGES.INVALID_INPUT;
+
+    return err.issues
+      .map((issue) => {
+        const path = issue.path.join(".");
+        if (!path) return issue.message;
+        return `${path}: ${issue.message}`;
+      })
+      .join("; ");
   }
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
