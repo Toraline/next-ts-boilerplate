@@ -93,3 +93,31 @@ export const updateRoleSchema = z
       typeof value.permissionIds !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
+
+export const assignRolePermissionSchema = z.object({
+  permissionId: permissionIdSchema,
+});
+
+export const rolePermissionEntitySchema = z.object({
+  roleId: roleIdSchema,
+  permissionId: permissionIdSchema,
+  createdAt: z.date(),
+});
+
+export const rolePermissionPublicSchema = z.object({
+  roleId: roleIdSchema,
+  permissionId: permissionIdSchema,
+  createdAt: isoDateTimeString,
+});
+
+export const rolePermissionAssignmentSchema = z.object({
+  id: permissionIdSchema,
+  key: z.string().trim(),
+  name: z.string().trim(),
+  description: z.string().nullable(),
+  assignedAt: isoDateTimeString,
+});
+
+export const listRolePermissionsResponseSchema = z.object({
+  items: z.array(rolePermissionAssignmentSchema),
+});

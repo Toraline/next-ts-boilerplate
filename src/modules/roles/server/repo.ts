@@ -37,9 +37,19 @@ export const rolePermissionCreateMany = (roleId: string, permissionIds: string[]
     skipDuplicates: true,
   });
 
+export const rolePermissionCreate = (roleId: string, permissionId: string) =>
+  prisma.rolePermission.create({
+    data: { roleId, permissionId },
+  });
+
 export const rolePermissionsDeleteMany = (roleId: string) =>
   prisma.rolePermission.deleteMany({
     where: { roleId },
+  });
+
+export const rolePermissionDelete = (roleId: string, permissionId: string) =>
+  prisma.rolePermission.delete({
+    where: { roleId_permissionId: { roleId, permissionId } },
   });
 
 export const permissionsByIds = (ids: string[]) =>
@@ -51,6 +61,20 @@ export const roleDelete = (id: string) =>
   prisma.role.delete({
     where: { id },
   });
+
+export const rolePermissionByIds = (roleId: string, permissionId: string) =>
+  prisma.rolePermission.findUnique({
+    where: { roleId_permissionId: { roleId, permissionId } },
+  });
+
+export async function rolePermissionsWithDetails(roleId: string) {
+  return prisma.rolePermission.findMany({
+    where: { roleId },
+    include: {
+      permission: true,
+    },
+  });
+}
 
 export async function roleFindMany(rawQuery: unknown) {
   const { page, pageSize, search, sortBy, sortDir } = listRolesQuerySchema.parse(rawQuery);
