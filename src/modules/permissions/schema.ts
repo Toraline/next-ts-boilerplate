@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { isoDateTimeStringSchema } from "lib/validation/datetime";
+import { paginationSchema, sortDirectionSchema } from "lib/validation/pagination";
 
 export const permissionIdSchema = z.cuid();
 export const permissionKeySchema = z
@@ -19,22 +21,16 @@ export const permissionDescriptionSchema = z
   .nullable()
   .optional();
 
-const isoDateTimeString = z.string().refine((value) => !Number.isNaN(Date.parse(value)), {
-  message: VALIDATION_MESSAGES.INVALID_INPUT,
-});
-
 export const createPermissionSchema = z.object({
   key: permissionKeySchema,
   name: permissionNameSchema,
   description: permissionDescriptionSchema,
 });
 
-export const listPermissionsQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+export const listPermissionsQuerySchema = paginationSchema.extend({
   search: z.string().trim().min(1).optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "key"]).default("createdAt"),
-  sortDir: z.enum(["asc", "desc"]).default("desc"),
+  sortDir: sortDirectionSchema.default("desc"),
 });
 
 export const permissionEntitySchema = z.object({
@@ -51,8 +47,8 @@ export const permissionPublicSchema = z.object({
   key: permissionKeySchema,
   name: permissionNameSchema,
   description: permissionDescriptionSchema,
-  createdAt: isoDateTimeString,
-  updatedAt: isoDateTimeString,
+  createdAt: isoDateTimeStringSchema,
+  updatedAt: isoDateTimeStringSchema,
 });
 
 export const listPermissionsResponseSchema = z.object({

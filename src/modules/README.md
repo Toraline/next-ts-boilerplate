@@ -12,6 +12,9 @@ src/
 │   │       ├── route.ts               # GET list, POST create
 │   │       └── [idOrSlug]/
 │   │           └── route.ts           # GET one, PATCH update, DELETE delete
+│   ├── (auth)/
+│   │   ├── login/page.tsx             # Manual login surface (react-hook-form + AuthClient)
+│   │   └── logout/page.tsx            # Manual logout surface (AuthClient.signOut)
 │   └── <feature>/
 │       ├── page.tsx                   # List page (server component)
 │       ├── new/
@@ -23,7 +26,9 @@ src/
 ├── lib/
 │   ├── client/                        # Client-side utilities
 │   │   ├── errors.ts                  # Client-side error handling with ApiError class
-│   │   └── react-query.tsx            # React Query provider
+│   │   ├── react-query.tsx            # React Query provider
+│   │   └── auth/
+│   │       └── client.ts              # Frontend AuthClient abstraction (login/logout/me helpers)
 │   ├── database/                      # Database utilities
 │   │   └── prisma.ts                  # Prisma client singleton
 │   ├── http/                          # HTTP/API utilities
@@ -93,6 +98,7 @@ Custom HttpError subclasses carry status, and helpers convert unknown errors int
 ### Client Layer
 - **`src/lib/client/errors.ts`** - Client-side error handling with ApiError class and generic error processing.
 - **`src/lib/client/react-query.tsx`** - React Query provider with global error handling and retry logic.
+- **`src/lib/auth/client.ts`** - Unified AuthClient abstraction used by login/logout pages and future auth-aware components.
 
 ### Utilities
 - **`src/lib/utils/getUrl.ts`** - URL construction utility with environment detection.
@@ -232,6 +238,14 @@ try {
 - **New page** (`new/page.tsx`): client form that POSTs JSON to the API.
 - **Detail page** (`[idOrSlug]/page.tsx`): server component showing one item.
 - **Edit page** (`[idOrSlug]/edit/page.tsx`): client form that PATCHes JSON (no-op tolerant, see below).
+
+### Authentication Surfaces & Manual QA
+
+- **`src/app/(auth)/login/page.tsx`** — client-side form built with `react-hook-form` + React Query that calls `AuthClient.signIn`. Shows payload preview, success status, and integrates with Tailwind for layout. Use it to manually create sessions and inspect the `s_session` cookie.
+- **`src/app/(auth)/logout/page.tsx`** — simple button that invokes `AuthClient.signOut` so you can revoke the active session without crafting requests manually.
+- **Documentation**:
+  - `docs/auth-flow.md` outlines the provider abstraction, environment variable toggles (`AUTH_PROVIDER`), and how these frontend surfaces hook into the backend.
+  - `docs/manual-auth-testing.md` provides the end-to-end checklist (curl + browser) covering multi-session behaviour, including the login/logout pages above.
 
 ## 📝 Constants & Text Management
 

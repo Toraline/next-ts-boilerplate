@@ -1,8 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { ConflictError, NotFoundError } from "lib/http/errors";
-import { recordAuditLog, resolveAuditActor } from "modules/audit";
-import type { AuditActor } from "modules/audit";
+import { AuditLogOptions, recordAuditLog, resolveAuditActorFromOptions } from "modules/audit";
 import {
   assignUserRoleSchema,
   assignUserPermissionSchema,
@@ -117,15 +116,7 @@ function mapPermissionWithAssignment(raw: unknown) {
   });
 }
 
-type ServiceOptions = {
-  actor?: AuditActor;
-};
-
-function auditActor(options?: ServiceOptions) {
-  return resolveAuditActor(options?.actor);
-}
-
-export async function createUser(raw: unknown, options?: ServiceOptions) {
+export async function createUser(raw: unknown, options?: AuditLogOptions) {
   const data = createUserSchema.parse(raw);
 
   if (await userRepo.userByEmail(data.email)) {
@@ -151,7 +142,7 @@ export async function createUser(raw: unknown, options?: ServiceOptions) {
   const user = mapToPublic(created);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.created",
     targetType: "user",
     targetId: user.id,
@@ -220,7 +211,7 @@ export async function getUser(raw: { id?: unknown; email?: unknown; clerkUserId?
   return mapToPublic(user);
 }
 
-export async function updateUser(id: string, raw: unknown, options?: ServiceOptions) {
+export async function updateUser(id: string, raw: unknown, options?: AuditLogOptions) {
   const patch = updateUserSchema.parse(raw);
 
   const existing = await resolveUser({ id });
@@ -257,7 +248,7 @@ export async function updateUser(id: string, raw: unknown, options?: ServiceOpti
   const user = mapToPublic(updated);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.updated",
     targetType: "user",
     targetId: user.id,
@@ -267,7 +258,7 @@ export async function updateUser(id: string, raw: unknown, options?: ServiceOpti
   return user;
 }
 
-export async function deleteUser(id: string, options?: ServiceOptions) {
+export async function deleteUser(id: string, options?: AuditLogOptions) {
   const existing = await resolveUser({ id }, { includeDeleted: true });
 
   if (existing.deletedAt) {
@@ -279,7 +270,7 @@ export async function deleteUser(id: string, options?: ServiceOptions) {
   await userRepo.userDelete(existing.id);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.deleted",
     targetType: "user",
     targetId: id,
@@ -287,7 +278,7 @@ export async function deleteUser(id: string, options?: ServiceOptions) {
   });
 }
 
-export async function assignRoleToUser(userId: string, raw: unknown, options?: ServiceOptions) {
+export async function assignRoleToUser(userId: string, raw: unknown, options?: AuditLogOptions) {
   const payload = assignUserRoleSchema.parse(raw);
 
   const user = await resolveUser({ id: userId });
@@ -303,7 +294,7 @@ export async function assignRoleToUser(userId: string, raw: unknown, options?: S
   const assignment = mapUserRoleToPublic(created);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.role.assigned",
     targetType: "user",
     targetId: user.id,
@@ -313,7 +304,11 @@ export async function assignRoleToUser(userId: string, raw: unknown, options?: S
   return assignment;
 }
 
-export async function removeRoleFromUser(userId: string, roleId: string, options?: ServiceOptions) {
+export async function removeRoleFromUser(
+  userId: string,
+  roleId: string,
+  options?: AuditLogOptions,
+) {
   const user = await resolveUser({ id: userId });
 
   const role = await userRepo.roleById(roleId);
@@ -325,7 +320,7 @@ export async function removeRoleFromUser(userId: string, roleId: string, options
   await userRepo.userRoleDelete(user.id, role.id);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.role.removed",
     targetType: "user",
     targetId: user.id,
@@ -346,7 +341,7 @@ export async function listUserRoles(userId: string) {
 export async function assignPermissionToUser(
   userId: string,
   raw: unknown,
-  options?: ServiceOptions,
+  options?: AuditLogOptions,
 ) {
   const payload = assignUserPermissionSchema.parse(raw);
 
@@ -363,7 +358,7 @@ export async function assignPermissionToUser(
   const assignment = mapUserPermissionToPublic(created);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.permission.assigned",
     targetType: "user",
     targetId: user.id,
@@ -376,7 +371,7 @@ export async function assignPermissionToUser(
 export async function removePermissionFromUser(
   userId: string,
   permissionId: string,
-  options?: ServiceOptions,
+  options?: AuditLogOptions,
 ) {
   const user = await resolveUser({ id: userId });
 
@@ -389,7 +384,7 @@ export async function removePermissionFromUser(
   await userRepo.userPermissionDelete(user.id, permission.id);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "user.permission.removed",
     targetType: "user",
     targetId: user.id,

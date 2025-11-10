@@ -1,6 +1,5 @@
 import { ConflictError, NotFoundError } from "lib/http/errors";
-import { recordAuditLog, resolveAuditActor } from "modules/audit";
-import type { AuditActor } from "modules/audit";
+import { AuditLogOptions, recordAuditLog, resolveAuditActorFromOptions } from "modules/audit";
 import {
   createPermissionSchema,
   listPermissionsQuerySchema,
@@ -21,15 +20,7 @@ function mapPermissionToPublic(raw: unknown) {
   });
 }
 
-type ServiceOptions = {
-  actor?: AuditActor;
-};
-
-function auditActor(options?: ServiceOptions) {
-  return resolveAuditActor(options?.actor);
-}
-
-export async function createPermission(raw: unknown, options?: ServiceOptions) {
+export async function createPermission(raw: unknown, options?: AuditLogOptions) {
   const payload = createPermissionSchema.parse(raw);
   const key = payload.key.trim();
 
@@ -48,7 +39,7 @@ export async function createPermission(raw: unknown, options?: ServiceOptions) {
   const permission = mapPermissionToPublic(created);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "permission.created",
     targetType: "permission",
     targetId: permission.id,
@@ -80,7 +71,7 @@ export async function getPermissionById(id: string) {
   return mapPermissionToPublic(permission);
 }
 
-export async function updatePermission(id: string, raw: unknown, options?: ServiceOptions) {
+export async function updatePermission(id: string, raw: unknown, options?: AuditLogOptions) {
   const payload = updatePermissionSchema.parse(raw);
 
   const permission = await permissionRepo.permissionById(id);
@@ -108,7 +99,7 @@ export async function updatePermission(id: string, raw: unknown, options?: Servi
   const updated = await getPermissionById(id);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "permission.updated",
     targetType: "permission",
     targetId: updated.id,
@@ -118,7 +109,7 @@ export async function updatePermission(id: string, raw: unknown, options?: Servi
   return updated;
 }
 
-export async function deletePermission(id: string, options?: ServiceOptions) {
+export async function deletePermission(id: string, options?: AuditLogOptions) {
   const permission = await permissionRepo.permissionById(id);
   if (!permission) throw new NotFoundError("Permission not found");
 
@@ -127,7 +118,7 @@ export async function deletePermission(id: string, options?: ServiceOptions) {
   await permissionRepo.permissionDelete(id);
 
   await recordAuditLog({
-    ...auditActor(options),
+    ...resolveAuditActorFromOptions(options),
     action: "permission.deleted",
     targetType: "permission",
     targetId: id,
