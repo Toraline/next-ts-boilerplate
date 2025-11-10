@@ -2,7 +2,6 @@ import { ComponentProps, Fragment, MouseEvent, useState } from "react";
 import { Button } from "global/ui";
 import { Save } from "global/ui/icons/Save";
 import { Field } from "global/ui/Field/Field";
-import "./Editing.style.css";
 
 type EditingProp = ComponentProps<"input"> & {
   isLoading: boolean;
@@ -22,7 +21,7 @@ export const Editing = ({ isLoading, onSaveEdit, initialValue = "" }: EditingPro
         onChange={(e) => setContent(e.target.value)}
       />
 
-      <div className="button-save">
+      <div className=" flex p-4">
         <Button
           variant="transparent"
           aria-label="save"

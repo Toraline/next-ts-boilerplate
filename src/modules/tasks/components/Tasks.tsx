@@ -4,7 +4,6 @@ import { Button } from "global/ui";
 import { CATEGORIES_UI } from "../../categories";
 import { GLOBAL_UI } from "global/constants";
 import { useTasksList } from "../hooks/useTasksList";
-import "./Tasks.style.css";
 import { FormNewTask } from "./FormNewTask/FormNewTask";
 import FormEditTask from "./FormEditTask/FormEditTask";
 
@@ -16,8 +15,8 @@ export const Tasks = ({ categoryId }: TasksProps) => {
   const { data, isLoading, error } = useTasksList({ categoryId });
 
   return (
-    <>
-      <div className="task-wrapper">
+    <div>
+      <div className=" flex align-middle flex-row justify-between">
         <h2 className="subtitle">{CATEGORIES_UI.HEADERS.TASKS}</h2>
         <Button size="sm">{GLOBAL_UI.BUTTONS.NEW_TASK}</Button>
       </div>
@@ -26,13 +25,13 @@ export const Tasks = ({ categoryId }: TasksProps) => {
       {data?.items && (
         <div>
           {data?.items.map((task) => (
-            <div className="task-wrapper">
+            <div className=" flex gap-2">
               <FormEditTask taskId={task.id} initialState={task} />
             </div>
           ))}
           <FormNewTask categoryId={categoryId} />
         </div>
       )}
-    </>
+    </div>
   );
 };

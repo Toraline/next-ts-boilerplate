@@ -104,7 +104,7 @@ export default function FormEditTask({
   const isLoading = updateTaskMutation.isPending || isSubmitting;
 
   return (
-    <div className="form-container">
+    <div className=" flex flex-col gap-4 grow">
       {updateTaskMutation.error && <div className="error">{updateTaskMutation.error.message}</div>}
       {noChangesMessage && <div className="error">{noChangesMessage}</div>}
       <form className="form">
@@ -117,8 +117,6 @@ export default function FormEditTask({
           initialChecked={initialState.checked}
           {...register("description")}
         />
-
-        {/* <input type="checkbox" {...register("checked")} /> */}
       </form>
     </div>
   );

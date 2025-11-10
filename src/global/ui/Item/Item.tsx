@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import "./Item.css";
 import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
@@ -42,7 +41,7 @@ export const Item = ({
   };
 
   return (
-    <div>
+    <div className=" flex rounded-xl border-slate-500 border cursor-pointer relative grow">
       {isEditing ? (
         <Editing isLoading={isLoading} initialValue={content} onSaveEdit={handleSaveEdit} />
       ) : (
