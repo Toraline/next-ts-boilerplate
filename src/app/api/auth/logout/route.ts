@@ -7,7 +7,7 @@ import { withActorFromSession } from "server/middleware/actorFromSession";
 export const runtime = "nodejs";
 
 export const POST = withActorFromSession(
-  async (req, { auth }) => {
+  async (req, auth) => {
     try {
       const sessionId = parseSessionIdFromRequest(req);
       const provider = getAuthProvider();

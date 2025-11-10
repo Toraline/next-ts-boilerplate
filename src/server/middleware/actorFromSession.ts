@@ -12,10 +12,6 @@ type ActorDetails = {
   session?: SessionWithUser | null;
 };
 
-type WithActorContext<T> = T & { auth: ActorDetails };
-
-type RouteHandler<TContext> = (req: Request, context: TContext) => Response | Promise<Response>;
-
 export type ActorFromSessionOptions = {
   allowAnonymous?: boolean;
   allowSystem?: boolean;
@@ -191,11 +187,19 @@ async function resolveActorDetails({
   });
 }
 
-export function withActorFromSession<TContext extends Record<string, unknown>>(
-  handler: RouteHandler<WithActorContext<TContext>>,
+type ActorRouteParams = Record<string, string | string[]>;
+
+type ActorRouteHandler<TParams extends ActorRouteParams> = (
+  request: Request,
+  auth: ActorDetails,
+  context: { params: TParams },
+) => Response | Promise<Response>;
+
+export function withActorFromSession<TParams extends ActorRouteParams = Record<string, never>>(
+  handler: ActorRouteHandler<TParams>,
   options?: ActorFromSessionOptions,
-): RouteHandler<TContext> {
-  return async (request: Request, context: TContext) => {
+) {
+  return async (request: Request, context?: { params: TParams }) => {
     const allowedActorTypes = buildAllowedActorTypes(options);
     const sessionId = parseSessionIdFromRequest(request);
     const now = new Date();
@@ -211,12 +215,9 @@ export function withActorFromSession<TContext extends Record<string, unknown>>(
     });
 
     const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
-    const nextContext = {
-      ...(context as object),
-      auth: actorDetails,
-    } as WithActorContext<TContext>;
+    const resolvedContext = context ?? ({ params: {} } as { params: TParams });
 
-    const response = await handler(actorAwareRequest, nextContext);
+    const response = await handler(actorAwareRequest, actorDetails, resolvedContext);
     applyActorHeaders(response?.headers, actorDetails);
 
     return response;
