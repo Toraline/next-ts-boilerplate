@@ -195,11 +195,22 @@ type ActorRouteHandler<TParams extends ActorRouteParams> = (
   context: { params: TParams },
 ) => Response | Promise<Response>;
 
-export function withActorFromSession<TParams extends ActorRouteParams = Record<string, never>>(
+type WithActorFromSessionFn = {
+  (
+    handler: ActorRouteHandler<Record<string, never>>,
+    options?: ActorFromSessionOptions,
+  ): (request: Request) => Promise<Response>;
+  <TParams extends ActorRouteParams>(
+    handler: ActorRouteHandler<TParams>,
+    options?: ActorFromSessionOptions,
+  ): (request: Request, context: { params: TParams }) => Promise<Response>;
+};
+
+const withActorFromSessionImpl = <TParams extends ActorRouteParams = Record<string, never>>(
   handler: ActorRouteHandler<TParams>,
   options?: ActorFromSessionOptions,
-) {
-  return async (request: Request, context: { params: TParams }) => {
+) => {
+  const execute = async (request: Request, context: { params: TParams }) => {
     const allowedActorTypes = buildAllowedActorTypes(options);
     const sessionId = parseSessionIdFromRequest(request);
     const now = new Date();
@@ -215,11 +226,19 @@ export function withActorFromSession<TParams extends ActorRouteParams = Record<s
     });
 
     const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
-    const resolvedContext = context ?? ({ params: {} } as { params: TParams });
+    const resolvedContext = context ?? { params: {} as TParams };
 
     const response = await handler(actorAwareRequest, actorDetails, resolvedContext);
     applyActorHeaders(response?.headers, actorDetails);
 
     return response;
   };
-}
+
+  if (handler.length < 3) {
+    return async (request: Request) => execute(request, { params: {} as TParams });
+  }
+
+  return async (request: Request, context: { params: TParams }) => execute(request, context);
+};
+
+export const withActorFromSession = withActorFromSessionImpl as WithActorFromSessionFn;
