@@ -199,7 +199,7 @@ export function withActorFromSession<TParams extends ActorRouteParams = Record<s
   handler: ActorRouteHandler<TParams>,
   options?: ActorFromSessionOptions,
 ) {
-  return async (request: Request, context?: { params: TParams }) => {
+  return async (request: Request, context: { params: TParams }) => {
     const allowedActorTypes = buildAllowedActorTypes(options);
     const sessionId = parseSessionIdFromRequest(request);
     const now = new Date();
