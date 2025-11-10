@@ -23,128 +23,188 @@ export type ActorFromSessionOptions = {
 const ACTOR_TYPE_HEADER = "x-actor-type";
 const ACTOR_USER_ID_HEADER = "x-actor-user-id";
 
+function buildAllowedActorTypes(options?: ActorFromSessionOptions) {
+  const allowed = new Set<AuditActorType>(["USER"]);
+  if (options?.allowAnonymous) allowed.add("ANONYMOUS");
+  if (options?.allowSystem) allowed.add("SYSTEM");
+  return allowed;
+}
+
+async function requireActiveSession(sessionId: string, now: Date) {
+  const session = await getActiveSessionContext(sessionId, now);
+  if (!session) {
+    throw new UnauthorizedError("Session expired or revoked");
+  }
+  return session;
+}
+
+function applyActorHeaders(target: Headers | undefined, actor: ActorDetails) {
+  if (!target) return;
+
+  target.set(ACTOR_TYPE_HEADER, actor.actorType);
+  if (actor.actorType === "USER" && actor.actorUserId) {
+    target.set(ACTOR_USER_ID_HEADER, actor.actorUserId);
+  } else {
+    target.delete(ACTOR_USER_ID_HEADER);
+  }
+}
+
+function createRequestWithActorHeaders(request: Request, actor: ActorDetails) {
+  const headers = new Headers(request.headers);
+  applyActorHeaders(headers, actor);
+  return new Request(request, { headers });
+}
+
+function resolveFallbackActor(options?: ActorFromSessionOptions): ActorDetails {
+  if (options?.allowAnonymous) {
+    return { actorType: "ANONYMOUS", session: null };
+  }
+
+  if (options?.allowSystem) {
+    return { actorType: "SYSTEM", session: null };
+  }
+
+  throw new UnauthorizedError("Authentication required");
+}
+
+type ResolveActorFromHeadersParams = {
+  sessionId: string | null;
+  allowedActorTypes: Set<AuditActorType>;
+  now: Date;
+};
+
+async function resolveActorFromHeaders(
+  actor: ReturnType<typeof getRequestAuditActor>,
+  { sessionId, allowedActorTypes, now }: ResolveActorFromHeadersParams,
+): Promise<ActorDetails> {
+  if (!actor) {
+    throw new UnauthorizedError("Unable to resolve actor from headers");
+  }
+
+  if (!allowedActorTypes.has(actor.type)) {
+    throw new ForbiddenError(`Actor type ${actor.type} is not allowed for this operation`);
+  }
+
+  if (actor.type !== "USER") {
+    return {
+      actorType: actor.type,
+      session: null,
+    };
+  }
+
+  if (!actor.userId) {
+    throw new UnauthorizedError("Missing actor user id");
+  }
+
+  if (!sessionId) {
+    return {
+      actorType: "USER",
+      actorUserId: actor.userId,
+      session: null,
+    };
+  }
+
+  const session = await requireActiveSession(sessionId, now);
+
+  if (session.userId !== actor.userId) {
+    throw new ForbiddenError("Session does not belong to provided actor");
+  }
+
+  return {
+    actorType: "USER",
+    actorUserId: actor.userId,
+    session,
+  };
+}
+
+type ResolveActorFromSessionParams = {
+  sessionId: string | null;
+  now: Date;
+  options?: ActorFromSessionOptions;
+};
+
+async function resolveActorFromSessionOrFallback({
+  sessionId,
+  now,
+  options,
+}: ResolveActorFromSessionParams): Promise<ActorDetails> {
+  if (!sessionId) {
+    return resolveFallbackActor(options);
+  }
+
+  const session = await getActiveSessionContext(sessionId, now);
+  if (session) {
+    return {
+      actorType: "USER",
+      actorUserId: session.userId,
+      session,
+    };
+  }
+
+  if (options?.allowAnonymous || options?.allowSystem) {
+    return resolveFallbackActor(options);
+  }
+
+  throw new UnauthorizedError("Session expired or revoked");
+}
+
+type ResolveActorParams = {
+  request: Request;
+  sessionId: string | null;
+  allowedActorTypes: Set<AuditActorType>;
+  now: Date;
+  options?: ActorFromSessionOptions;
+};
+
+async function resolveActorDetails({
+  request,
+  sessionId,
+  allowedActorTypes,
+  now,
+  options,
+}: ResolveActorParams): Promise<ActorDetails> {
+  const actorFromHeaders = getRequestAuditActor(request);
+
+  if (actorFromHeaders) {
+    return resolveActorFromHeaders(actorFromHeaders, {
+      sessionId,
+      allowedActorTypes,
+      now,
+    });
+  }
+
+  return resolveActorFromSessionOrFallback({
+    sessionId,
+    now,
+    options,
+  });
+}
+
 export function withActorFromSession<TContext extends Record<string, unknown>>(
   handler: RouteHandler<WithActorContext<TContext>>,
   options?: ActorFromSessionOptions,
 ): RouteHandler<TContext> {
-  return async (req: Request, context: TContext) => {
-    const allowedTypes: Set<AuditActorType> = new Set(["USER"]);
-    if (options?.allowAnonymous) allowedTypes.add("ANONYMOUS");
-    if (options?.allowSystem) allowedTypes.add("SYSTEM");
-
-    const existingActor = getRequestAuditActor(req);
-    const sessionId = parseSessionIdFromRequest(req);
+  return async (request: Request, context: TContext) => {
+    const allowedActorTypes = buildAllowedActorTypes(options);
+    const sessionId = parseSessionIdFromRequest(request);
     const now = new Date();
 
-    let resolvedSession: SessionWithUser | null = null;
-    let actorDetails: ActorDetails | null = null;
+    const actorDetails = await resolveActorDetails({
+      request,
+      sessionId,
+      allowedActorTypes,
+      now,
+      options,
+    });
 
-    if (existingActor) {
-      if (!allowedTypes.has(existingActor.type)) {
-        throw new ForbiddenError(
-          `Actor type ${existingActor.type} is not allowed for this operation`,
-        );
-      }
-
-      if (existingActor.type === "USER") {
-        if (!existingActor.userId) {
-          throw new UnauthorizedError("Missing actor user id");
-        }
-
-        if (sessionId) {
-          const session = await getActiveSessionContext(sessionId, now);
-          if (!session) {
-            throw new UnauthorizedError("Session expired or revoked");
-          }
-
-          if (session.userId !== existingActor.userId) {
-            throw new ForbiddenError("Session does not belong to provided actor");
-          }
-
-          resolvedSession = session;
-        }
-
-        actorDetails = {
-          actorType: "USER",
-          actorUserId: existingActor.userId,
-          session: resolvedSession,
-        };
-      } else {
-        actorDetails = {
-          actorType: existingActor.type,
-          actorUserId: undefined,
-          session: null,
-        };
-      }
-    } else {
-      if (sessionId) {
-        const session = await getActiveSessionContext(sessionId, now);
-        if (!session) {
-          if (options?.allowAnonymous) {
-            actorDetails = {
-              actorType: "ANONYMOUS",
-              session: null,
-            };
-          } else if (options?.allowSystem) {
-            actorDetails = {
-              actorType: "SYSTEM",
-              session: null,
-            };
-          } else {
-            throw new UnauthorizedError("Session expired or revoked");
-          }
-        } else {
-          resolvedSession = session;
-          actorDetails = {
-            actorType: "USER",
-            actorUserId: session.userId,
-            session,
-          };
-        }
-      } else if (options?.allowAnonymous) {
-        actorDetails = {
-          actorType: "ANONYMOUS",
-          session: null,
-        };
-      } else if (options?.allowSystem) {
-        actorDetails = {
-          actorType: "SYSTEM",
-          session: null,
-        };
-      } else {
-        throw new UnauthorizedError("Authentication required");
-      }
-    }
-
-    if (!actorDetails) {
-      throw new UnauthorizedError("Unable to resolve actor");
-    }
-
-    const headers = new Headers(req.headers);
-    headers.set(ACTOR_TYPE_HEADER, actorDetails.actorType);
-    if (actorDetails.actorType === "USER" && actorDetails.actorUserId) {
-      headers.set(ACTOR_USER_ID_HEADER, actorDetails.actorUserId);
-    } else {
-      headers.delete(ACTOR_USER_ID_HEADER);
-    }
-
-    const actorRequest = new Request(req.clone(), { headers });
-
+    const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
     const nextContext = {
       ...(context as object),
       auth: actorDetails,
     } as WithActorContext<TContext>;
 
-    const response = await handler(actorRequest, nextContext);
-
-    if (response?.headers) {
-      response.headers.set(ACTOR_TYPE_HEADER, actorDetails.actorType);
-      if (actorDetails.actorType === "USER" && actorDetails.actorUserId) {
-        response.headers.set(ACTOR_USER_ID_HEADER, actorDetails.actorUserId);
-      } else {
-        response.headers.delete(ACTOR_USER_ID_HEADER);
-      }
-    }
+    const response = await handler(actorAwareRequest, nextContext);
+    applyActorHeaders(response?.headers, actorDetails);
 
     return response;
   };
