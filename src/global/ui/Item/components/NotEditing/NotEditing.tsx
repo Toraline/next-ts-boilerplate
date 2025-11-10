@@ -1,15 +1,14 @@
-import { MouseEvent } from "react";
+import React, { ChangeEvent, MouseEvent, useState } from "react";
 import { Button } from "global/ui";
-import { Check } from "global/ui/icons/Check";
 import { EditTask } from "global/ui/icons/EditTask";
 import { DeleteTask } from "global/ui/icons/DeleteTask";
 import "./NotEditing.style.css";
 import clsx from "clsx";
 
 type NotEditingProps = {
-  checked?: boolean;
-  onComplete: (event: MouseEvent, checked: boolean) => void;
-  onClick: (event: MouseEvent) => void;
+  initialChecked: boolean;
+  onComplete: (event: ChangeEvent, checked: boolean) => void;
+  onEdit: (event: MouseEvent) => void;
   content?: string;
   onDelete?: () => void;
   checkbox?: boolean;
@@ -20,9 +19,9 @@ const NotEditing = ({
   editButton = true,
   checkbox = true,
   content,
-  checked = false,
+  initialChecked,
   onDelete,
-  onClick,
+  onEdit,
   onComplete,
 }: NotEditingProps) => {
   // const contentIsDoneClass = isDone ? " item__content--done" : "";
@@ -32,11 +31,21 @@ const NotEditing = ({
     onDelete?.();
   };
 
+  const [checked, setChecked] = useState(initialChecked);
   return (
     <div className="item__container">
       {checkbox && (
         <div className=" item__checkbox" data-testid="checkbox">
-          <input type="checkbox" id="task-checkbox" onClick={(e) => onComplete(e, checked)} />
+          <input
+            aria-label="check"
+            type="checkbox"
+            id="task-checkbox"
+            onChange={(e) => {
+              setChecked(e.currentTarget.checked);
+              onComplete(e, e.currentTarget.checked);
+            }}
+            checked={checked}
+          />
           {/* {isDone && <Check aria-label="check" />} */}
         </div>
       )}
@@ -44,7 +53,7 @@ const NotEditing = ({
       <p className={clsx("item__content", { "item_content--done": "" })}>{content}</p>
 
       {editButton && (
-        <Button variant="transparent" aria-label="edit" onClick={onClick}>
+        <Button variant="transparent" aria-label="edit" onClick={onEdit}>
           <EditTask />
         </Button>
       )}

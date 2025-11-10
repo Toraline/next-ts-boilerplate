@@ -16,8 +16,6 @@ export default function FormEditTask({
 }: {
   initialState: Task;
   taskId: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  checked?: boolean;
 }) {
   const updateTaskMutation = useUpdateTask();
 
@@ -41,9 +39,6 @@ export default function FormEditTask({
     if (data.description !== initialState.description) {
       updates.description = data.description;
     }
-    if (data.checked !== initialState.checked) {
-      updates.checked = data.checked;
-    }
 
     if (Object.keys(updates).length === 0) {
       setNoChangesMessage(TASKS_UI.FORM_MESSAGES.NO_CHANGES_DETECTED);
@@ -62,8 +57,31 @@ export default function FormEditTask({
       },
     );
   };
+
+  const onChecked = (data: CreateTask) => {
+    const updates: Record<string, unknown> = {};
+    if (data.checked !== initialState.checked) {
+      updates.checked = data.checked;
+    }
+
+    updateTaskMutation.mutate(
+      {
+        taskById: taskId,
+        updates,
+      },
+      {
+        onError: (error) => {
+          console.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
+        },
+      },
+    );
+  };
+
   const handleCheckbox = (checked: boolean) => {
-    handleSubmit((data) => onSubmit({ ...data, checked }));
+    handleSubmit((data) => {
+      const newData = { ...data, checked };
+      return onChecked(newData);
+    })();
   };
 
   const handleSaveEdit = (description: string) => {
@@ -96,6 +114,7 @@ export default function FormEditTask({
           onSaveEdit={handleSaveEdit}
           onDelete={onDelete}
           onComplete={handleCheckbox}
+          initialChecked={initialState.checked}
           {...register("description")}
         />
 
