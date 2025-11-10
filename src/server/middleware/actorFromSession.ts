@@ -2,7 +2,8 @@ import type { AuditActorType } from "modules/audit";
 import { ForbiddenError, UnauthorizedError } from "lib/http/errors";
 import { getRequestAuditActor } from "lib/http/audit-actor";
 import { parseSessionIdFromRequest } from "server/auth/cookies";
-import { getActiveSessionContext } from "server/auth/sessionService";
+import { getAuthProvider } from "server/auth/provider";
+import type { AuthProvider } from "server/auth/provider";
 import type { SessionWithUser } from "server/db/sessionRepository";
 
 type ActorDetails = {
@@ -25,16 +26,21 @@ const ACTOR_USER_ID_HEADER = "x-actor-user-id";
 
 function buildAllowedActorTypes(options?: ActorFromSessionOptions) {
   const allowed = new Set<AuditActorType>(["USER"]);
+
   if (options?.allowAnonymous) allowed.add("ANONYMOUS");
+
   if (options?.allowSystem) allowed.add("SYSTEM");
+
   return allowed;
 }
 
-async function requireActiveSession(sessionId: string, now: Date) {
-  const session = await getActiveSessionContext(sessionId, now);
+async function requireActiveSession(provider: AuthProvider, sessionId: string, now: Date) {
+  const session = await provider.getSession({ sessionId, now });
+
   if (!session) {
     throw new UnauthorizedError("Session expired or revoked");
   }
+
   return session;
 }
 
@@ -42,6 +48,7 @@ function applyActorHeaders(target: Headers | undefined, actor: ActorDetails) {
   if (!target) return;
 
   target.set(ACTOR_TYPE_HEADER, actor.actorType);
+
   if (actor.actorType === "USER" && actor.actorUserId) {
     target.set(ACTOR_USER_ID_HEADER, actor.actorUserId);
   } else {
@@ -74,6 +81,7 @@ type ResolveActorFromHeadersParams = {
 };
 
 async function resolveActorFromHeaders(
+  provider: AuthProvider,
   actor: ReturnType<typeof getRequestAuditActor>,
   { sessionId, allowedActorTypes, now }: ResolveActorFromHeadersParams,
 ): Promise<ActorDetails> {
@@ -104,7 +112,7 @@ async function resolveActorFromHeaders(
     };
   }
 
-  const session = await requireActiveSession(sessionId, now);
+  const session = await requireActiveSession(provider, sessionId, now);
 
   if (session.userId !== actor.userId) {
     throw new ForbiddenError("Session does not belong to provided actor");
@@ -124,15 +132,16 @@ type ResolveActorFromSessionParams = {
 };
 
 async function resolveActorFromSessionOrFallback({
+  provider,
   sessionId,
   now,
   options,
-}: ResolveActorFromSessionParams): Promise<ActorDetails> {
+}: ResolveActorFromSessionParams & { provider: AuthProvider }): Promise<ActorDetails> {
   if (!sessionId) {
     return resolveFallbackActor(options);
   }
 
-  const session = await getActiveSessionContext(sessionId, now);
+  const session = await provider.getSession({ sessionId, now });
   if (session) {
     return {
       actorType: "USER",
@@ -157,16 +166,17 @@ type ResolveActorParams = {
 };
 
 async function resolveActorDetails({
+  provider,
   request,
   sessionId,
   allowedActorTypes,
   now,
   options,
-}: ResolveActorParams): Promise<ActorDetails> {
+}: ResolveActorParams & { provider: AuthProvider }): Promise<ActorDetails> {
   const actorFromHeaders = getRequestAuditActor(request);
 
   if (actorFromHeaders) {
-    return resolveActorFromHeaders(actorFromHeaders, {
+    return resolveActorFromHeaders(provider, actorFromHeaders, {
       sessionId,
       allowedActorTypes,
       now,
@@ -174,6 +184,7 @@ async function resolveActorDetails({
   }
 
   return resolveActorFromSessionOrFallback({
+    provider,
     sessionId,
     now,
     options,
@@ -188,8 +199,10 @@ export function withActorFromSession<TContext extends Record<string, unknown>>(
     const allowedActorTypes = buildAllowedActorTypes(options);
     const sessionId = parseSessionIdFromRequest(request);
     const now = new Date();
+    const authProvider = getAuthProvider();
 
     const actorDetails = await resolveActorDetails({
+      provider: authProvider,
       request,
       sessionId,
       allowedActorTypes,

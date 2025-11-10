@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { UnauthorizedError, getErrorMessage, getHttpStatus } from "lib/http/errors";
 import { parseSessionIdFromRequest } from "server/auth/cookies";
+import { getAuthProvider } from "server/auth/provider";
 import { meResponseSchema } from "server/auth/schemas";
-import { getActiveSessionContext } from "server/auth/sessionService";
 import { mapUserToPublic } from "server/auth/userMapper";
 
 export const runtime = "nodejs";
@@ -14,7 +14,8 @@ export async function GET(req: Request) {
       throw new UnauthorizedError("Session not found");
     }
 
-    const session = await getActiveSessionContext(sessionId);
+    const provider = getAuthProvider();
+    const session = await provider.getSession({ sessionId });
     if (!session) {
       throw new UnauthorizedError("Session expired or revoked");
     }
@@ -32,4 +33,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
   }
 }
-
