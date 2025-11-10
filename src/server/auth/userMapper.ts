@@ -11,4 +11,3 @@ export function mapUserToPublic(raw: unknown) {
     deletedAt: entity.deletedAt ? entity.deletedAt.toISOString() : null,
   });
 }
-
