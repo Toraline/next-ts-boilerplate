@@ -64,7 +64,7 @@ export default function FormEditTask({
           onSuccess?.();
           toast.success(TASK_SUCCESSES.EDIT_TASK_SUCCESS, { duration: 5000 });
           if (data.checked !== initialState.checked) {
-            if (data.checked == true) {
+            if (data.checked) {
               toast.success(TASK_SUCCESSES.CHECKED_TRUE_TASK, { duration: 3000 });
             } else {
               toast.success(TASK_SUCCESSES.CHECKED_FALSE_TASK, { duration: 3000 });

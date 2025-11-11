@@ -3,6 +3,7 @@ import { ReactQueryProvider } from "lib/client/react-query";
 import { Sidebar } from "global/components/Sidebar/Sidebar";
 import { Toaster } from "sonner";
 import type { Metadata } from "next";
+import "global/styles/index.css";
 
 export const metadata: Metadata = {
   title: "Boilerplate Next.js",
