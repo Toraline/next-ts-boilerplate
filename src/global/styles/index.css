@@ -4,9 +4,3 @@
 @import "tailwindcss/preflight";
 @import "tailwindcss/utilities";
 
-/* Optional baseline to visualize */
-html, body {
-  min-height: 100%;
-  background: var(--bg);
-  color: var(--fg);
-}
