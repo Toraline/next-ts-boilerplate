@@ -13,8 +13,10 @@ import {
   CreateCategory,
   CATEGORIES_UI,
   CATEGORY_ERRORS,
+  CATEGORY_SUCCESSES,
 } from "../..";
 import { GLOBAL_UI } from "global/constants";
+import { toast } from "sonner";
 
 export default function FormNewCategory() {
   const router = useRouter();
@@ -36,12 +38,13 @@ export default function FormNewCategory() {
   const onSubmit = (data: CreateCategory) => {
     createCategoryMutation.mutate(data, {
       onSuccess: (createdCategory) => {
+        toast.success(CATEGORY_SUCCESSES.CREATE_CATEGORY_SUCCESS);
         // Navigate immediately without clearing form state to prevent freezing
         router.push(`/categories/${createdCategory.slug}`);
       },
-      onError: (error) => {
+      onError: () => {
         // Error handling is done by the global error handler
-        console.error(CATEGORY_ERRORS.CREATE_CATEGORY_ERROR, error);
+        toast.error(CATEGORY_ERRORS.CREATE_CATEGORY_ERROR);
       },
     });
   };
