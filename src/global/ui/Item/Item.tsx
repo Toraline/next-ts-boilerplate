@@ -5,7 +5,7 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
-  checkboxId: string;
+  checkboxId?: string;
   onComplete?: (checked: boolean) => void;
   initialChecked: boolean;
   isLoading: boolean;

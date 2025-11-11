@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 
 type NotEditingProps = {
-  checkboxId: string;
+  checkboxId?: string;
   initialChecked: boolean;
   onComplete: (event: ChangeEvent, checked: boolean) => void;
   onEdit: (event: MouseEvent) => void;
