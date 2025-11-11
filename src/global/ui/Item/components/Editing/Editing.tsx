@@ -4,7 +4,7 @@ import { Save } from "global/ui/icons/Save";
 import { Field } from "global/ui/Field/Field";
 
 type EditingProp = ComponentProps<"input"> & {
-  isLoading: boolean;
+  isLoading?: boolean;
   initialValue?: string;
   onSaveEdit: (event: MouseEvent, description: string) => void;
 };

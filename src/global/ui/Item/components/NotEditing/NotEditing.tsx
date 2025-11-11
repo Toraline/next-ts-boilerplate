@@ -7,7 +7,7 @@ import { twMerge } from "tailwind-merge";
 
 type NotEditingProps = {
   checkboxId?: string;
-  initialChecked: boolean;
+  initialChecked?: boolean;
   onComplete: (event: ChangeEvent, checked: boolean) => void;
   onEdit: (event: MouseEvent) => void;
   content?: string;
@@ -50,6 +50,7 @@ const NotEditing = ({
             onComplete(e, e.currentTarget.checked);
           }}
           checked={checked}
+          value={1}
         />
       )}
       <label className=" grow cursor-pointer" htmlFor={checkboxId}>
