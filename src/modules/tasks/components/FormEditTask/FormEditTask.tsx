@@ -116,6 +116,7 @@ export default function FormEditTask({
           onComplete={handleCheckbox}
           initialChecked={initialState.checked}
           {...register("description")}
+          checkboxId={initialState.id}
         />
       </form>
     </div>

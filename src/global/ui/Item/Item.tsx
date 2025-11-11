@@ -5,6 +5,7 @@ import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
+  checkboxId: string;
   onComplete?: (checked: boolean) => void;
   initialChecked: boolean;
   isLoading: boolean;
@@ -16,6 +17,7 @@ type ItemProps = {
 };
 
 export const Item = ({
+  checkboxId,
   initialChecked,
   onComplete,
   isLoading,
@@ -41,7 +43,7 @@ export const Item = ({
   };
 
   return (
-    <div className=" flex rounded-xl border-slate-500 border cursor-pointer relative grow">
+    <div className=" flex rounded-xl border-neutral-300 border cursor-pointer relative grow">
       {isEditing ? (
         <Editing isLoading={isLoading} initialValue={content} onSaveEdit={handleSaveEdit} />
       ) : (
@@ -53,6 +55,7 @@ export const Item = ({
           content={content}
           onComplete={handleCheckbox}
           initialChecked={initialChecked}
+          checkboxId={checkboxId}
         />
       )}
     </div>

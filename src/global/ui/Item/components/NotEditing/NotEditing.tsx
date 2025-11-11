@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 
 type NotEditingProps = {
+  checkboxId: string;
   initialChecked: boolean;
   onComplete: (event: ChangeEvent, checked: boolean) => void;
   onEdit: (event: MouseEvent) => void;
@@ -16,6 +17,7 @@ type NotEditingProps = {
 };
 
 const NotEditing = ({
+  checkboxId,
   editButton = true,
   checkbox = true,
   content,
@@ -24,7 +26,6 @@ const NotEditing = ({
   onEdit,
   onComplete,
 }: NotEditingProps) => {
-  // const contentIsDoneClass = isDone ? " item__content--done" : "";
   const handleDelete = (e: MouseEvent) => {
     e.stopPropagation();
     onDelete?.();
@@ -34,16 +35,16 @@ const NotEditing = ({
   const cn = (...args) => twMerge(clsx(...args));
 
   const checkboxClass = cn("p-4 flex gap-2.5 align-middle grow", {
-    "bg-slate-500 line-through": checked == true,
+    "bg-neutral-200 line-through": checked == true,
   });
 
   return (
-    <div className={checkboxClass} onClick={(e) => e.stopPropagation()}>
+    <div className={checkboxClass}>
       {checkbox && (
         <input
           aria-label="checkbox"
           type="checkbox"
-          id="checkbox"
+          id={checkboxId}
           onChange={(e) => {
             setChecked(e.currentTarget.checked);
             onComplete(e, e.currentTarget.checked);
@@ -51,7 +52,9 @@ const NotEditing = ({
           checked={checked}
         />
       )}
-      <label>{content}</label>
+      <label className=" grow cursor-pointer" htmlFor={checkboxId}>
+        {content}
+      </label>
 
       {editButton && (
         <Button variant="transparent" aria-label="edit" onClick={onEdit}>
