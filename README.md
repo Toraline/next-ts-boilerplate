@@ -92,6 +92,10 @@ npm run services:up
 # Set up database
 npm run prisma:migrate
 npm run prisma:generate
+npm run prisma:seed
+
+# If you need to reset db
+npm run prisma:reset
 
 # Start development server
 npm run dev
@@ -166,6 +170,73 @@ export const useCategoriesList = (query) => {
 ```
 
 The component using this hook remains unchanged because the interface is consistent.
+
+## 🔌 API Surface Overview
+
+Each feature module owns a fully validated REST surface, implemented via Next.js App Router handlers and backed by layered services/repositories.
+
+### Users
+- `GET /api/users` — paginated list with filtering, sorting, and soft-delete controls.
+- `POST /api/users` — creates a user, enforcing unique email/clerk IDs.
+- `GET /api/users/:userId` — loads a single user (excludes soft-deleted records).
+- `PATCH /api/users/:userId` — partial update; must include at least one field.
+- `DELETE /api/users/:userId` — soft delete; repeat deletion returns 404.
+- `GET /api/users/:userId/roles` — roles with their permissions.
+- `POST /api/users/:userId/roles` — assigns a role (409 on duplicates).
+- `DELETE /api/users/:userId/roles/:roleId`
+- `GET /api/users/:userId/permissions` — direct permission assignments.
+- `POST /api/users/:userId/permissions`
+- `DELETE /api/users/:userId/permissions/:permissionId`
+
+### Roles
+- `GET /api/roles`, `POST /api/roles`
+- `GET /api/roles/:roleId`, `PATCH`, `DELETE`
+- `GET /api/roles/:roleId/permissions`
+- `POST /api/roles/:roleId/permissions`
+- `DELETE /api/roles/:roleId/permissions/:permissionId`
+
+### Permissions
+- `GET /api/permissions`, `POST /api/permissions`
+- `GET /api/permissions/:permissionId`, `PATCH`, `DELETE`
+
+### Categories
+- `GET /api/categories` — paginated list with search support.
+- `POST /api/categories` — creates a category, enforcing unique slugs.
+- `GET /api/categories/:categoryIdOrSlug` — fetch by cuid or slug.
+- `PATCH /api/categories/:categoryIdOrSlug` — updates slug/name/description with conflict checks.
+- `DELETE /api/categories/:categoryIdOrSlug`
+
+### Tasks
+- `GET /api/tasks` — paginated list with filters (done state, category).
+- `POST /api/tasks` — creates a task under a category.
+- `GET /api/tasks/:taskId`
+- `PATCH /api/tasks/:taskId` — toggles completion or updates description.
+- `DELETE /api/tasks/:taskId`
+
+### Audit Logs
+- `GET /api/audit-logs` — paginated feed filterable by actor, target type/id, and date range.
+- `GET /api/audit-logs/:auditLogId`
+
+Every mutating route records an audit log describing the action, actor, target identifiers, and payload metadata. Zod schemas guard all inputs/outputs; errors propagate through the centralized HTTP helpers.
+
+### Passing Actor Context
+Audit entries require an `actorType`. When the caller omits headers, the system defaults to `SYSTEM`. Supply headers to capture real actors:
+
+```
+X-Actor-Type: USER | SYSTEM | SERVICE | WEBHOOK | ANONYMOUS
+X-Actor-User-Id: <cuid>   # required only when X-Actor-Type = USER
+```
+
+Invalid combinations are rejected before the mutation commits, ensuring the audit trail remains consistent.
+
+## 🧱 Shared Foundations
+
+Reusable validation helpers live in `src/lib/validation/`:
+
+- `pagination.ts` — `paginationSchema`, `sortDirectionSchema`, plus `withPagination` to extend feature-specific filters.
+- `datetime.ts` — ISO 8601 refinement shared across public DTOs.
+
+Audit logging exposes a simple contract via `modules/audit/types.ts`, keeping the options shape co-located with the feature while allowing other modules to opt in without duplicating definitions.
 
 ## 📚 Learn More
 

@@ -7,6 +7,158 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
+
+model User {
+  id          String           @id @default(cuid())
+  email       String           @unique
+  name        String
+  avatarUrl   String?
+  status      UserStatus       @default(INVITED)
+  lastLoginAt DateTime?
+  deletedAt   DateTime?
+  clerkUserId String?          @unique
+  tenantId    String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  invitations Invitation[]     @relation("InvitationUser")
+  sentInvites Invitation[]     @relation("InvitationsSent")
+  auditLogs   AuditLog[]       @relation("AuditActor")
+  roles       UserRole[]
+  permissions UserPermission[]
+  sessions    Session[]
+
+  @@index([status])
+  @@index([tenantId])
+  @@index([deletedAt])
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  key         String           @unique
+  name        String
+  description String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  permissions RolePermission[]
+  users       UserRole[]
+  invitations Invitation[]
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  key         String           @unique
+  name        String
+  description String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  roles       RolePermission[]
+  users       UserPermission[]
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model UserRole {
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+}
+
+model UserPermission {
+  userId       String
+  permissionId String
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@index([permissionId])
+}
+
+model Invitation {
+  id              String    @id @default(cuid())
+  email           String
+  roleId          String?
+  invitedByUserId String?
+  userId          String?
+  tokenHash       String
+  expiresAt       DateTime
+  acceptedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  role       Role? @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  invitedBy  User? @relation("InvitationsSent", fields: [invitedByUserId], references: [id], onDelete: SetNull)
+  invitedFor User? @relation("InvitationUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([expiresAt])
+  @@index([tokenHash])
+}
+
+model AuditLog {
+  id          String         @id @default(cuid())
+  actorUserId String?
+  actorType   AuditActorType @default(SYSTEM)
+  action      String
+  targetType  String
+  targetId    String
+  metadata    Json?
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime       @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([actorUserId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}
+
+enum AuditActorType {
+  USER
+  SYSTEM
+  SERVICE
+  WEBHOOK
+  ANONYMOUS
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+  expiresAt DateTime
+  userAgent String?
+  ipHash    String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+}
+
 model Category {
   id          String   @id @default(cuid())
   slug        String   @unique
