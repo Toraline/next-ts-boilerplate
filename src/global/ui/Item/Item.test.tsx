@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Item } from "./Item";
-import { HandledError } from "storybook/internal/common";
 
 describe("Item", () => {
   //tests if the Item is initially checked when loaded.
