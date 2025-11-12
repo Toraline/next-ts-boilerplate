@@ -17,7 +17,7 @@ export const Tasks = ({ categoryId }: TasksProps) => {
   return (
     <div>
       <div className=" flex align-middle flex-row justify-between">
-        <h2 className="subtitle">{CATEGORIES_UI.HEADERS.TASKS}</h2>
+        <h2 className="text-2xl font-semibold">{CATEGORIES_UI.HEADERS.TASKS}</h2>
         <Button size="sm">{GLOBAL_UI.BUTTONS.NEW_TASK}</Button>
       </div>
       {isLoading && <p>Loading...</p>}
