@@ -83,7 +83,7 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
         </div>
       )}
       {isEditing && (
-        <div className="form-container" onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div>
             <h1 className="title"> {category.name}</h1>
           </div>

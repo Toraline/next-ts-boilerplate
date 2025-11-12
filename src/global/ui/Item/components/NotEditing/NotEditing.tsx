@@ -1,45 +1,61 @@
-import { MouseEvent } from "react";
+import React, { ChangeEvent, MouseEvent, useState } from "react";
 import { Button } from "global/ui";
-import { Check } from "global/ui/icons/Check";
 import { EditTask } from "global/ui/icons/EditTask";
 import { DeleteTask } from "global/ui/icons/DeleteTask";
-import "./NotEditing.style.css";
+import clsx from "clsx";
 
 type NotEditingProps = {
-  onClick: (event: MouseEvent) => void;
+  checkboxId?: string;
+  initialChecked?: boolean;
+  onComplete: (event: ChangeEvent, checked: boolean) => void;
+  onEdit: (event: MouseEvent) => void;
   content?: string;
-  isDone?: boolean;
   onDelete?: () => void;
   checkbox?: boolean;
   editButton?: boolean;
 };
 
 const NotEditing = ({
+  checkboxId,
   editButton = true,
   checkbox = true,
   content,
-  isDone,
+  initialChecked,
   onDelete,
-  onClick,
+  onEdit,
+  onComplete,
 }: NotEditingProps) => {
-  const contentIsDoneClass = isDone ? " item__content--done" : "";
   const handleDelete = (e: MouseEvent) => {
     e.stopPropagation();
     onDelete?.();
   };
+  const [checked, setChecked] = useState(initialChecked);
+
+  const checkboxClass = clsx("p-4 flex gap-2.5 align-middle grow", {
+    "bg-neutral-200 line-through": checked == true,
+  });
 
   return (
-    <div className="item__container">
+    <div className={checkboxClass}>
       {checkbox && (
-        <div className="item__checkbox" data-testid="checkbox">
-          {isDone && <Check aria-label="check" />}
-        </div>
+        <input
+          aria-label="checkbox"
+          type="checkbox"
+          id={checkboxId}
+          onChange={(e) => {
+            setChecked(e.currentTarget.checked);
+            onComplete(e, e.currentTarget.checked);
+          }}
+          checked={checked}
+          value={1}
+        />
       )}
-
-      <p className={`item__content${contentIsDoneClass}`}>{content}</p>
+      <label className="grow cursor-pointer" htmlFor={checkboxId}>
+        {content}
+      </label>
 
       {editButton && (
-        <Button variant="transparent" aria-label="edit" onClick={onClick}>
+        <Button variant="transparent" aria-label="edit" onClick={onEdit}>
           <EditTask />
         </Button>
       )}
