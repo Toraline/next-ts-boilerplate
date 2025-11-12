@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createTaskSchema } from "modules/tasks/schema";
 import { useForm } from "react-hook-form";
 import { TASK_ERRORS } from "modules/tasks/constants/errors";
+import { toast } from "sonner";
+import { TASK_SUCCESSES } from "modules/tasks/constants/successes";
 
 type TasksProps = {
   categoryId: string;
@@ -16,8 +18,11 @@ export const FormNewTask = ({ categoryId }: TasksProps) => {
   const createTaskMutation = useCreateTask();
   const onSubmit = (data: CreateTask) => {
     createTaskMutation.mutate(data, {
-      onError: (error) => {
-        console.error(TASK_ERRORS.CREATE_TASK_ERROR, error);
+      onSuccess: () => {
+        toast.success(TASK_SUCCESSES.CREATE_TASK_SUCCESS);
+      },
+      onError: () => {
+        toast.error(TASK_ERRORS.CREATE_TASK_ERROR);
       },
     });
   };

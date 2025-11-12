@@ -9,13 +9,18 @@ import { TASK_ERRORS } from "modules/tasks/constants/errors";
 import { useState } from "react";
 import React from "react";
 import { useDeleteTask } from "modules/tasks/hooks/useDeleteTask";
+import { toast } from "sonner";
+import { TASK_SUCCESSES } from "modules/tasks/constants/successes";
 
 export default function FormEditTask({
   initialState,
   taskId,
+  onSuccess,
 }: {
   initialState: Task;
   taskId: string;
+  checked?: boolean;
+  onSuccess?: () => void;
 }) {
   const updateTaskMutation = useUpdateTask();
 
@@ -51,8 +56,19 @@ export default function FormEditTask({
         updates,
       },
       {
-        onError: (error) => {
-          console.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
+        onSuccess: () => {
+          onSuccess?.();
+          toast.success(TASK_SUCCESSES.EDIT_TASK_SUCCESS, { duration: 5000 });
+          if (data.checked !== initialState.checked) {
+            if (data.checked) {
+              toast.success(TASK_SUCCESSES.CHECKED_TRUE_TASK, { duration: 3000 });
+            } else {
+              toast.success(TASK_SUCCESSES.CHECKED_FALSE_TASK, { duration: 3000 });
+            }
+          }
+        },
+        onError: () => {
+          toast.error(TASK_ERRORS.UPDATE_TASK_ERROR);
         },
       },
     );
@@ -94,10 +110,10 @@ export default function FormEditTask({
 
     deleteTaskMutation.mutate(taskId, {
       onSuccess: () => {
-        console.log("Task deleted");
+        toast.success(TASK_SUCCESSES.DELETE_TASK_SUCCESS);
       },
-      onError: (error) => {
-        console.error(TASK_ERRORS.DELETE_TASK_ERROR, error);
+      onError: () => {
+        toast.error(TASK_ERRORS.DELETE_TASK_ERROR);
       },
     });
   };
