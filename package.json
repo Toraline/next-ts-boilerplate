@@ -31,6 +31,7 @@
     "@prisma/client": "^6.13.0",
     "@tanstack/react-query": "^5.90.5",
     "ci": "^2.3.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.1",
     "dotenv-expand": "^12.0.2",
@@ -39,7 +40,6 @@
     "react-aria-components": "^1.12.1",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.65.0",
-    "tailwind-merge": "^3.4.0",
     "zod": "^4.0.17"
   },
   "devDependencies": {

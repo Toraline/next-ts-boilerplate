@@ -21,7 +21,7 @@ export const Editing = ({ isLoading, onSaveEdit, initialValue = "" }: EditingPro
         onChange={(e) => setContent(e.target.value)}
       />
 
-      <div className=" flex p-4">
+      <div className="flex p-4">
         <Button
           variant="transparent"
           aria-label="save"
