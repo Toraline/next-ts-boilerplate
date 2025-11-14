@@ -1,34 +1,24 @@
 import { NextResponse } from "next/server";
 import * as userService from "modules/users/server/service";
-import { getErrorMessage, getHttpStatus } from "lib/http/errors";
+import { withActorFromSession } from "server/middleware/actorFromSession";
 import { getRequestAuditActor } from "lib/http/audit-actor";
 
 export const runtime = "nodejs";
 
-type RouteParams = { params: Promise<{ userId: string }> };
+export const GET = withActorFromSession(async (_req, _auth, { params }) => {
+  const { userId } = await params;
+  const permissions = await userService.listUserPermissions(userId);
+  return NextResponse.json(permissions);
+});
 
-export async function GET(_req: Request, { params }: RouteParams) {
-  try {
-    const { userId } = await params;
-    const permissions = await userService.listUserPermissions(userId);
-    return NextResponse.json(permissions);
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
-  }
-}
-
-export async function POST(req: Request, { params }: RouteParams) {
-  try {
-    const { userId } = await params;
-    const payload = await req.json();
-    const actor = getRequestAuditActor(req);
-    const assignment = await userService.assignPermissionToUser(
-      userId,
-      payload,
-      actor ? { actor } : undefined,
-    );
-    return NextResponse.json(assignment, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
-  }
-}
+export const POST = withActorFromSession(async (req, _auth, { params }) => {
+  const { userId } = await params;
+  const payload = await req.json();
+  const actor = getRequestAuditActor(req);
+  const assignment = await userService.assignPermissionToUser(
+    userId,
+    payload,
+    actor ? { actor } : undefined,
+  );
+  return NextResponse.json(assignment, { status: 201 });
+});

@@ -1,12 +1,13 @@
+import { NextResponse } from "next/server";
 import type { AuditActorType } from "modules/audit";
-import { ForbiddenError, UnauthorizedError } from "lib/http/errors";
+import { ForbiddenError, UnauthorizedError, getErrorMessage, getHttpStatus } from "lib/http/errors";
 import { getRequestAuditActor } from "lib/http/audit-actor";
 import { parseSessionIdFromRequest } from "server/auth/cookies";
 import { getAuthProvider } from "server/auth/provider";
 import type { AuthProvider } from "server/auth/provider";
 import type { SessionWithUser } from "server/db/sessionRepository";
 
-type ActorDetails = {
+export type ActorDetails = {
   actorType: AuditActorType;
   actorUserId?: string;
   session?: SessionWithUser | null;
@@ -187,12 +188,12 @@ async function resolveActorDetails({
   });
 }
 
-type ActorRouteParams = Record<string, string | string[]>;
+type RouteParams = Record<string, string | string[]>;
 
-type ActorRouteHandler<TParams extends ActorRouteParams> = (
+type ActorRouteHandler<TRouteParams extends RouteParams> = (
   request: Request,
   auth: ActorDetails,
-  context: { params: TParams },
+  context: { params: Promise<TRouteParams> },
 ) => Response | Promise<Response>;
 
 type WithActorFromSessionFn = {
@@ -200,45 +201,51 @@ type WithActorFromSessionFn = {
     handler: ActorRouteHandler<Record<string, never>>,
     options?: ActorFromSessionOptions,
   ): (request: Request) => Promise<Response>;
-  <TParams extends ActorRouteParams>(
-    handler: ActorRouteHandler<TParams>,
+  <TRouteParams extends RouteParams>(
+    handler: ActorRouteHandler<TRouteParams>,
     options?: ActorFromSessionOptions,
-  ): (request: Request, context: { params: TParams }) => Promise<Response>;
+  ): (request: Request, context: { params: Promise<TRouteParams> }) => Promise<Response>;
 };
 
-const withActorFromSessionImpl = <TParams extends ActorRouteParams = Record<string, never>>(
-  handler: ActorRouteHandler<TParams>,
+const withActorFromSessionImpl = <TRouteParams extends RouteParams = Record<string, never>>(
+  handler: ActorRouteHandler<TRouteParams>,
   options?: ActorFromSessionOptions,
 ) => {
-  const execute = async (request: Request, context: { params: TParams }) => {
-    const allowedActorTypes = buildAllowedActorTypes(options);
-    const sessionId = parseSessionIdFromRequest(request);
-    const now = new Date();
-    const authProvider = getAuthProvider();
+  const execute = async (request: Request, nextContext?: { params: Promise<TRouteParams> }) => {
+    try {
+      const allowedActorTypes = buildAllowedActorTypes(options);
+      const sessionId = parseSessionIdFromRequest(request);
+      const now = new Date();
+      const authProvider = getAuthProvider();
 
-    const actorDetails = await resolveActorDetails({
-      provider: authProvider,
-      request,
-      sessionId,
-      allowedActorTypes,
-      now,
-      options,
-    });
+      const actorDetails = await resolveActorDetails({
+        provider: authProvider,
+        request,
+        sessionId,
+        allowedActorTypes,
+        now,
+        options,
+      });
 
-    const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
-    const resolvedContext = context ?? { params: {} as TParams };
+      const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
 
-    const response = await handler(actorAwareRequest, actorDetails, resolvedContext);
-    applyActorHeaders(response?.headers, actorDetails);
-
-    return response;
+      const context = nextContext ?? { params: Promise.resolve({} as TRouteParams) };
+      const response = await handler(actorAwareRequest, actorDetails, context);
+      applyActorHeaders(response?.headers, actorDetails);
+      return response;
+    } catch (error) {
+      return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
+    }
   };
 
+  // Function.length returns the number of parameters. 3 means (request, auth, context),
+  // so < 3 means the handler doesn't expect a context param (no dynamic route segments).
   if (handler.length < 3) {
-    return async (request: Request) => execute(request, { params: {} as TParams });
+    return async (request: Request) => execute(request);
   }
 
-  return async (request: Request, context: { params: TParams }) => execute(request, context);
+  return async (request: Request, context: { params: Promise<TRouteParams> }) =>
+    execute(request, context);
 };
 
 export const withActorFromSession = withActorFromSessionImpl as WithActorFromSessionFn;

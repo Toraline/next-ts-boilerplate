@@ -1,29 +1,21 @@
 import { NextResponse } from "next/server";
-import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 import { createTask, listTasks } from "modules/tasks/server/service";
+import { withActorFromSession } from "server/middleware/actorFromSession";
 
 export const runtime = "nodejs";
 
-export async function POST(request: Request) {
-  try {
-    const task = await request.json();
+export const POST = withActorFromSession(async (request) => {
+  const task = await request.json();
 
-    const createdTask = await createTask(task);
-    return NextResponse.json(createdTask, { status: 201 });
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
-  }
-}
+  const createdTask = await createTask(task);
+  return NextResponse.json(createdTask, { status: 201 });
+});
 
-export async function GET(req: Request) {
-  try {
-    const url = new URL(req.url);
-    const params = Object.fromEntries(url.searchParams.entries());
+export const GET = withActorFromSession(async (req) => {
+  const url = new URL(req.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
 
-    const data = await listTasks(params);
+  const data = await listTasks(queryParams);
 
-    return NextResponse.json(data);
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
-  }
-}
+  return NextResponse.json(data);
+});
