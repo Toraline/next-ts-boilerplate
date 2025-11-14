@@ -1,6 +1,5 @@
 import { ComponentProps } from "react";
-import "./Field.style.css";
-import clsx from "clsx";
+import { cva } from "class-variance-authority";
 
 type FieldProps = ComponentProps<"input"> & {
   type?: string;
@@ -9,27 +8,42 @@ type FieldProps = ComponentProps<"input"> & {
   error?: string;
 };
 
-export const Field = ({
-  id,
-  type = "text",
-  variant = "primary",
-  label,
-  error,
-  ...inputProps
-}: FieldProps) => {
-  const classes = clsx("input", {
-    "input--borderless": variant === "borderless",
-    "input--error": error,
-  });
+export const Field = ({ id, type = "text", variant, label, error, ...inputProps }: FieldProps) => {
+  const input = cva(
+    "p-4 rounded-md bg-transparent border border-neutral-200 outline-none font-normal text-base placeholder:text-neutral-400",
+    {
+      variants: {
+        variant: {
+          primary: ["border border-neutral-200"],
+          borderless: ["border-none outline-none"],
+          error: ["border-red-600"],
+        },
+      },
+      compoundVariants: [
+        {
+          variant: "borderless",
+        },
+        {
+          variant: "error",
+        },
+        {
+          variant: "primary",
+        },
+      ],
+      defaultVariants: {
+        variant: "primary",
+      },
+    },
+  );
   return (
-    <div className="field__container">
+    <div className="flex flex-col grow">
       {label && (
-        <label className="label" htmlFor={id}>
+        <label className="font-medium py-2 px-4 text-base" htmlFor={id}>
           {label}
         </label>
       )}
-      <input className={classes} id={id} type={type} {...inputProps} />
-      {error && <p className="field-error">{error}</p>}
+      <input className={input({ variant })} id={id} type={type} {...inputProps} />
+      {error && <p className="text-sm mt-1 ml-1 border-red-600">{error}</p>}
     </div>
   );
 };
