@@ -21,7 +21,7 @@ export type ActorFromSessionOptions = {
 const ACTOR_TYPE_HEADER = "x-actor-type";
 const ACTOR_USER_ID_HEADER = "x-actor-user-id";
 
-function buildAllowedActorTypes(options?: ActorFromSessionOptions) {
+function getAllowedActorTypes(options?: ActorFromSessionOptions) {
   const allowed = new Set<AuditActorType>(["USER"]);
 
   if (options?.allowAnonymous) allowed.add("ANONYMOUS");
@@ -31,7 +31,7 @@ function buildAllowedActorTypes(options?: ActorFromSessionOptions) {
   return allowed;
 }
 
-async function requireActiveSession(provider: AuthProvider, sessionId: string, now: Date) {
+async function getActiveSessionOrThrow(provider: AuthProvider, sessionId: string, now: Date) {
   const session = await provider.getSession({ sessionId, now });
 
   if (!session) {
@@ -53,13 +53,13 @@ function applyActorHeaders(target: Headers | undefined, actor: ActorDetails) {
   }
 }
 
-function createRequestWithActorHeaders(request: Request, actor: ActorDetails) {
+function createRequestWithActorHeaders(request: Request, actor: ActorDetails): Request {
   const headers = new Headers(request.headers);
   applyActorHeaders(headers, actor);
   return new Request(request, { headers });
 }
 
-function resolveFallbackActor(options?: ActorFromSessionOptions): ActorDetails {
+function resolveAnonymousOrSystemActor(options?: ActorFromSessionOptions): ActorDetails {
   if (options?.allowAnonymous) {
     return { actorType: "ANONYMOUS", session: null };
   }
@@ -109,7 +109,7 @@ async function resolveActorFromHeaders(
     };
   }
 
-  const session = await requireActiveSession(provider, sessionId, now);
+  const session = await getActiveSessionOrThrow(provider, sessionId, now);
 
   if (session.userId !== actor.userId) {
     throw new ForbiddenError("Session does not belong to provided actor");
@@ -128,14 +128,14 @@ type ResolveActorFromSessionParams = {
   options?: ActorFromSessionOptions;
 };
 
-async function resolveActorFromSessionOrFallback({
+async function resolveActorFromSession({
   provider,
   sessionId,
   now,
   options,
 }: ResolveActorFromSessionParams & { provider: AuthProvider }): Promise<ActorDetails> {
   if (!sessionId) {
-    return resolveFallbackActor(options);
+    return resolveAnonymousOrSystemActor(options);
   }
 
   const session = await provider.getSession({ sessionId, now });
@@ -148,7 +148,7 @@ async function resolveActorFromSessionOrFallback({
   }
 
   if (options?.allowAnonymous || options?.allowSystem) {
-    return resolveFallbackActor(options);
+    return resolveAnonymousOrSystemActor(options);
   }
 
   throw new UnauthorizedError("Session expired or revoked");
@@ -170,17 +170,17 @@ async function resolveActorDetails({
   now,
   options,
 }: ResolveActorParams & { provider: AuthProvider }): Promise<ActorDetails> {
-  const actorFromHeaders = getRequestAuditActor(request);
+  const actorInHeaders = getRequestAuditActor(request);
 
-  if (actorFromHeaders) {
-    return resolveActorFromHeaders(provider, actorFromHeaders, {
+  if (actorInHeaders) {
+    return resolveActorFromHeaders(provider, actorInHeaders, {
       sessionId,
       allowedActorTypes,
       now,
     });
   }
 
-  return resolveActorFromSessionOrFallback({
+  return resolveActorFromSession({
     provider,
     sessionId,
     now,
@@ -198,22 +198,25 @@ type ActorRouteHandler<TRouteParams extends RouteParams> = (
 
 type WithActorFromSessionFn = {
   (
-    handler: ActorRouteHandler<Record<string, never>>,
+    routeHandler: ActorRouteHandler<Record<string, never>>,
     options?: ActorFromSessionOptions,
   ): (request: Request) => Promise<Response>;
   <TRouteParams extends RouteParams>(
-    handler: ActorRouteHandler<TRouteParams>,
+    routeHandler: ActorRouteHandler<TRouteParams>,
     options?: ActorFromSessionOptions,
   ): (request: Request, context: { params: Promise<TRouteParams> }) => Promise<Response>;
 };
 
-const withActorFromSessionImpl = <TRouteParams extends RouteParams = Record<string, never>>(
-  handler: ActorRouteHandler<TRouteParams>,
+function createWithActorFromSession<TRouteParams extends RouteParams = Record<string, never>>(
+  routeHandler: ActorRouteHandler<TRouteParams>,
   options?: ActorFromSessionOptions,
-) => {
-  const execute = async (request: Request, nextContext?: { params: Promise<TRouteParams> }) => {
+) {
+  const handleRequest = async (
+    request: Request,
+    nextJsContext?: { params: Promise<TRouteParams> },
+  ) => {
     try {
-      const allowedActorTypes = buildAllowedActorTypes(options);
+      const allowedActorTypes = getAllowedActorTypes(options);
       const sessionId = parseSessionIdFromRequest(request);
       const now = new Date();
       const authProvider = getAuthProvider();
@@ -227,10 +230,10 @@ const withActorFromSessionImpl = <TRouteParams extends RouteParams = Record<stri
         options,
       });
 
-      const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
+      const requestWithActorHeaders = createRequestWithActorHeaders(request, actorDetails);
 
-      const context = nextContext ?? { params: Promise.resolve({} as TRouteParams) };
-      const response = await handler(actorAwareRequest, actorDetails, context);
+      const routeContext = nextJsContext ?? { params: Promise.resolve({} as TRouteParams) };
+      const response = await routeHandler(requestWithActorHeaders, actorDetails, routeContext);
       applyActorHeaders(response?.headers, actorDetails);
       return response;
     } catch (error) {
@@ -238,14 +241,15 @@ const withActorFromSessionImpl = <TRouteParams extends RouteParams = Record<stri
     }
   };
 
-  // Function.length returns the number of parameters. 3 means (request, auth, context),
-  // so < 3 means the handler doesn't expect a context param (no dynamic route segments).
-  if (handler.length < 3) {
-    return async (request: Request) => execute(request);
+  // Next.js route handlers can have 2 signatures: (request) or (request, { params }).
+  // We use Function.length to detect which signature the routeHandler expects.
+  // If routeHandler.length < 3, it doesn't expect the context argument (no dynamic route segments).
+  if (routeHandler.length < 3) {
+    return async (request: Request) => handleRequest(request);
   }
 
   return async (request: Request, context: { params: Promise<TRouteParams> }) =>
-    execute(request, context);
-};
+    handleRequest(request, context);
+}
 
-export const withActorFromSession = withActorFromSessionImpl as WithActorFromSessionFn;
+export const withActorFromSession = createWithActorFromSession as WithActorFromSessionFn;
