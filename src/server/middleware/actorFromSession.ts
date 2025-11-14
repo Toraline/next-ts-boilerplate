@@ -1,12 +1,13 @@
+import { NextResponse } from "next/server";
 import type { AuditActorType } from "modules/audit";
-import { ForbiddenError, UnauthorizedError } from "lib/http/errors";
+import { ForbiddenError, UnauthorizedError, getErrorMessage, getHttpStatus } from "lib/http/errors";
 import { getRequestAuditActor } from "lib/http/audit-actor";
 import { parseSessionIdFromRequest } from "server/auth/cookies";
 import { getAuthProvider } from "server/auth/provider";
 import type { AuthProvider } from "server/auth/provider";
 import type { SessionWithUser } from "server/db/sessionRepository";
 
-type ActorDetails = {
+export type ActorDetails = {
   actorType: AuditActorType;
   actorUserId?: string;
   session?: SessionWithUser | null;
@@ -20,7 +21,7 @@ export type ActorFromSessionOptions = {
 const ACTOR_TYPE_HEADER = "x-actor-type";
 const ACTOR_USER_ID_HEADER = "x-actor-user-id";
 
-function buildAllowedActorTypes(options?: ActorFromSessionOptions) {
+function getAllowedActorTypes(options?: ActorFromSessionOptions) {
   const allowed = new Set<AuditActorType>(["USER"]);
 
   if (options?.allowAnonymous) allowed.add("ANONYMOUS");
@@ -30,7 +31,7 @@ function buildAllowedActorTypes(options?: ActorFromSessionOptions) {
   return allowed;
 }
 
-async function requireActiveSession(provider: AuthProvider, sessionId: string, now: Date) {
+async function getActiveSessionOrThrow(provider: AuthProvider, sessionId: string, now: Date) {
   const session = await provider.getSession({ sessionId, now });
 
   if (!session) {
@@ -52,13 +53,13 @@ function applyActorHeaders(target: Headers | undefined, actor: ActorDetails) {
   }
 }
 
-function createRequestWithActorHeaders(request: Request, actor: ActorDetails) {
+function createRequestWithActorHeaders(request: Request, actor: ActorDetails): Request {
   const headers = new Headers(request.headers);
   applyActorHeaders(headers, actor);
   return new Request(request, { headers });
 }
 
-function resolveFallbackActor(options?: ActorFromSessionOptions): ActorDetails {
+function resolveAnonymousOrSystemActor(options?: ActorFromSessionOptions): ActorDetails {
   if (options?.allowAnonymous) {
     return { actorType: "ANONYMOUS", session: null };
   }
@@ -108,7 +109,7 @@ async function resolveActorFromHeaders(
     };
   }
 
-  const session = await requireActiveSession(provider, sessionId, now);
+  const session = await getActiveSessionOrThrow(provider, sessionId, now);
 
   if (session.userId !== actor.userId) {
     throw new ForbiddenError("Session does not belong to provided actor");
@@ -127,14 +128,14 @@ type ResolveActorFromSessionParams = {
   options?: ActorFromSessionOptions;
 };
 
-async function resolveActorFromSessionOrFallback({
+async function resolveActorFromSession({
   provider,
   sessionId,
   now,
   options,
 }: ResolveActorFromSessionParams & { provider: AuthProvider }): Promise<ActorDetails> {
   if (!sessionId) {
-    return resolveFallbackActor(options);
+    return resolveAnonymousOrSystemActor(options);
   }
 
   const session = await provider.getSession({ sessionId, now });
@@ -147,7 +148,7 @@ async function resolveActorFromSessionOrFallback({
   }
 
   if (options?.allowAnonymous || options?.allowSystem) {
-    return resolveFallbackActor(options);
+    return resolveAnonymousOrSystemActor(options);
   }
 
   throw new UnauthorizedError("Session expired or revoked");
@@ -169,17 +170,17 @@ async function resolveActorDetails({
   now,
   options,
 }: ResolveActorParams & { provider: AuthProvider }): Promise<ActorDetails> {
-  const actorFromHeaders = getRequestAuditActor(request);
+  const actorInHeaders = getRequestAuditActor(request);
 
-  if (actorFromHeaders) {
-    return resolveActorFromHeaders(provider, actorFromHeaders, {
+  if (actorInHeaders) {
+    return resolveActorFromHeaders(provider, actorInHeaders, {
       sessionId,
       allowedActorTypes,
       now,
     });
   }
 
-  return resolveActorFromSessionOrFallback({
+  return resolveActorFromSession({
     provider,
     sessionId,
     now,
@@ -187,58 +188,68 @@ async function resolveActorDetails({
   });
 }
 
-type ActorRouteParams = Record<string, string | string[]>;
+type RouteParams = Record<string, string | string[]>;
 
-type ActorRouteHandler<TParams extends ActorRouteParams> = (
+type ActorRouteHandler<TRouteParams extends RouteParams> = (
   request: Request,
   auth: ActorDetails,
-  context: { params: TParams },
+  context: { params: Promise<TRouteParams> },
 ) => Response | Promise<Response>;
 
 type WithActorFromSessionFn = {
   (
-    handler: ActorRouteHandler<Record<string, never>>,
+    routeHandler: ActorRouteHandler<Record<string, never>>,
     options?: ActorFromSessionOptions,
   ): (request: Request) => Promise<Response>;
-  <TParams extends ActorRouteParams>(
-    handler: ActorRouteHandler<TParams>,
+  <TRouteParams extends RouteParams>(
+    routeHandler: ActorRouteHandler<TRouteParams>,
     options?: ActorFromSessionOptions,
-  ): (request: Request, context: { params: TParams }) => Promise<Response>;
+  ): (request: Request, context: { params: Promise<TRouteParams> }) => Promise<Response>;
 };
 
-const withActorFromSessionImpl = <TParams extends ActorRouteParams = Record<string, never>>(
-  handler: ActorRouteHandler<TParams>,
+function createWithActorFromSession<TRouteParams extends RouteParams = Record<string, never>>(
+  routeHandler: ActorRouteHandler<TRouteParams>,
   options?: ActorFromSessionOptions,
-) => {
-  const execute = async (request: Request, context: { params: TParams }) => {
-    const allowedActorTypes = buildAllowedActorTypes(options);
-    const sessionId = parseSessionIdFromRequest(request);
-    const now = new Date();
-    const authProvider = getAuthProvider();
+) {
+  const handleRequest = async (
+    request: Request,
+    nextJsContext?: { params: Promise<TRouteParams> },
+  ) => {
+    try {
+      const allowedActorTypes = getAllowedActorTypes(options);
+      const sessionId = parseSessionIdFromRequest(request);
+      const now = new Date();
+      const authProvider = getAuthProvider();
 
-    const actorDetails = await resolveActorDetails({
-      provider: authProvider,
-      request,
-      sessionId,
-      allowedActorTypes,
-      now,
-      options,
-    });
+      const actorDetails = await resolveActorDetails({
+        provider: authProvider,
+        request,
+        sessionId,
+        allowedActorTypes,
+        now,
+        options,
+      });
 
-    const actorAwareRequest = createRequestWithActorHeaders(request, actorDetails);
-    const resolvedContext = context ?? { params: {} as TParams };
+      const requestWithActorHeaders = createRequestWithActorHeaders(request, actorDetails);
 
-    const response = await handler(actorAwareRequest, actorDetails, resolvedContext);
-    applyActorHeaders(response?.headers, actorDetails);
-
-    return response;
+      const routeContext = nextJsContext ?? { params: Promise.resolve({} as TRouteParams) };
+      const response = await routeHandler(requestWithActorHeaders, actorDetails, routeContext);
+      applyActorHeaders(response?.headers, actorDetails);
+      return response;
+    } catch (error) {
+      return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
+    }
   };
 
-  if (handler.length < 3) {
-    return async (request: Request) => execute(request, { params: {} as TParams });
+  // Next.js route handlers can have 2 signatures: (request) or (request, { params }).
+  // We use Function.length to detect which signature the routeHandler expects.
+  // If routeHandler.length < 3, it doesn't expect the context argument (no dynamic route segments).
+  if (routeHandler.length < 3) {
+    return async (request: Request) => handleRequest(request);
   }
 
-  return async (request: Request, context: { params: TParams }) => execute(request, context);
-};
+  return async (request: Request, context: { params: Promise<TRouteParams> }) =>
+    handleRequest(request, context);
+}
 
-export const withActorFromSession = withActorFromSessionImpl as WithActorFromSessionFn;
+export const withActorFromSession = createWithActorFromSession as WithActorFromSessionFn;

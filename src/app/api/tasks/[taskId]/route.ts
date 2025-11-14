@@ -1,43 +1,29 @@
-import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 import { deleteTaskById, getTaskById, updateTaskById } from "modules/tasks/server/service";
 import { NextResponse } from "next/server";
+import { withActorFromSession } from "server/middleware/actorFromSession";
 
 export const runtime = "nodejs";
 
-type RouteParams = { params: Promise<{ taskId: string }> };
+export const GET = withActorFromSession(async (_req, _auth, { params }) => {
+  const { taskId } = await params;
 
-export async function GET(_r: Request, { params }: RouteParams) {
-  try {
-    const { taskId } = await params;
+  const task = await getTaskById(taskId);
 
-    const task = await getTaskById(taskId);
+  return NextResponse.json(task);
+});
 
-    return NextResponse.json(task);
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
-  }
-}
+export const PATCH = withActorFromSession(async (req, _auth, { params }) => {
+  const { taskId } = await params;
+  const json = await req.json();
 
-export async function PATCH(req: Request, { params }: RouteParams) {
-  try {
-    const { taskId } = await params;
-    const json = await req.json();
+  const updatedTask = await updateTaskById(taskId, json);
 
-    const updatedTask = await updateTaskById(taskId, json);
+  return NextResponse.json(updatedTask);
+});
 
-    return NextResponse.json(updatedTask);
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
-  }
-}
+export const DELETE = withActorFromSession(async (_req, _auth, { params }) => {
+  const { taskId } = await params;
+  await deleteTaskById(taskId);
 
-export async function DELETE(_r: Request, { params }: RouteParams) {
-  try {
-    const { taskId } = await params;
-    await deleteTaskById(taskId);
-
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
-  }
-}
+  return new Response(null, { status: 204 });
+});
