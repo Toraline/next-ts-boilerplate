@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { removePermissionFromRole } from "modules/roles";
 import { withActorFromSession } from "server/middleware/actorFromSession";
 import { getRequestAuditActor } from "lib/http/audit-actor";

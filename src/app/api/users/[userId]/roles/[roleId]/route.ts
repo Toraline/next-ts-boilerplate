@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import * as userService from "modules/users/server/service";
 import { withActorFromSession } from "server/middleware/actorFromSession";
 import { getRequestAuditActor } from "lib/http/audit-actor";
