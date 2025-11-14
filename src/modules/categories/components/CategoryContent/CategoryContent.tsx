@@ -14,7 +14,7 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
 
   if (isLoading) {
     return (
-      <div className="category-wrapper">
+      <div className="flex-col flex pt-20 pl-40 gap-14">
         <div>{CATEGORIES_UI.LOADING.LOADING_CATEGORY}</div>
       </div>
     );
@@ -24,14 +24,14 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
     // Check if it's a 404 error specifically
     if (error instanceof ApiError && error.status === 404) {
       return (
-        <div className="category-wrapper">
+        <div className="flex-col flex pt-20 pl-40 gap-14 max-w-2xl">
           <div>{CATEGORIES_UI.EMPTY_STATES.CATEGORY_NOT_FOUND}</div>
         </div>
       );
     }
 
     return (
-      <div className="category-wrapper">
+      <div className="flex-col flex pt-20 pl-40 gap-14 max-w-2xl">
         <div>
           {CATEGORY_ERRORS.ERROR_LOADING_CATEGORY}: {error.message}
         </div>
@@ -41,14 +41,14 @@ export default function CategoryContent({ categoryIdOrSlug }: CategoryContentPro
 
   if (!category) {
     return (
-      <div className="category-wrapper">
+      <div className="flex-col flex pt-20 pl-40 gap-14 max-w-2xl">
         <div>{CATEGORIES_UI.EMPTY_STATES.CATEGORY_NOT_FOUND}</div>
       </div>
     );
   }
 
   return (
-    <div className="category-wrapper">
+    <div className="flex-col flex pt-20 pl-40 gap-14 max-w-2xl">
       <EditState categoryIdOrSlug={categoryIdOrSlug} />
 
       <Tasks categoryId={category.id} />

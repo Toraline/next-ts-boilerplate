@@ -1,67 +1,61 @@
 "use client";
 
 import { useState } from "react";
-import "./Item.css";
 import { Editing } from "./components/Editing/Editing";
 import { NotEditing } from "./components/NotEditing/NotEditing";
 
 type ItemProps = {
-  onlyEditing?: boolean;
+  checkboxId?: string;
+  onComplete?: (checked: boolean) => void;
+  initialChecked?: boolean;
+  isLoading?: boolean;
   editButton?: boolean;
   checkbox?: boolean;
   content?: string;
-  isDone?: boolean;
-  onContentChange?: (content: string) => void;
-  onComplete?: (isDone: boolean) => void;
+  onSaveEdit?: (content: string) => void;
   onDelete?: () => void;
-  onEdit?: () => void;
 };
 
 export const Item = ({
+  checkboxId,
+  initialChecked,
+  onComplete,
+  isLoading,
   editButton,
   checkbox,
   content,
-  isDone,
-  onContentChange,
-  onComplete,
+  onSaveEdit,
   onDelete,
-  onEdit,
 }: ItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const itemIsDoneClass = isDone ? " item--done" : "";
 
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    onEdit?.();
-    setIsEditing(false);
-  };
   const toggleEditMode = (e) => {
     e.stopPropagation();
-    setIsEditing(true);
+    setIsEditing(!isEditing);
+  };
+  const handleSaveEdit = (e, description: string) => {
+    toggleEditMode(e);
+    onSaveEdit?.(description);
+  };
+  const handleCheckbox = (e, checked: boolean) => {
+    onComplete?.(checked);
+    e.stopPropagation();
   };
 
   return (
-    <div
-      className={`item${itemIsDoneClass}`}
-      onClick={(e) => {
-        e.stopPropagation();
-        onComplete?.(!isDone);
-      }}
-    >
+    <div className=" flex rounded-xl border-neutral-300 border cursor-pointer relative grow">
       {isEditing ? (
-        <Editing
-          onChange={(e) => onContentChange?.(e.target.value)}
-          value={content}
-          onClick={handleEdit}
-        />
+        <Editing isLoading={isLoading} initialValue={content} onSaveEdit={handleSaveEdit} />
       ) : (
         <NotEditing
           editButton={editButton}
           checkbox={checkbox}
           onDelete={onDelete}
-          onClick={toggleEditMode}
+          onEdit={toggleEditMode}
           content={content}
-          isDone={isDone}
+          onComplete={handleCheckbox}
+          initialChecked={initialChecked}
+          checkboxId={checkboxId}
         />
       )}
     </div>

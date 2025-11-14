@@ -14,15 +14,17 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     content: "initial value",
-    isDone: true,
     editButton: false,
+    isLoading: false,
+    initialChecked: false,
   },
 };
 
 export const HaveButtons: Story = {
   args: {
     content: "initial value",
-    isDone: true,
+    isLoading: false,
+    initialChecked: false,
     onDelete: () => console.log("deletou"),
   },
 };
