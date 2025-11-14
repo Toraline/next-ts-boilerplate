@@ -24,7 +24,7 @@ export const Button = ({
     {
       "bg-transparent border-none text-black p-0 hover:bg-transparent": variant === "transparent",
       "py-1 px-2 text-xs": size === "sm",
-      "py-2 px-4": size === "md" && variant === "primary",
+      "py-2 px-4": size === "md",
     },
   );
   if (href) {
