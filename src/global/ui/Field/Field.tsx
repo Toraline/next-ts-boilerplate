@@ -17,10 +17,13 @@ export const Field = ({
   error,
   ...inputProps
 }: FieldProps) => {
-  const classes = clsx("input", {
-    "input--borderless": variant === "borderless",
-    "input--error": error,
-  });
+  const classes = clsx(
+    "p-4 rounded-md bg-transparent border border-neutral-200 outline-none font-normal text-base",
+    {
+      "input--borderless": variant === "borderless",
+      "input--error": error,
+    },
+  );
   return (
     <div className="field__container">
       {label && (
