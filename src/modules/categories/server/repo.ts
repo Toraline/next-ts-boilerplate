@@ -2,25 +2,40 @@ import { Prisma } from "@prisma/client";
 import prisma from "lib/database/prisma";
 import { listCategoriesQuerySchema } from "../schema";
 
-export const categoryById = (id: string) => prisma.category.findUnique({ where: { id } });
+export const categoryById = (id: string, userId?: string) => {
+  const where: { id: string; userId?: string } = { id };
+  if (userId) where.userId = userId;
+  return prisma.category.findUnique({ where });
+};
 
-export const categoryBySlug = (slug: string) => prisma.category.findUnique({ where: { slug } });
+export const categoryBySlug = (slug: string, userId?: string) => {
+  const where: { slug: string; userId?: string } = { slug };
+  if (userId) where.userId = userId;
+  return prisma.category.findUnique({ where });
+};
 
-export const categoryCreate = (data: { slug: string; name: string; description?: string }) =>
-  prisma.category.create({ data });
+export const categoryCreate = (data: {
+  slug: string;
+  name: string;
+  description?: string;
+  userId: string;
+}) => prisma.category.create({ data });
 
-export async function categoryFindMany(raw: unknown) {
+export async function categoryFindMany(raw: unknown, userId: string) {
   const { page, pageSize, search, sortBy, sortDir } = listCategoriesQuerySchema.parse(raw);
 
-  const where: Prisma.CategoryWhereInput = search
-    ? {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { slug: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
-        ],
-      }
-    : {};
+  const searchConditions: Prisma.CategoryWhereInput[] = search
+    ? [
+        { name: { contains: search, mode: "insensitive" } },
+        { slug: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ]
+    : [];
+
+  const where: Prisma.CategoryWhereInput = {
+    userId,
+    ...(searchConditions.length > 0 ? { OR: searchConditions } : {}),
+  };
 
   const [items, total] = await Promise.all([
     prisma.category.findMany({

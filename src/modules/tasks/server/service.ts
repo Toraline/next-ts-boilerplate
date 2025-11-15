@@ -1,4 +1,4 @@
-import { NotFoundError } from "lib/http/errors";
+import { NotFoundError, UnauthorizedError } from "lib/http/errors";
 import {
   createTaskSchema,
   idSchema,
@@ -10,20 +10,29 @@ import {
 } from "../schema";
 import { taskById, taskCreate, taskDelete, taskFindMany, taskUpdate } from "./repo";
 
-export async function createTask(raw: unknown) {
+export async function createTask(raw: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const task = createTaskSchema.parse(raw);
 
   const createdTask = await taskCreate({
     description: task.description,
     checked: task.checked || false,
     categoryId: task.categoryId,
+    userId,
   });
   return createdTask;
 }
 
-export async function getTaskById(raw: unknown) {
+export async function getTaskById(raw: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const taskId = idSchema.parse(raw);
-  const foundTaskId = await taskById(taskId);
+  const foundTaskId = await taskById(taskId, userId);
 
   if (!foundTaskId) {
     throw new NotFoundError();
@@ -42,18 +51,26 @@ function toPublic(row: unknown) {
   });
 }
 
-export async function listTasks(rawQuery: unknown) {
+export async function listTasks(rawQuery: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const query = listTasksQuerySchema.parse(rawQuery);
 
-  const response = await taskFindMany(query);
+  const response = await taskFindMany(query, userId);
 
   const tasks = response.items.map(toPublic);
 
   return listTasksResponseSchema.parse({ ...response, items: tasks });
 }
 
-export async function updateTaskById(id: string, raw: unknown) {
-  const existingTask = await taskById(id);
+export async function updateTaskById(id: string, raw: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
+  const existingTask = await taskById(id, userId);
 
   if (!existingTask) throw new NotFoundError();
 
@@ -72,8 +89,12 @@ export async function updateTaskById(id: string, raw: unknown) {
   return toPublic(updatedTask);
 }
 
-export async function deleteTaskById(id: string) {
-  const existingTask = await taskById(id);
+export async function deleteTaskById(id: string, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
+  const existingTask = await taskById(id, userId);
 
   if (!existingTask) throw new NotFoundError();
 

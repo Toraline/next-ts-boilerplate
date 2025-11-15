@@ -1,4 +1,4 @@
-import { NotFoundError } from "lib/http/errors";
+import { NotFoundError, UnauthorizedError } from "lib/http/errors";
 import {
   categoryEntitySchema,
   categoryPublicSchema,
@@ -19,10 +19,14 @@ import {
   categoryDelete,
 } from "modules/categories/server/repo";
 
-export async function createCategory(raw: unknown) {
+export async function createCategory(raw: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const category = createCategorySchema.parse(raw);
 
-  const exists = await categoryBySlug(category.slug);
+  const exists = await categoryBySlug(category.slug, userId);
 
   if (exists) {
     throw new Error("Category with this slug already exists");
@@ -32,6 +36,7 @@ export async function createCategory(raw: unknown) {
     slug: category.slug,
     name: category.name.trim(),
     description: typeof category.description === "string" ? category.description.trim() : "",
+    userId,
   });
 
   return created;
@@ -47,23 +52,31 @@ function toPublic(row: unknown) {
   });
 }
 
-export async function listCategories(rawQuery: unknown) {
+export async function listCategories(rawQuery: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const query = listCategoriesQuerySchema.parse(rawQuery);
 
-  const response = await categoryFindMany(query);
+  const response = await categoryFindMany(query, userId);
 
   const categories = response.items.map(toPublic);
 
   return listCategoriesResponseSchema.parse({ ...response, items: categories });
 }
 
-export async function getCategoryByIdOrSlug(raw: unknown) {
+export async function getCategoryByIdOrSlug(raw: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const idOrSlug = idOrSlugSchema.parse(raw);
   const cuid = isCuid(idOrSlug);
 
   const foundCategoryByIdOrSlug = cuid
-    ? await categoryById(idOrSlug)
-    : await categoryBySlug(idOrSlug);
+    ? await categoryById(idOrSlug, userId)
+    : await categoryBySlug(idOrSlug, userId);
 
   if (!foundCategoryByIdOrSlug) {
     throw new NotFoundError();
@@ -72,16 +85,22 @@ export async function getCategoryByIdOrSlug(raw: unknown) {
   return toPublic(foundCategoryByIdOrSlug);
 }
 
-export async function updateCategoryByIdOrSlug(idOrSlug: string, raw: unknown) {
+export async function updateCategoryByIdOrSlug(idOrSlug: string, raw: unknown, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const isId = idSchema.safeParse(idOrSlug).success;
-  const existingCategory = isId ? await categoryById(idOrSlug) : await categoryBySlug(idOrSlug);
+  const existingCategory = isId
+    ? await categoryById(idOrSlug, userId)
+    : await categoryBySlug(idOrSlug, userId);
 
   if (!existingCategory) throw new NotFoundError();
 
   const patch = updateCategorySchema.parse(raw);
 
   if (typeof patch.slug !== "undefined" && patch.slug !== existingCategory.slug) {
-    const exists = await categoryBySlug(patch.slug);
+    const exists = await categoryBySlug(patch.slug, userId);
 
     if (exists) {
       throw new Error("Category with this slug already exists");
@@ -107,9 +126,15 @@ export async function updateCategoryByIdOrSlug(idOrSlug: string, raw: unknown) {
   return toPublic(updatedCategory);
 }
 
-export async function deleteCategoryByIdOrSlug(idOrSlug: string) {
+export async function deleteCategoryByIdOrSlug(idOrSlug: string, userId: string) {
+  if (!userId) {
+    throw new UnauthorizedError("User ID is required");
+  }
+
   const isId = idSchema.safeParse(idOrSlug).success;
-  const existingCategory = isId ? await categoryById(idOrSlug) : await categoryBySlug(idOrSlug);
+  const existingCategory = isId
+    ? await categoryById(idOrSlug, userId)
+    : await categoryBySlug(idOrSlug, userId);
 
   if (!existingCategory) throw new NotFoundError();
 
