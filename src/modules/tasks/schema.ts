@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { userIdSchema } from "modules/users/schema";
 import { TASK_ERRORS } from "./constants/errors";
 
 /** Fields Schemas */
@@ -47,6 +48,7 @@ export const taskEntitySchema = z.object({
   description: descriptionSchema.optional(),
   checked: checkedSchema,
   categoryId: categoryIdSchema,
+  userId: userIdSchema,
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -57,6 +59,7 @@ export const taskPublicSchema = z.object({
   description: descriptionSchema,
   checked: checkedSchema,
   categoryId: categoryIdSchema,
+  userId: userIdSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });

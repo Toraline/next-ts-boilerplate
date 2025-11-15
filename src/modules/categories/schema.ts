@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
+import { userIdSchema } from "modules/users/schema";
 
 export const isCuid = (value: string) => z.cuid().safeParse(value).success;
 
@@ -75,6 +76,7 @@ export const categoryEntitySchema = z.object({
   slug: slugSchema,
   name: nameSchema,
   description: z.string().nullable().optional(),
+  userId: userIdSchema,
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -85,6 +87,7 @@ export const categoryPublicSchema = z.object({
   slug: slugSchema,
   name: nameSchema,
   description: z.string().nullable().optional(),
+  userId: userIdSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
