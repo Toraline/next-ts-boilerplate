@@ -32,7 +32,7 @@ export const Tasks = ({ categoryId }: TasksProps) => {
       {data?.items && (
         <div className="flex-col flex gap-2">
           {data?.items.map((task) => (
-            <div>
+            <div className=" flex gap-2">
               <FormEditTask taskId={task.id} initialState={task} />
             </div>
           ))}
