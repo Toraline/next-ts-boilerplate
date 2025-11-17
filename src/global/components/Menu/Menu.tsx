@@ -18,10 +18,10 @@ export const Menu = ({ initialState }: MenuProps) => {
       {initialState.map((category) => (
         <Link
           className={clsx("menu__item", {
-            "menu__item--active": pathname === `/categories/${category.slug}`,
+            "menu__item--active": pathname === `/categories/${category.id}`,
           })}
           key={category.slug}
-          href={`/categories/${category.slug}`}
+          href={`/categories/${category.id}`}
         >
           {category.name}
         </Link>

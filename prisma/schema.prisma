@@ -31,6 +31,8 @@ model User {
   roles       UserRole[]
   permissions UserPermission[]
   sessions    Session[]
+  categories  Category[]
+  tasks       Task[]
 
   @@index([status])
   @@index([tenantId])
@@ -164,9 +166,13 @@ model Category {
   slug        String   @unique
   name        String
   description String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   tasks       Task[]
+
+  @@index([userId])
 }
 
 model Task {
@@ -175,8 +181,11 @@ model Task {
   checked     Boolean  @default(false)
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([categoryId])
+  @@index([userId])
 }

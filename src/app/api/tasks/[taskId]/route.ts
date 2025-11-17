@@ -1,43 +1,42 @@
-import { getErrorMessage, getHttpStatus } from "lib/http/errors";
 import { deleteTaskById, getTaskById, updateTaskById } from "modules/tasks/server/service";
 import { NextResponse } from "next/server";
+import { withActorFromSession } from "server/middleware/actorFromSession";
+import { UnauthorizedError } from "lib/http/errors";
 
 export const runtime = "nodejs";
 
-type RouteParams = { params: Promise<{ taskId: string }> };
-
-export async function GET(_r: Request, { params }: RouteParams) {
-  try {
-    const { taskId } = await params;
-
-    const task = await getTaskById(taskId);
-
-    return NextResponse.json(task);
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
+export const GET = withActorFromSession(async (_req, auth, { params }) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
 
-export async function PATCH(req: Request, { params }: RouteParams) {
-  try {
-    const { taskId } = await params;
-    const json = await req.json();
+  const { taskId } = await params;
 
-    const updatedTask = await updateTaskById(taskId, json);
+  const task = await getTaskById(taskId, auth.actorUserId);
 
-    return NextResponse.json(updatedTask);
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
+  return NextResponse.json(task);
+});
+
+export const PATCH = withActorFromSession(async (req, auth, { params }) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
 
-export async function DELETE(_r: Request, { params }: RouteParams) {
-  try {
-    const { taskId } = await params;
-    await deleteTaskById(taskId);
+  const { taskId } = await params;
+  const json = await req.json();
 
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
+  const updatedTask = await updateTaskById(taskId, json, auth.actorUserId);
+
+  return NextResponse.json(updatedTask);
+});
+
+export const DELETE = withActorFromSession(async (_req, auth, { params }) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
+
+  const { taskId } = await params;
+  await deleteTaskById(taskId, auth.actorUserId);
+
+  return new Response(null, { status: 204 });
+});

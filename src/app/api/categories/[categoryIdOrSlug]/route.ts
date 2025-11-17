@@ -1,43 +1,42 @@
 import { NextResponse } from "next/server";
-
 import {
   getCategoryByIdOrSlug,
   updateCategoryByIdOrSlug,
   deleteCategoryByIdOrSlug,
 } from "modules/categories";
-import { getErrorMessage, getHttpStatus } from "lib/http/errors";
+import { withActorFromSession } from "server/middleware/actorFromSession";
+import { UnauthorizedError } from "lib/http/errors";
+
 export const runtime = "nodejs";
 
-type RouteParams = { params: Promise<{ categoryIdOrSlug: string }> };
-
-export async function GET(_r: Request, { params }: RouteParams) {
-  try {
-    const { categoryIdOrSlug } = await params;
-    const category = await getCategoryByIdOrSlug(categoryIdOrSlug);
-
-    return NextResponse.json(category);
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
+export const GET = withActorFromSession(async (_req, auth, { params }) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
 
-export async function PATCH(req: Request, { params }: RouteParams) {
-  try {
-    const { categoryIdOrSlug } = await params;
-    const json = await req.json();
-    const updatedCategory = await updateCategoryByIdOrSlug(categoryIdOrSlug, json);
-    return NextResponse.json(updatedCategory);
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
-  }
-}
+  const { categoryIdOrSlug } = await params;
+  const category = await getCategoryByIdOrSlug(categoryIdOrSlug, auth.actorUserId);
 
-export async function DELETE(_r: Request, { params }: RouteParams) {
-  try {
-    const { categoryIdOrSlug } = await params;
-    await deleteCategoryByIdOrSlug(categoryIdOrSlug);
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
+  return NextResponse.json(category);
+});
+
+export const PATCH = withActorFromSession(async (req, auth, { params }) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
+
+  const { categoryIdOrSlug } = await params;
+  const json = await req.json();
+  const updatedCategory = await updateCategoryByIdOrSlug(categoryIdOrSlug, json, auth.actorUserId);
+  return NextResponse.json(updatedCategory);
+});
+
+export const DELETE = withActorFromSession(async (_req, auth, { params }) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
+  }
+
+  const { categoryIdOrSlug } = await params;
+  await deleteCategoryByIdOrSlug(categoryIdOrSlug, auth.actorUserId);
+  return new Response(null, { status: 204 });
+});

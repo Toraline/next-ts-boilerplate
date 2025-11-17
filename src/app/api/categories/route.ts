@@ -1,29 +1,30 @@
 import { NextResponse } from "next/server";
 import { createCategory, listCategories } from "modules/categories";
-import { getErrorMessage, getHttpStatus } from "lib/http/errors";
+import { withActorFromSession } from "server/middleware/actorFromSession";
+import { UnauthorizedError } from "lib/http/errors";
 
 export const runtime = "nodejs";
 
-export async function GET(req: Request) {
-  try {
-    const url = new URL(req.url);
-    const params = Object.fromEntries(url.searchParams.entries());
-
-    const data = await listCategories(params);
-
-    return NextResponse.json(data);
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
+export const GET = withActorFromSession(async (req, auth) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
 
-export async function POST(req: Request) {
-  try {
-    const json = await req.json();
-    const created = await createCategory(json);
+  const url = new URL(req.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
 
-    return NextResponse.json(created, { status: 201 });
-  } catch (e) {
-    return NextResponse.json({ error: getErrorMessage(e) }, { status: getHttpStatus(e) });
+  const data = await listCategories(queryParams, auth.actorUserId);
+
+  return NextResponse.json(data);
+});
+
+export const POST = withActorFromSession(async (req, auth) => {
+  if (auth.actorType !== "USER" || !auth.actorUserId) {
+    throw new UnauthorizedError("Authentication required");
   }
-}
+
+  const json = await req.json();
+  const created = await createCategory(json, auth.actorUserId);
+
+  return NextResponse.json(created, { status: 201 });
+});

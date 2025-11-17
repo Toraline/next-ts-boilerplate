@@ -1,35 +1,21 @@
 import { NextResponse } from "next/server";
-import { UnauthorizedError, getErrorMessage, getHttpStatus } from "lib/http/errors";
-import { parseSessionIdFromRequest } from "server/auth/cookies";
-import { getAuthProvider } from "server/auth/provider";
 import { meResponseSchema } from "server/auth/schemas";
 import { mapUserToPublic } from "server/auth/userMapper";
+import { withActorFromSession } from "server/middleware/actorFromSession";
 
 export const runtime = "nodejs";
 
-export async function GET(req: Request) {
-  try {
-    const sessionId = parseSessionIdFromRequest(req);
-    if (!sessionId) {
-      throw new UnauthorizedError("Session not found");
-    }
-
-    const provider = getAuthProvider();
-    const session = await provider.getSession({ sessionId });
-    if (!session) {
-      throw new UnauthorizedError("Session expired or revoked");
+export const GET = withActorFromSession(
+  async (_req, auth) => {
+    if (!auth.session) {
+      return NextResponse.json({ user: null }, { status: 200 });
     }
 
     const responsePayload = meResponseSchema.parse({
-      user: mapUserToPublic(session.user),
+      user: mapUserToPublic(auth.session.user),
     });
 
-    const response = NextResponse.json(responsePayload, { status: 200 });
-    response.headers.set("x-actor-type", "USER");
-    response.headers.set("x-actor-user-id", session.userId);
-
-    return response;
-  } catch (error) {
-    return NextResponse.json({ error: getErrorMessage(error) }, { status: getHttpStatus(error) });
-  }
-}
+    return NextResponse.json(responsePayload, { status: 200 });
+  },
+  { allowAnonymous: true },
+);
