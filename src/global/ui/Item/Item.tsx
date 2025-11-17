@@ -43,7 +43,7 @@ export const Item = ({
   };
 
   return (
-    <div className=" flex rounded-xl border-neutral-300 border cursor-pointer relative grow">
+    <div className="flex rounded-xl border-neutral-300 border cursor-pointer relative grow">
       {isEditing ? (
         <Editing isLoading={isLoading} initialValue={content} onSaveEdit={handleSaveEdit} />
       ) : (
