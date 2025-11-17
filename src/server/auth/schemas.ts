@@ -23,7 +23,7 @@ export const loginResponseSchema = z.object({
 });
 
 export const meResponseSchema = z.object({
-  user: userPublicSchema,
+  user: userPublicSchema.nullable(),
 });
 
 export const sessionDtoSchema = z.object({

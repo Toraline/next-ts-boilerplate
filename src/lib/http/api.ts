@@ -6,7 +6,10 @@ export async function api<T>(
   init?: Parameters<typeof fetch>[1],
 ): Promise<T> {
   try {
-    const response = await fetch(input, init);
+    const response = await fetch(input, {
+      ...init,
+      credentials: init?.credentials ?? "include",
+    });
     return await processFetchResponse<T>(response);
   } catch (error) {
     if (error instanceof ApiError) {

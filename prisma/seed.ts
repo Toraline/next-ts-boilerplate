@@ -167,6 +167,43 @@ async function seedSuperAdmin(superAdminRoleId: string) {
   });
 
   console.log(`✅ Super admin available at ${superAdminEmail}`);
+
+  return superAdminUser;
+}
+
+async function seedCategoryAndTask(userId: string) {
+  const category = await prisma.category.upsert({
+    where: { slug: "seed-category" },
+    update: {
+      name: "Seed Category",
+      description: "A sample category created by the seed script",
+      userId,
+    },
+    create: {
+      slug: "seed-category",
+      name: "Seed Category",
+      description: "A sample category created by the seed script",
+      userId,
+    },
+  });
+
+  await prisma.task.deleteMany({
+    where: {
+      categoryId: category.id,
+      description: "A sample task created by the seed script",
+    },
+  });
+
+  await prisma.task.create({
+    data: {
+      description: "A sample task created by the seed script",
+      checked: false,
+      categoryId: category.id,
+      userId,
+    },
+  });
+
+  console.log(`✅ Created seed category and task for user ${userId}`);
 }
 
 async function main() {
@@ -179,7 +216,8 @@ async function main() {
     throw new Error("SUPERADMIN role was not created correctly.");
   }
 
-  await seedSuperAdmin(superAdminRole.id);
+  const superAdminUser = await seedSuperAdmin(superAdminRole.id);
+  await seedCategoryAndTask(superAdminUser.id);
 }
 
 main()
