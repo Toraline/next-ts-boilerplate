@@ -25,7 +25,6 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // setIsEditing(false);
   };
 
   const onDelete = async () => {
@@ -66,10 +65,11 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
             <h1 className="title"> {category.name}</h1>
           </div>
           <div className="category-buttons">
-            <Button variant="transparent" onClick={() => setIsEditing(true)}>
+            <Button variant="transparent" size="transparent" onClick={() => setIsEditing(true)}>
               <Edit />
             </Button>
             <Button
+              size="transparent"
               variant="transparent"
               id="delete-button"
               type="button"

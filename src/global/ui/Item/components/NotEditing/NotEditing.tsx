@@ -55,13 +55,18 @@ const NotEditing = ({
       </label>
 
       {editButton && (
-        <Button variant="transparent" aria-label="edit" onClick={onEdit}>
+        <Button variant="transparent" size="transparent" aria-label="edit" onClick={onEdit}>
           <EditTask />
         </Button>
       )}
 
       {onDelete && (
-        <Button aria-label="delete-button" variant="transparent" onClick={handleDelete}>
+        <Button
+          aria-label="delete-button"
+          size="transparent"
+          variant="transparent"
+          onClick={handleDelete}
+        >
           <DeleteTask />
         </Button>
       )}
