@@ -63,7 +63,7 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
       {!isEditing && (
         <div className="category-header">
           <div>
-            <h1 className="title"> {category.name}</h1>
+            <h1 className="text-3xl font-semibold"> {category.name}</h1>
           </div>
           <div className="category-buttons">
             <Button variant="transparent" onClick={() => setIsEditing(true)}>
@@ -85,7 +85,7 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
       {isEditing && (
         <div className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div>
-            <h1 className="title"> {category.name}</h1>
+            <h1 className="text-3xl font-semibold"> {category.name}</h1>
           </div>
           <FormEditCategory
             initialState={category}
