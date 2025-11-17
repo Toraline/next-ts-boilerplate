@@ -40,7 +40,7 @@ export default function FormNewCategory() {
       onSuccess: (createdCategory) => {
         toast.success(CATEGORY_SUCCESSES.CREATE_CATEGORY_SUCCESS);
         // Navigate immediately without clearing form state to prevent freezing
-        router.push(`/categories/${createdCategory.slug}`);
+        router.push(`/categories/${createdCategory.id}`);
       },
       onError: () => {
         // Error handling is done by the global error handler
