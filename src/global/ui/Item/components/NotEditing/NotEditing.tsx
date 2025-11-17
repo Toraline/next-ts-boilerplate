@@ -31,8 +31,8 @@ const NotEditing = ({
   };
   const [checked, setChecked] = useState(initialChecked);
 
-  const checkboxClass = clsx("p-4 flex gap-2.5 align-middle grow", {
-    "bg-neutral-200 line-through": checked == true,
+  const checkboxClass = clsx("p-4 flex gap-2.5 align-middle grow rounded-xl", {
+    "bg-neutral-200 line-through text-black": checked == true,
   });
 
   return (
