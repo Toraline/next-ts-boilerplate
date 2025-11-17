@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { ReactQueryProvider } from "lib/client/react-query";
 import { Sidebar } from "global/components/Sidebar/Sidebar";
-import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import "global/styles/index.css";
 
@@ -31,7 +30,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="flex min-h-full">
         <ReactQueryProvider>
-          <Toaster />
           <header className="h-lvh shrink-0 overflow-y-auto">
             <Sidebar />
           </header>

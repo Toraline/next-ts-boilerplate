@@ -17,8 +17,6 @@ import {
 } from "../..";
 import { GLOBAL_UI } from "global/constants";
 import "./FormEditCategory.style.css";
-import { toast } from "sonner";
-import { CATEGORY_SUCCESSES } from "modules/categories/constants";
 
 export default function FormEditCategory({
   initialState,
@@ -73,11 +71,15 @@ export default function FormEditCategory({
       {
         onSuccess: (updatedCategory) => {
           onSuccess?.();
+<<<<<<< HEAD
           toast.success(CATEGORY_SUCCESSES.EDIT_CATEGORY_SUCCESS);
           router.push(`/categories/${updatedCategory.id}`);
+=======
+          router.push(`/categories/${updatedCategory.slug}`);
+>>>>>>> parent of ebcfd8d (Merge remote-tracking branch 'origin' into BO-122-task-list)
         },
-        onError: () => {
-          toast.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR);
+        onError: (error) => {
+          console.error(CATEGORY_ERRORS.UPDATE_CATEGORY_ERROR, error);
         },
       },
     );
