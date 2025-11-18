@@ -1,5 +1,4 @@
 import { CategoryContent } from "modules/categories";
-import "./page.style.css";
 
 export default async function Page({
   params,
