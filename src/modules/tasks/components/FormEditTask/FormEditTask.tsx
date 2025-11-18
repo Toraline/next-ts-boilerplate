@@ -58,14 +58,7 @@ export default function FormEditTask({
       {
         onSuccess: () => {
           onSuccess?.();
-          toast.success(TASK_SUCCESSES.EDIT_TASK_SUCCESS, { duration: 5000 });
-          if (data.checked !== initialState.checked) {
-            if (data.checked) {
-              toast.success(TASK_SUCCESSES.CHECKED_TRUE_TASK, { duration: 3000 });
-            } else {
-              toast.success(TASK_SUCCESSES.CHECKED_FALSE_TASK, { duration: 3000 });
-            }
-          }
+          toast.success(TASK_SUCCESSES.EDIT_TASK_SUCCESS, { duration: 3000 });
         },
         onError: () => {
           toast.error(TASK_ERRORS.UPDATE_TASK_ERROR);
@@ -84,6 +77,17 @@ export default function FormEditTask({
       {
         taskById: taskId,
         updates,
+      },
+      {
+        onSuccess: () => {
+          if (data.checked !== initialState.checked) {
+            if (data.checked) {
+              toast.success(TASK_SUCCESSES.CHECKED_TRUE_TASK, { duration: 2000 });
+            } else {
+              toast.success(TASK_SUCCESSES.CHECKED_FALSE_TASK, { duration: 2000 });
+            }
+          }
+        },
       },
       {
         onError: (error) => {
