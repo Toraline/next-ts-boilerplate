@@ -88,8 +88,7 @@ export default function FormEditTask({
             }
           }
         },
-      },
-      {
+
         onError: (error) => {
           console.error(TASK_ERRORS.UPDATE_TASK_ERROR, error);
         },
