@@ -1,9 +1,8 @@
 import { FormNewCategory } from "modules/categories";
-import "./page.style.css";
 
 export default function Page() {
   return (
-    <div className="new-category">
+    <div className="flex-col flex pt-18 pl-41 pr-6 gap-15 max-w-xl">
       <FormNewCategory />
     </div>
   );
