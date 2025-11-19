@@ -1,6 +1,5 @@
 "use client";
 
-import "./FormNewCategory.css";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,13 +51,13 @@ export default function FormNewCategory() {
   const isLoading = createCategoryMutation.isPending || isSubmitting;
 
   return (
-    <div className="form-container">
-      <h1 className="title">{CATEGORIES_UI.HEADERS.NEW_CATEGORY}</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-3xl font-semibold">{CATEGORIES_UI.HEADERS.NEW_CATEGORY}</h1>
       {createCategoryMutation.error && (
         <p className="error">{createCategoryMutation.error.message}</p>
       )}
-      <form className="form-new-category" onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-new-category__header">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-row gap-4">
           <Field
             label={CATEGORIES_UI.LABELS.NAME}
             {...register("name")}
