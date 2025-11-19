@@ -50,7 +50,7 @@ const NotEditing = ({
           value={1}
         />
       )}
-      <label className="grow cursor-pointer" htmlFor={checkboxId}>
+      <label className="grow cursor-pointer py-1" htmlFor={checkboxId}>
         {content}
       </label>
 
