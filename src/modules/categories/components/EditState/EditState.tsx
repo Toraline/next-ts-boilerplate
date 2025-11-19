@@ -14,7 +14,6 @@ import FormEditCategory from "../FormEditCategory/FormEditCategory";
 import { FormEvent, useState } from "react";
 import { Edit } from "global/ui/icons/Edit";
 import { Delete } from "global/ui/icons/Delete";
-import "./EditState.style.css";
 import { toast } from "sonner";
 
 export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: string }) {
@@ -60,9 +59,9 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
   return (
     <div className="category-content">
       {!isEditing && (
-        <div className="category-header">
+        <div className="flex flex-row gap-4">
           <div>
-            <h1 className="title"> {category.name}</h1>
+            <h1 className="text-3xl font-semibold"> {category.name}</h1>
           </div>
           <div className="category-buttons">
             <Button variant="transparent" size="transparent" onClick={() => setIsEditing(true)}>
@@ -85,7 +84,7 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
       {isEditing && (
         <div className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div>
-            <h1 className="title"> {category.name}</h1>
+            <h1 className="text-3xl font-semibold"> {category.name}</h1>
           </div>
           <FormEditCategory
             initialState={category}
