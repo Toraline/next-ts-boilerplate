@@ -7,7 +7,7 @@ type ButtonProps = ComponentProps<"button"> & {
   "aria-label"?: string;
   href?: string;
   children?: ReactNode;
-  size?: "sm" | "md" | "transparent";
+  size?: "xs" | "sm" | "md";
   variant?: "primary" | "transparent";
 };
 
@@ -23,7 +23,7 @@ export const Button = ({
     "align-middle bg-black rounded-md border-none cursor-pointer inline-block text-base text-white font-medium  text-center hover:bg-neutral-200",
     {
       "bg-transparent border-none text-black hover:bg-transparent": variant === "transparent",
-      "p-0": size === "transparent",
+      "p-0": size === "xs",
       "py-1 px-2 text-xs": size === "sm",
       "py-2 px-4": size === "md",
     },

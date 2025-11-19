@@ -64,11 +64,11 @@ export default function EditState({ categoryIdOrSlug }: { categoryIdOrSlug: stri
             <h1 className="text-3xl font-semibold"> {category.name}</h1>
           </div>
           <div className="category-buttons">
-            <Button variant="transparent" size="transparent" onClick={() => setIsEditing(true)}>
+            <Button variant="transparent" size="xs" onClick={() => setIsEditing(true)}>
               <Edit />
             </Button>
             <Button
-              size="transparent"
+              size="xs"
               variant="transparent"
               id="delete-button"
               type="button"
