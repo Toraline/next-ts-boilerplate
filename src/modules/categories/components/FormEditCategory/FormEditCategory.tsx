@@ -16,7 +16,6 @@ import {
   CATEGORY_ERRORS,
 } from "../..";
 import { GLOBAL_UI } from "global/constants";
-import "./FormEditCategory.style.css";
 import { toast } from "sonner";
 import { CATEGORY_SUCCESSES } from "modules/categories/constants";
 
@@ -86,13 +85,13 @@ export default function FormEditCategory({
   const isLoading = updateCategoryMutation.isPending || isSubmitting;
 
   return (
-    <div className="form-container">
+    <div>
       {updateCategoryMutation.error && (
         <div className="error">{updateCategoryMutation.error.message}</div>
       )}
       {noChangesMessage && <div className="error">{noChangesMessage}</div>}
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="form__header">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-row gap-4">
           <Field
             label={CATEGORIES_UI.LABELS.NAME}
             {...register("name")}
