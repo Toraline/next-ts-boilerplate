@@ -3,7 +3,6 @@
 import { Menu } from "global/components/Menu/Menu";
 import Link from "next/link";
 import { PlusSign } from "global/ui/icons/PlusSign";
-import "./Sidebar.style.css";
 import { useCategoriesList } from "modules/categories";
 import { Button } from "global/ui";
 import { ThemeSelect } from "../ThemeSelect";
@@ -20,21 +19,29 @@ export const Sidebar = () => {
   const items = categoriesResponse?.items || [];
 
   return (
-    <div className="sidebar">
+    <div className="flex-col justify-self-start h-dvh border border-neutral-200">
       <ThemeSelect />
-      <div className="sidebar-header">
-        <Link className="subtitle" href="/categories">
+      <div className="flex justify-between align-middle py-4">
+        <Link className="text-2xl font-semibold" href="/categories">
           Categories
         </Link>
-        <div className="sidebar__button-container">
+        <div className="px-6">
           <Button href="/categories/new" size="sm">
-            <PlusSign className="plus-icon" />
+            <PlusSign className="invert" />
           </Button>
         </div>
       </div>
       <nav>
-        {isLoading && <div className="menu">Loading categories...</div>}
-        {error && <div className="menu">Error loading categories</div>}
+        {isLoading && (
+          <div className="flex flex-col py-1 w-64 text-neutral-400 text-base">
+            Loading categories...
+          </div>
+        )}
+        {error && (
+          <div className="flex flex-col py-1 w-64 text-neutral-400 text-base">
+            Error loading categories
+          </div>
+        )}
         {!isLoading && !error && <Menu initialState={items} />}
       </nav>
     </div>

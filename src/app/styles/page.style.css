@@ -1,8 +1,0 @@
-.button__container {
-  padding: 0 16px;
-  gap: 16px;
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
