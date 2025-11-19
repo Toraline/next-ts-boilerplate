@@ -27,6 +27,7 @@ export const Editing = ({ isLoading, onSaveEdit, initialValue = "" }: EditingPro
           aria-label="save"
           onClick={(e) => onSaveEdit(e, content)}
           disabled={isLoading}
+          type="submit"
         >
           <Save />
         </Button>
