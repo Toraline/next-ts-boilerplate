@@ -1,5 +1,3 @@
-"use client";
-
 import { FormNewPermission } from "modules/permissions/components/FormNewPermission/FormNewPermission";
 
 export default function Page() {
