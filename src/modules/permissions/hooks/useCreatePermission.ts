@@ -1,5 +1,5 @@
 import { API_URL } from "lib/constants";
-import { createPermission, Permission } from "../server/types";
+import { createPermission, Permission } from "../types";
 import { api } from "lib/http/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "global/hooks/useMutation";

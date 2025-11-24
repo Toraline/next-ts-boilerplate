@@ -41,6 +41,7 @@ export const PERMISSIONS_UI = {
   //Loading States
   LOADING: {
     LOADING_PERMISSIONS: "Loading permissions...",
+    LOADING_PERMISSION: "Loading permission...",
   },
 
   //Placeholders

@@ -8,7 +8,7 @@ import { PERMISSION_SUCCESSES } from "modules/permissions/constants/successes";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
 import { useCreatePermission } from "modules/permissions/hooks/useCreatePermission";
 import { createPermissionSchema } from "modules/permissions/schema";
-import { createPermission } from "modules/permissions/server/types";
+import { createPermission } from "modules/permissions/types";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
