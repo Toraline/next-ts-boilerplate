@@ -18,6 +18,8 @@
     "test:watch": "npm test -- --watch",
     "test:unit:watch": "npm run test:unit -- --watch",
     "test:integration:watch": "npm run test:integration -- --watch",
+    "test:e2e": "npx playwright test --config=./e2e/playwright.config.ts",
+    "test:e2e:watch": "npx playwright test --config=./e2e/playwright.config.ts --ui",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check",
