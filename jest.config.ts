@@ -11,6 +11,7 @@ const customJestConfig = createJestConfig({
   testTimeout: 60000,
   clearMocks: true,
   testEnvironment: "jsdom",
+  testPathIgnorePatterns: ["/e2e/"],
   globals: {
     TextEncoder,
     TextDecoder,
