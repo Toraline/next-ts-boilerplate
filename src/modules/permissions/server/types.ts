@@ -7,7 +7,7 @@ import {
   permissionsListFiltersSchema,
 } from "../schema";
 
-export type createPermission = z.infer<typeof createPermissionSchema>;
+export type CreatePermission = z.infer<typeof createPermissionSchema>;
 
 export type Permission = z.infer<typeof permissionPublicSchema>;
 

@@ -1,11 +1,11 @@
 import { API_URL } from "lib/constants";
-import { createPermission, Permission } from "../server/types";
+import { CreatePermission, Permission } from "../types";
 import { api } from "lib/http/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "global/hooks/useMutation";
 import { ApiError } from "lib/client/errors";
 
-const fetchCreatePermission = async (permissionData: createPermission): Promise<Permission> => {
+const fetchCreatePermission = async (permissionData: CreatePermission): Promise<Permission> => {
   const url = `${API_URL}/permissions/`;
   return api<Permission>(url, {
     method: "POST",
@@ -17,7 +17,7 @@ const fetchCreatePermission = async (permissionData: createPermission): Promise<
 export const useCreatePermission = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Permission, ApiError, createPermission>({
+  return useMutation<Permission, ApiError, CreatePermission>({
     mutationFn: fetchCreatePermission,
     onSuccess: () => {
       queryClient.invalidateQueries({
