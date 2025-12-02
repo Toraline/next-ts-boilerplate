@@ -1,3 +1,4 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GLOBAL_UI } from "global/constants";
 import { Button, Field, TextArea } from "global/ui";
