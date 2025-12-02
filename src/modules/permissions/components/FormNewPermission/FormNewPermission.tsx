@@ -8,13 +8,13 @@ import { PERMISSION_SUCCESSES } from "modules/permissions/constants/successes";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
 import { useCreatePermission } from "modules/permissions/hooks/useCreatePermission";
 import { createPermissionSchema } from "modules/permissions/schema";
-import { createPermission } from "modules/permissions/types";
+import { CreatePermission } from "modules/permissions/types";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export const FormNewPermission = () => {
   const createPermissionMutation = useCreatePermission();
-  const onSubmit = (data: createPermission) => {
+  const onSubmit = (data: CreatePermission) => {
     createPermissionMutation.mutate(data, {
       onSuccess: () => {
         toast.success(PERMISSION_SUCCESSES.CREATE_PERMISSION_SUCCESS);
@@ -29,7 +29,7 @@ export const FormNewPermission = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<createPermission>({
+  } = useForm<CreatePermission>({
     resolver: zodResolver(createPermissionSchema),
     defaultValues: {
       key: "",

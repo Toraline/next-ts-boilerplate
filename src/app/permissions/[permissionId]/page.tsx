@@ -1,5 +1,4 @@
-import EditStatePermission from "modules/permissions/components/EditStatePermission/EditStatePermission";
-
+import { EditStatePermission } from "modules/permissions";
 export default async function Page({
   params,
 }: {

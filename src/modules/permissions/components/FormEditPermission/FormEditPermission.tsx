@@ -6,7 +6,7 @@ import { PERMISSION_SUCCESSES } from "modules/permissions/constants/successes";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
 import { useUpdatePermission } from "modules/permissions/hooks/useUpdatePermission";
 import { createPermissionSchema } from "modules/permissions/schema";
-import { createPermission, Permission } from "modules/permissions/types";
+import { CreatePermission, Permission } from "modules/permissions/types";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,7 +27,7 @@ export const FormEditPermission = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<createPermission>({
+  } = useForm<CreatePermission>({
     resolver: zodResolver(createPermissionSchema),
     defaultValues: {
       key: initialState.key,
@@ -36,7 +36,7 @@ export const FormEditPermission = ({
     },
   });
 
-  const onSubmit = (data: createPermission) => {
+  const onSubmit = (data: CreatePermission) => {
     setNoChangesMessage(null);
     const updates: Record<string, unknown> = {};
 
