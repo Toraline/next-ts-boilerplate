@@ -13,6 +13,7 @@ export const PERMISSIONS_UI = {
   EMPTY_STATES: {
     PERMISSION_NOT_FOUND: "Permission not found",
     NO_PERMISSIONS_FOUND: "No permissions found",
+    TRY_ADJUSTING_FILTERS: "Try adjusting your search or filters",
   },
 
   //Form Messages
@@ -43,10 +44,34 @@ export const PERMISSIONS_UI = {
     LOADING_PERMISSIONS: "Loading permissions...",
   },
 
+  // Pagination
+  PAGINATION: {
+    PERMISSIONS: "permissions",
+  },
+
   //Placeholders
   PLACEHOLDERS: {
     KEY: "Enter the permission key",
     NAME: "Enter the permission name",
     DESCRIPTION: "Enter the permission description",
+    SEARCH: "Search by key/name/description",
   },
-};
+
+  // Sort Options
+  SORT_OPTIONS: {
+    CREATED_AT: "Created Date",
+    KEY: "Key",
+    NAME: "Name",
+    UPDATED_AT: "Updated Date",
+  },
+
+  // Table Columns
+  TABLE_COLUMNS: {
+    ACTIONS: "Actions",
+    CREATED: "Created",
+    DESCRIPTION: "Description",
+    KEY: "Key",
+    NAME: "Name",
+    UPDATED: "Updated",
+  },
+} as const;

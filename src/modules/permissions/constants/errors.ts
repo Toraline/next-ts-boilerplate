@@ -7,4 +7,7 @@ export const PERMISSION_ERRORS = {
   CREATE_PERMISSION_ERROR: "Failed to create permission",
   DELETE_PERMISSION_ERROR: "Failed to delete permission",
   UPDATE_PERMISSION_ERROR: "Failed to update permission",
+
+  ERROR_LOADING_PERMISSIONS: "Error loading permissions",
+  ERROR_LOADING_PERMISSION: "Error loading permission",
 };
