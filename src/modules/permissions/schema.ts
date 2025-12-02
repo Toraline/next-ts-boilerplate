@@ -67,3 +67,11 @@ export const updatePermissionSchema = z
     (value) => typeof value.name !== "undefined" || typeof value.description !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
+
+export const permissionsListFiltersSchema = listPermissionsQuerySchema
+  .pick({
+    search: true,
+    sortBy: true,
+    sortDir: true,
+  })
+  .partial();
