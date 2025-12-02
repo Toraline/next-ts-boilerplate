@@ -1,6 +1,8 @@
 import { GLOBAL_UI } from "global/constants";
 import { Table, TableColumn } from "global/ui";
+import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
+import { useDeletePermission } from "modules/permissions/hooks/useDeletePermission";
 import { Permission } from "modules/permissions/server/types";
 import Link from "next/link";
 
@@ -23,6 +25,18 @@ export default function PermissionsTable({
   onSortChange,
   currentSort,
 }: PermissionsTableProps) {
+  const deletePermissionMutation = useDeletePermission();
+
+  const onDelete = async (id: string) => {
+    if (!confirm(PERMISSIONS_UI.CONFIRMATIONS.DELETE_PERMISSION)) return;
+
+    deletePermissionMutation.mutate(id, {
+      onError: (error) => {
+        console.error(PERMISSION_ERRORS.DELETE_PERMISSION_ERROR, error);
+      },
+    });
+  };
+
   const columns: TableColumn<Permission>[] = [
     {
       key: "key",
@@ -63,11 +77,18 @@ export default function PermissionsTable({
           <button
             id="delete-button"
             type="button"
+            onClick={() => onDelete(item.id)}
+            disabled={deletePermissionMutation.isPending}
             className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
           >
-            Delete
+            {deletePermissionMutation.isPending
+              ? GLOBAL_UI.BUTTONS.DELETING
+              : GLOBAL_UI.ACTIONS.DELETE}
           </button>
+          {deletePermissionMutation.error && (
+            <p className="error text-sm">{deletePermissionMutation.error.message}</p>
+          )}
         </div>
       ),
     },
