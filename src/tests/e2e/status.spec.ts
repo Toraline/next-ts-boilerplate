@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("GET /api/status", () => {
   test("should return status ok", async ({ request }) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const apiUrl = "http://localhost:3000";
 
     const response = await request.get(`${apiUrl}/api/status`);
 
