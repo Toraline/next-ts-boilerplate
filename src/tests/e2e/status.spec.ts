@@ -23,7 +23,7 @@ test.describe("GET /api/status", () => {
       },
     };
 
-    // Usamos toMatchObject para que o teste não quebre se você adicionar no futuro
+    // Usamos toMatchObject para que o teste não quebre se você adicionar no futuro.
     expect(data).toMatchObject(expectedStatus);
   });
 });
