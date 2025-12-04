@@ -57,7 +57,7 @@ export default function RolesTable({
       label: ROLES_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          <Link href={`/roles/${item.id}`} className="text-blue-500 hover:underline">
+          <Link href={`/admin/roles/${item.id}`} className="text-blue-500 hover:underline">
             {GLOBAL_UI.ACTIONS.EDIT}
           </Link>
           <button

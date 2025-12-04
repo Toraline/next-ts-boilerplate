@@ -5,10 +5,9 @@ import { useForm } from "react-hook-form";
 import { rolesListFiltersSchema } from "../schema";
 import { GLOBAL_UI } from "global/constants";
 import { ROLES_ERRORS } from "../constants/errors";
-import { Field } from "global/ui";
+import { Button, Field } from "global/ui";
 import { ROLES_UI } from "../constants/ui";
 import RolesTable from "../components/RolesTable";
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function RolesListView() {
@@ -156,11 +155,7 @@ export default function RolesListView() {
           </h3>
         </div>
       )}
-
-      {/* Create Role Link */}
-      <div className="mt-4">
-        <Link href="admin/roles/new">{ROLES_UI.LINKS.CREATE_ROLE}</Link>
-      </div>
+      <Button>Create Role</Button>
     </div>
   );
 }
