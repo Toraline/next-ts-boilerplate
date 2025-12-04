@@ -82,7 +82,7 @@ export default function PermissionsListView() {
         <Field
           {...register("search")}
           placeholder={PERMISSIONS_UI.PLACEHOLDERS.SEARCH}
-          id="search-categories"
+          id="search-permissions"
           error={errors.search?.message}
         />
         <select {...register("sortBy")} className="border rounded p-2">
@@ -159,7 +159,7 @@ export default function PermissionsListView() {
 
       {/* Create Permission Link */}
       <div className="mt-4">
-        <Link href="/permissions/new">{PERMISSIONS_UI.LINKS.CREATE_PERMISSION}</Link>
+        <Link href="/admin/permissions/new">{PERMISSIONS_UI.LINKS.CREATE_PERMISSION}</Link>
       </div>
     </div>
   );
