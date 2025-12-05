@@ -7,11 +7,13 @@ import { ROLE_ERRORS, ROLE_SUCCESSES, ROLES_UI } from "modules/roles/constants";
 import { useCreateRole } from "modules/roles/hooks/useCreateRole";
 import { createRoleSchema } from "modules/roles/schema";
 import { CreateRole } from "modules/roles/types";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export const FormNewRole = () => {
   const createRoleMutation = useCreateRole();
+  const router = useRouter();
 
   const onSubmit = (data: CreateRole) => {
     createRoleMutation.mutate(
@@ -22,6 +24,7 @@ export const FormNewRole = () => {
       {
         onSuccess: () => {
           toast.success(ROLE_SUCCESSES.CREATE_ROLE_SUCCESS);
+          router.push("/admin/roles");
         },
         onError: () => {
           toast.error(ROLE_ERRORS.CREATE_ROLE_ERROR);
