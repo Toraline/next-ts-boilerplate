@@ -81,20 +81,28 @@ export default function FormEditRole({
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <Field
-            label={"Name"}
+            label={ROLES_UI.LABELS.NAME}
             {...register("name")}
             id="role-name"
             type="text"
             error={errors.name?.message}
-            placeholder={"Digite o nome"}
+            placeholder={ROLES_UI.PLACEHOLDERS.NAME}
+          />
+          <Field
+            label={ROLES_UI.LABELS.KEY}
+            {...register("key")}
+            id="role-key"
+            type="text"
+            error={errors.key?.message}
+            placeholder={ROLES_UI.PLACEHOLDERS.KEY}
           />
         </div>
         <div>
           <TextArea
             {...register("description")}
             id="description"
-            label="Description"
-            placeholder="Digite a descrição"
+            label={ROLES_UI.LABELS.DESCRIPTION}
+            placeholder={ROLES_UI.PLACEHOLDERS.DESCRIPTION}
             error={errors.description?.message}
           />
         </div>

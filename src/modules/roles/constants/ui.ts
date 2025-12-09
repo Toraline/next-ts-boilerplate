@@ -5,7 +5,20 @@ export const ROLES_UI = {
   FORM_MESSAGES: {
     NO_CHANGES_DETECTED: "No changes detected. Please modify at least one field before saving.",
   },
+
+  LABELS: {
+    NAME: "Name",
+    KEY: "Key",
+    DESCRIPTION: "Description",
+  },
+
   LOADING: {
     LOADING_ROLE: "Loading role...",
+  },
+
+  PLACEHOLDERS: {
+    NAME: "Enter the role name",
+    KEY: "Enter the role key",
+    DESCRIPTION: "Enter the role description",
   },
 };
