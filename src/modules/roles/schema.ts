@@ -80,6 +80,7 @@ export const updateRoleSchema = z
   .object({
     name: roleNameSchema.optional(),
     description: roleDescriptionSchema,
+    key: roleKeySchema.optional(),
     permissionIds: z.array(permissionIdSchema).optional(),
   })
   .refine(
