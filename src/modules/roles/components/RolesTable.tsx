@@ -1,7 +1,6 @@
-import { Table, TableColumn } from "global/ui";
+import { Button, Table, TableColumn } from "global/ui";
 import { Role } from "../types";
 import { ROLES_UI } from "../constants/ui";
-import Link from "next/link";
 import { GLOBAL_UI } from "global/constants";
 
 type RolesTableProps = {
@@ -57,17 +56,20 @@ export default function RolesTable({
       label: ROLES_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          <Link href={`/admin/roles/${item.id}`} className="text-blue-500 hover:underline">
+          <Button
+            href={`/admin/roles/${item.id}`}
+            className="text-blue-500 hover:underline disabled:opacity-50 cursor-pointer"
+          >
             {GLOBAL_UI.ACTIONS.EDIT}
-          </Link>
-          <button
+          </Button>
+          <Button
             id="delete-button"
             type="button"
             className="text-red-500 hover:underline disabled:opacity-50
                   cursor-pointer"
           >
             Delete
-          </button>
+          </Button>
         </div>
       ),
     },
