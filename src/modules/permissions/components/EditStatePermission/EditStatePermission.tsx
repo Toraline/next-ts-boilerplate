@@ -39,8 +39,8 @@ export default function EditStatePermission({ permissionId }: { permissionId: st
 
     deletePermissionMutation.mutate(permission.id, {
       onSuccess: () => {
+        router.push("/admin/permissions");
         toast.success(PERMISSION_SUCCESSES.DELETE_PERMISSION_SUCCESS);
-        router.push("/permissions");
       },
       onError: () => {
         toast.error(PERMISSION_ERRORS.DELETE_PERMISSION_ERROR);
