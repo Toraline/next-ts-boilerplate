@@ -1,22 +1,22 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { GLOBAL_UI } from "global/constants";
-import { Field } from "global/ui";
-import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
-import { usePermissionsList } from "modules/permissions/hooks/usePermissionsList";
-import { ListPermissionsQuery, PermissionsListFilters } from "modules/permissions/server/types";
 import { useState } from "react";
+import { ListRolesQuery, RolesListFilters } from "../types";
+import { useRolesList } from "../hooks/useRolesList";
 import { useForm } from "react-hook-form";
-import PermissionsTable from "../../PermissionsTable/PermissionsTable";
-import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
+import { rolesListFiltersSchema } from "../schema";
+import { GLOBAL_UI } from "global/constants";
+import { ROLE_ERRORS } from "../constants/errors";
+import { ROLES_UI } from "../constants/ui";
+import RolesTable from "../components/RolesTable";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { permissionsListFiltersSchema } from "modules/permissions/schema";
+import { Field } from "global/ui";
 
-export default function PermissionsListView() {
-  const [filters, setFilters] = useState<PermissionsListFilters>({});
+export default function RolesListView() {
+  const [filters, setFilters] = useState<RolesListFilters>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
-  const query: ListPermissionsQuery = {
+  const query: ListRolesQuery = {
     page: currentPage,
     pageSize,
     sortBy: filters.sortBy || "createdAt",
@@ -24,14 +24,14 @@ export default function PermissionsListView() {
     search: filters.search,
   };
 
-  const { data: permissionsResponse, isLoading, error } = usePermissionsList(query);
+  const { data: rolesResponse, isLoading, error } = useRolesList(query);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PermissionsListFilters>({
-    resolver: zodResolver(permissionsListFiltersSchema),
+  } = useForm<RolesListFilters>({
+    resolver: zodResolver(rolesListFiltersSchema),
     defaultValues: {
       search: "",
       sortBy: "createdAt",
@@ -39,12 +39,12 @@ export default function PermissionsListView() {
     },
   });
 
-  const items = permissionsResponse?.items || [];
-  const total = permissionsResponse?.total || 0;
-  const page = permissionsResponse?.page || 1;
+  const items = rolesResponse?.items || [];
+  const total = rolesResponse?.total || 0;
+  const page = rolesResponse?.page || 1;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
-  const onFiltersSubmit = (data: PermissionsListFilters) => {
+  const onFiltersSubmit = (data: RolesListFilters) => {
     setFilters(data);
     setCurrentPage(1);
   };
@@ -59,7 +59,6 @@ export default function PermissionsListView() {
       sortBy: sortBy as "createdAt" | "name" | "updatedAt" | "key",
       sortDir,
     }));
-
     setCurrentPage(1);
   };
 
@@ -71,28 +70,29 @@ export default function PermissionsListView() {
   if (error) {
     return (
       <div className="flex flex-col items-center h-lvh">
-        <h1>{PERMISSION_ERRORS.ERROR_LOADING_PERMISSIONS}</h1>
+        <h1>{ROLE_ERRORS.ERROR_LOADING_ROLES}</h1>
         <p className="error">{GLOBAL_UI.MESSAGES.SOMETHING_WENT_WRONG}</p>
       </div>
     );
   }
+
   return (
     <div className="flex flex-col items-center h-lvh">
       <form onSubmit={handleSubmit(onFiltersSubmit)} className="flex gap-2 mb-4">
         <Field
           {...register("search")}
-          placeholder={PERMISSIONS_UI.PLACEHOLDERS.SEARCH}
-          id="search-permissions"
+          placeholder={ROLES_UI.PLACEHOLDERS.SEARCH}
+          id="search-roles"
           error={errors.search?.message}
         />
         <select {...register("sortBy")} className="border rounded p-2">
-          <option value="createdAt">{PERMISSIONS_UI.SORT_OPTIONS.CREATED_AT}</option>
+          <option value="createdAt">{ROLES_UI.SORT_OPTIONS.CREATED_AT}</option>
 
-          <option value="key">{PERMISSIONS_UI.SORT_OPTIONS.KEY}</option>
+          <option value="key">{ROLES_UI.SORT_OPTIONS.KEY}</option>
 
-          <option value="name">{PERMISSIONS_UI.SORT_OPTIONS.NAME}</option>
+          <option value="name">{ROLES_UI.SORT_OPTIONS.NAME}</option>
 
-          <option value="updatedAt">{PERMISSIONS_UI.SORT_OPTIONS.UPDATED_AT}</option>
+          <option value="updatedAt">{ROLES_UI.SORT_OPTIONS.UPDATED_AT}</option>
         </select>
         <select {...register("sortDir")} className="border rounded p-2">
           <option value="desc">{GLOBAL_UI.SORT.DESCENDING}</option>
@@ -125,17 +125,17 @@ export default function PermissionsListView() {
       <div className="mb-4">
         <p>
           {GLOBAL_UI.PAGINATION.SHOWING} {items.length} {GLOBAL_UI.PAGINATION.OF} {total}{" "}
-          {PERMISSIONS_UI.PAGINATION.PERMISSIONS} • {GLOBAL_UI.PAGINATION.PAGE} {page}{" "}
-          {GLOBAL_UI.PAGINATION.OF} {totalPages}
+          {ROLES_UI.PAGINATION.ROLES} • {GLOBAL_UI.PAGINATION.PAGE} {page} {GLOBAL_UI.PAGINATION.OF}{" "}
+          {totalPages}
         </p>
       </div>
 
-      {/* Permissions Table */}
+      {/* Roles Table */}
       {isLoading ? (
-        <div>{PERMISSIONS_UI.LOADING.LOADING_PERMISSIONS}</div>
+        <div>{ROLES_UI.LOADING.LOADING_ROLES}</div>
       ) : items.length > 0 ? (
         <>
-          <PermissionsTable
+          <RolesTable
             items={items}
             loading={isLoading}
             totalPages={totalPages}
@@ -150,16 +150,15 @@ export default function PermissionsListView() {
         </>
       ) : (
         <div className="no-content">
-          <h1 className="no-content__title">{PERMISSIONS_UI.EMPTY_STATES.NO_PERMISSIONS_FOUND}</h1>
+          <h1 className="no-content__title">{ROLES_UI.EMPTY_STATES.NO_ROLES_FOUND}</h1>
           <h3 className="no-content__subtitle">
-            {Object.keys(filters).length > 0 && PERMISSIONS_UI.EMPTY_STATES.TRY_ADJUSTING_FILTERS}
+            {Object.keys(filters).length > 0 && ROLES_UI.EMPTY_STATES.TRY_ADJUSTING_FILTERS}
           </h3>
         </div>
       )}
-
-      {/* Create Permission Link */}
+      {/* Create Role Link */}
       <div className="mt-4">
-        <Link href="/admin/permissions/new">{PERMISSIONS_UI.LINKS.CREATE_PERMISSION}</Link>
+        <Link href="/admin/roles/new">{ROLES_UI.LINKS.CREATE_ROLE}</Link>
       </div>
     </div>
   );
