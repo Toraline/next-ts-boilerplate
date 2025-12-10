@@ -6,7 +6,7 @@ import { rolesListFiltersSchema } from "../schema";
 import { GLOBAL_UI } from "global/constants";
 import { ROLE_ERRORS } from "../constants/errors";
 import { ROLES_UI } from "../constants/ui";
-import RolesTable from "../components/RolesTable";
+import RolesTable from "../components/RolesTable/RolesTable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Field } from "global/ui";
