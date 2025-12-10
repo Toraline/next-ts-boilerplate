@@ -1,10 +1,12 @@
 import { GLOBAL_UI } from "global/constants";
 import { Table, TableColumn } from "global/ui";
+import { PERMISSION_SUCCESSES } from "modules/permissions/constants";
 import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
 import { useDeletePermission } from "modules/permissions/hooks/useDeletePermission";
 import { Permission } from "modules/permissions/server/types";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type PermissionsTableProps = {
   items: Permission[];
@@ -31,8 +33,11 @@ export default function PermissionsTable({
     if (!confirm(PERMISSIONS_UI.CONFIRMATIONS.DELETE_PERMISSION)) return;
 
     deletePermissionMutation.mutate(id, {
-      onError: (error) => {
-        console.error(PERMISSION_ERRORS.DELETE_PERMISSION_ERROR, error);
+      onSuccess: () => {
+        toast.success(PERMISSION_SUCCESSES.DELETE_PERMISSION_SUCCESS);
+      },
+      onError: () => {
+        toast.error(PERMISSION_ERRORS.DELETE_PERMISSION_ERROR);
       },
     });
   };
@@ -71,7 +76,7 @@ export default function PermissionsTable({
       label: PERMISSIONS_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          <Link href={`/permissions/${item.id}`} className="text-blue-500 hover:underline">
+          <Link href={`permissions/${item.id}`} className="text-blue-500 hover:underline">
             {GLOBAL_UI.ACTIONS.EDIT}
           </Link>
           <button

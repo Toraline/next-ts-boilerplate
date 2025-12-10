@@ -118,3 +118,11 @@ export const rolePermissionAssignmentSchema = z.object({
 export const listRolePermissionsResponseSchema = z.object({
   items: z.array(rolePermissionAssignmentSchema),
 });
+
+export const rolesListFiltersSchema = listRolesQuerySchema
+  .pick({
+    search: true,
+    sortBy: true,
+    sortDir: true,
+  })
+  .partial();

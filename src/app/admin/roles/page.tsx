@@ -1,5 +1,10 @@
 "use client";
+import RolesListView from "modules/roles/views/RolesListView";
 
 export default function Page() {
-  return <h1>Roles</h1>;
+  return (
+    <div>
+      <RolesListView />
+    </div>
+  );
 }
