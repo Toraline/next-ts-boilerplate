@@ -1,6 +1,12 @@
 import z from "zod";
-import { createRoleSchema, rolePublicSchema, updateRoleSchema } from "./schema";
-import { listRolesQuerySchema, listRolesResponseSchema, rolesListFiltersSchema } from "./schema";
+import {
+  listRolesQuerySchema,
+  listRolesResponseSchema,
+  rolePublicSchema,
+  rolesListFiltersSchema,
+  createRoleSchema,
+  updateRoleSchema,
+} from "./schema";
 
 export type UpdateRole = z.infer<typeof updateRoleSchema>;
 
