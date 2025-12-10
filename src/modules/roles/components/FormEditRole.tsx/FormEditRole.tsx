@@ -66,7 +66,7 @@ export default function FormEditRole({
           toast.success(ROLES_SUCCESSES.UPDATE_ROLE_SUCCESS);
         },
         onError: () => {
-          toast.error(ROLE_ERRORS.UPDDATE_ERROR);
+          toast.error(ROLE_ERRORS.UPDATE_ROLE_ERROR);
         },
       },
     );
