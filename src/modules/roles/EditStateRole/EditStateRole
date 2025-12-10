@@ -1,0 +1,28 @@
+const deleteRoleMutation = useDeleteRole();
+const router = useRouter()
+
+const onDelete = async ()=>{
+    if(!role || !confirm(ROLES_UI.CONFIRMATIONS.DELETE_ROLE)) return;
+
+    deleteRoleMutation.mutate(role.id, {
+        onSuccess: ()=>{
+            toast.success(ROLES_SUCCESSES.DELETE_ROLE)
+            router.push("/roles")
+        },
+        onError: ()=>{
+            toast.error(ROLE_ERRORS.DELETE_ROLE);
+        }
+    });
+return
+    <Button
+              variant="transparent"
+              size="xs"
+              id="delete-button"
+              type="button"
+              onClick={onDelete}
+              disabled={deleteCategoryMutation.isPending}
+            >
+              <Delete />
+              {deleteCategoryMutation.isPending && GLOBAL_UI.BUTTONS.DELETING}
+            </Button>
+}
