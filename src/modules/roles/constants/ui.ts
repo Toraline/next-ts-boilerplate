@@ -1,18 +1,18 @@
 /**
- * Permission-specific UI text constants
- * All text that appears in permission-related components
+ * Role-specific UI text constants
+ * All text that appears in role-related components
  */
 
-export const PERMISSIONS_UI = {
+export const ROLES_UI = {
   //Confirmations
   CONFIRMATIONS: {
-    DELETE_PERMISSION: "Are you sure you want to delete this permission?",
+    DELETE_ROLE: "Are you sure you want to delete this role?",
   },
 
   //Empty States
   EMPTY_STATES: {
-    PERMISSION_NOT_FOUND: "Permission not found",
-    NO_PERMISSIONS_FOUND: "No permissions found",
+    ROLE_NOT_FOUND: "Role not found",
+    NO_ROLES_FOUND: "No roles found",
     TRY_ADJUSTING_FILTERS: "Try adjusting your search or filters",
   },
 
@@ -23,8 +23,8 @@ export const PERMISSIONS_UI = {
 
   //Headers and Titles
   HEADERS: {
-    PERMISSIONS: "Permissions",
-    NEW_PERMISSION: "New Permission",
+    ROLES: "Roles",
+    NEW_ROLE: "New Role",
   },
 
   //Labels
@@ -36,25 +36,25 @@ export const PERMISSIONS_UI = {
 
   //Links
   LINKS: {
-    CREATE_PERMISSION: "Create Permission",
+    CREATE_ROLE: "Create Role",
   },
 
   //Loading States
   LOADING: {
-    LOADING_PERMISSIONS: "Loading permissions...",
-    LOADING_PERMISSION: "Loading permission...",
+    LOADING_ROLES: "Loading roles...",
+    LOADING_ROLE: "Loading role...",
   },
 
   // Pagination
   PAGINATION: {
-    PERMISSIONS: "Permissions",
+    ROLES: "roles",
   },
 
   //Placeholders
   PLACEHOLDERS: {
-    KEY: "Enter the permission key",
-    NAME: "Enter the permission name",
-    DESCRIPTION: "Enter the permission description",
+    KEY: "Enter the role key",
+    NAME: "Enter the role name",
+    DESCRIPTION: "Enter the role description",
     SEARCH: "Search by key/name/description",
   },
 
@@ -63,10 +63,9 @@ export const PERMISSIONS_UI = {
     CREATED_AT: "Created Date",
     KEY: "Key",
     NAME: "Name",
-    UPDATED_AT: "Updated Date",
+    UPDATED_AT: "Updated At",
   },
 
-  // Table Columns
   TABLE_COLUMNS: {
     ACTIONS: "Actions",
     CREATED: "Created",
