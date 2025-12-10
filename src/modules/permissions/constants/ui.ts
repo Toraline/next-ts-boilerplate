@@ -47,7 +47,7 @@ export const PERMISSIONS_UI = {
 
   // Pagination
   PAGINATION: {
-    PERMISSIONS: "permissions",
+    PERMISSIONS: "Permissions",
   },
 
   //Placeholders

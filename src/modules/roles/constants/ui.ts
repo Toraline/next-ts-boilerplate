@@ -63,10 +63,9 @@ export const ROLES_UI = {
     CREATED_AT: "Created Date",
     KEY: "Key",
     NAME: "Name",
-    UPDATED_AT: "Updated Date",
+    UPDATED_AT: "Updated At",
   },
 
-  // Table Columns
   TABLE_COLUMNS: {
     ACTIONS: "Actions",
     CREATED: "Created",
