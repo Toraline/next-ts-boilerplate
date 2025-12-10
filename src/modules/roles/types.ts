@@ -4,7 +4,10 @@ import {
   listRolesResponseSchema,
   rolePublicSchema,
   rolesListFiltersSchema,
+  createRoleSchema,
 } from "./schema";
+
+export type CreateRole = z.infer<typeof createRoleSchema>;
 
 export type ListRolesQuery = z.infer<typeof listRolesQuerySchema>;
 

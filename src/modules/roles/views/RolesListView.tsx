@@ -4,7 +4,7 @@ import { useRolesList } from "../hooks/useRolesList";
 import { useForm } from "react-hook-form";
 import { rolesListFiltersSchema } from "../schema";
 import { GLOBAL_UI } from "global/constants";
-import { ROLES_ERRORS } from "../constants/errors";
+import { ROLE_ERRORS } from "../constants/errors";
 import { ROLES_UI } from "../constants/ui";
 import RolesTable from "../components/RolesTable";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,7 +70,7 @@ export default function RolesListView() {
   if (error) {
     return (
       <div className="flex flex-col items-center h-lvh">
-        <h1>{ROLES_ERRORS.ERROR_LOADING_ROLES}</h1>
+        <h1>{ROLE_ERRORS.ERROR_LOADING_ROLES}</h1>
         <p className="error">{GLOBAL_UI.MESSAGES.SOMETHING_WENT_WRONG}</p>
       </div>
     );
