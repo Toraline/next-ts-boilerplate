@@ -1,7 +1,10 @@
 import { Button, Table, TableColumn } from "global/ui";
-import { Role } from "../types";
-import { ROLES_UI } from "../constants/ui";
+import { Role } from "../../types";
+import { ROLES_UI } from "../../constants/ui";
 import { GLOBAL_UI } from "global/constants";
+import { toast } from "sonner";
+import { ROLE_ERRORS, ROLE_SUCCESSES } from "../../constants";
+import { useDeleteRole } from "../../hooks/useDeleteRole";
 
 type RolesTableProps = {
   items: Role[];
@@ -22,6 +25,21 @@ export default function RolesTable({
   onSortChange,
   currentSort,
 }: RolesTableProps) {
+  const deleteRoleMutation = useDeleteRole();
+
+  const onDelete = async (id: string) => {
+    if (!confirm(ROLES_UI.CONFIRMATIONS.DELETE_ROLE)) return;
+
+    deleteRoleMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success(ROLE_SUCCESSES.DELETE_ROLE_SUCCESS);
+      },
+      onError: () => {
+        toast.error(ROLE_ERRORS.DELETE_ROLE_ERROR);
+      },
+    });
+  };
+
   const columns: TableColumn<Role>[] = [
     {
       key: "key",
@@ -66,10 +84,15 @@ export default function RolesTable({
             id="delete-button"
             type="button"
             className="text-red-500 hover:underline disabled:opacity-50
-                  cursor-pointer"
+            cursor-pointer"
+            onClick={() => onDelete(item.id)}
+            disabled={deleteRoleMutation.isPending}
           >
-            Delete
+            {deleteRoleMutation.isPending ? GLOBAL_UI.BUTTONS.DELETING : GLOBAL_UI.ACTIONS.DELETE}
           </Button>
+          {deleteRoleMutation.error && (
+            <p className="error text-sm">{deleteRoleMutation.error.message}</p>
+          )}
         </div>
       ),
     },
