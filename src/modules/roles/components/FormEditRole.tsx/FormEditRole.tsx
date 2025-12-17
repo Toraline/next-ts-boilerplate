@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GLOBAL_UI } from "global/constants";
 import { Button, Field, TextArea } from "global/ui";
+import { Checkbox } from "global/ui/Checkbox";
+import { usePermissionsList } from "modules/permissions/hooks/usePermissionsList";
 import { ROLE_ERRORS } from "modules/roles/constants/errors";
 import { ROLES_SUCCESSES } from "modules/roles/constants/successes";
 import { ROLES_UI } from "modules/roles/constants/ui";
@@ -11,18 +13,26 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function FormEditRole({
-  initialState,
-  roleId,
-  onSuccess,
-}: {
+type FormEditRoleProps = {
+  checked: boolean;
   initialState: Role;
   roleId: string;
-  checked?: boolean;
   onSuccess?: () => void;
-}) {
+};
+
+export default function FormEditRole({ initialState, roleId, onSuccess }: FormEditRoleProps) {
+  const permissions = usePermissionsList();
+  console.log({ permissions });
+
   const updateRoleMutation = useUpdateRole();
 
+  const initialRolePermission = initialState.permissions.map((permission) => permission.id);
+  const defaultPermissionsIds = {
+    cmif667uf0001cknk1qutkuqe: true,
+    cmif667uo0006cknk8l7c8f3k: true,
+    cmif667uo0004cknknxia66ka: true,
+    cmif667uh0002cknkuxl708ny: true,
+  };
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
   const {
     register,
@@ -34,6 +44,12 @@ export default function FormEditRole({
       key: initialState.key,
       name: initialState.name,
       description: initialState.description || "",
+      permissionIds: [
+        "cmif667uf0001cknk1qutkuqe",
+        "cmif667uo0006cknk8l7c8f3k",
+        "cmif667uo0004cknknxia66ka",
+        "cmif667uh0002cknkuxl708ny",
+      ],
     },
   });
 
@@ -51,6 +67,9 @@ export default function FormEditRole({
 
     if (data.description !== initialState.description || "") {
       updates.description = data.description;
+    }
+    if (data.permissionIds !== initialRolePermission) {
+      updates.permissionIds = data.permissionIds;
     }
 
     if (Object.keys(updates).length === 0) {
@@ -106,8 +125,25 @@ export default function FormEditRole({
             error={errors.description?.message}
           />
         </div>
+        <div>
+          <h1>Permissions</h1>
+          {permissions.data?.items.map((permission) => {
+            const isLocked = defaultPermissionsIds[permission.id];
+            return (
+              <div>
+                <Checkbox
+                  id={permission.id}
+                  label={permission.name}
+                  value={permission.id}
+                  {...register("permissionIds")}
+                  disabled={isLocked}
+                ></Checkbox>
+              </div>
+            );
+          })}
+        </div>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}{" "}
+          {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
         </Button>
       </form>
     </div>
