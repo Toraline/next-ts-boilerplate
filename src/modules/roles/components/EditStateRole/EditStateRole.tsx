@@ -46,13 +46,12 @@ export default function EditStateRole({ roleId }: { roleId: string }) {
   if (!role) {
     return <div>{ROLES_UI.EMPTY_STATES.ROLE_NOT_FOUND}</div>;
   }
-
   return (
     <div>
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">{role.name}</h1>
       </div>
-      <FormEditRole initialState={role} roleId={roleId} />
+      <FormEditRole initialState={role} roleId={role.id} />
       <Button
         id="delete-button"
         type="button"
