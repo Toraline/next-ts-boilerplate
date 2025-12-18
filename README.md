@@ -243,6 +243,7 @@ Audit logging exposes a simple contract via `modules/audit/types.ts`, keeping th
 - **Module Architecture**: See `src/modules/README.md` for detailed guidelines
 - **Categories Example**: Check `src/modules/categories/README.md` for implementation details
 - **Adding Features**: Follow the step-by-step guide in the modules documentation
+- **UI flows and interactions**: Check `https://toraline.atlassian.net/wiki/x/AgCBAQ` for documentation with screenshots
 
 ---
 
