@@ -10,6 +10,7 @@ import { ROLE_SUCCESSES } from "modules/roles/constants";
 import { GLOBAL_UI } from "global/constants";
 import { Button } from "global/ui";
 import { useRouter } from "next/navigation";
+import Test from "./test";
 
 export default function EditStateRole({ roleId }: { roleId: string }) {
   const { data: role, isLoading, error } = useRole(roleId);
@@ -52,6 +53,7 @@ export default function EditStateRole({ roleId }: { roleId: string }) {
         <h1 className="text-3xl font-semibold">{role.name}</h1>
       </div>
       <FormEditRole initialState={role} roleId={role.id} />
+      <Test />
       <Button
         id="delete-button"
         type="button"

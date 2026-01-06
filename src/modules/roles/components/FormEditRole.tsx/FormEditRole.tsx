@@ -10,7 +10,7 @@ import { useUpdateRole } from "modules/roles/hooks/useUpdateRole";
 import { createRoleSchema } from "modules/roles/schema";
 import { CreateRole, Role } from "modules/roles/types";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 type FormEditRoleProps = {
@@ -20,20 +20,28 @@ type FormEditRoleProps = {
 };
 
 export default function FormEditRole({ initialState, roleId, onSuccess }: FormEditRoleProps) {
-  const permissions = usePermissionsList();
-  console.log({ permissions });
+  const fetchPermissions = usePermissionsList();
 
   const updateRoleMutation = useUpdateRole();
 
-  const initialRolePermission = initialState.permissions.map((permission) => permission.id);
-  const defaultPermissionsIds = {
-    cmif667uf0001cknk1qutkuqe: true,
-    cmif667uo0006cknk8l7c8f3k: true,
-    cmif667uo0004cknknxia66ka: true,
-    cmif667uh0002cknkuxl708ny: true,
+  const initialRolePermission = initialState.permissions.map((permission) => permission.key);
+
+  const uncheckedPermissions =
+    fetchPermissions.data?.items.filter(
+      (permission) => !initialRolePermission.includes(permission.key),
+    ) || [];
+
+  const lockedPermissions = {
+    "categories.view": true,
+    "categories.edit": true,
+    "tasks.view": true,
+    "tasks.edit": true,
   };
+
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
+
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -43,12 +51,16 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
       key: initialState.key,
       name: initialState.name,
       description: initialState.description || "",
-      permissionIds: [
-        "cmif667uf0001cknk1qutkuqe",
-        "cmif667uo0006cknk8l7c8f3k",
-        "cmif667uo0004cknknxia66ka",
-        "cmif667uh0002cknkuxl708ny",
-      ],
+      permissionIds: initialState.permissions,
+      // [
+      //   { key: "roles.manage", value: false, name: "Manage Roles" },
+      //   { key: "users.manage", value: false, name: "Manage Users" },
+      //   { key: "users.invite", value: false, name: "Invite Users" },
+      //   { key: "categories.view", value: true, name: "View Categories" },
+      //   { key: "categories.edit", value: true, name: "Edit Categories" },
+      //   { key: "tasks.view", value: true, name: "View Tasks" },
+      //   { key: "tasks.edit", value: true, name: "Edit Tasks" },
+      // ],
     },
   });
 
@@ -63,11 +75,11 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
     if (data.name !== initialState.name) {
       updates.name = data.name;
     }
-
     if (data.description !== initialState.description || "") {
       updates.description = data.description;
     }
-    if (data.permissionIds !== initialRolePermission) {
+
+    if (data.permissionIds !== initialState.permissions) {
       updates.permissionIds = data.permissionIds;
     }
 
@@ -126,20 +138,34 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
         </div>
         <div>
           <h1>Permissions</h1>
-          {permissions.data?.items.map((permission) => {
-            const isLocked = defaultPermissionsIds[permission.id];
-            return (
-              <div>
-                <Checkbox
-                  id={permission.id}
-                  label={permission.name}
-                  value={permission.id}
-                  {...register("permissionIds")}
-                  disabled={isLocked}
-                ></Checkbox>
-              </div>
-            );
-          })}
+          {fetchPermissions.data?.items.map((permission) => (
+            <Controller
+              name="permissionIds"
+              control={control}
+              render={({ field }) => {
+                const value = field.value ?? [];
+                const isChecked = value.some((p) => p.key === permission.key);
+
+                return (
+                  <Checkbox
+                    id={permission.key}
+                    label={permission.name}
+                    checked={isChecked}
+                    disabled={lockedPermissions[permission.key]}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+
+                      if (checked) {
+                        field.onChange([...value, permission]);
+                      } else {
+                        field.onChange(value.filter((p) => p.key !== permission.key));
+                      }
+                    }}
+                  />
+                );
+              }}
+            />
+          ))}
         </div>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}

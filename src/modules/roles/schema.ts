@@ -2,6 +2,7 @@ import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
 import { isoDateTimeStringSchema } from "lib/validation/datetime";
 import { paginationSchema, sortDirectionSchema } from "lib/validation/pagination";
+import { permissionDescriptionSchema } from "modules/permissions";
 
 export const roleIdSchema = z.cuid();
 export const roleKeySchema = z
@@ -27,7 +28,16 @@ export const createRoleSchema = z.object({
   key: roleKeySchema,
   name: roleNameSchema,
   description: roleDescriptionSchema,
-  permissionIds: z.array(permissionIdSchema).optional(),
+  permissionIds: z
+    .array(
+      z.object({
+        id: z.cuid(),
+        name: z.string(),
+        key: z.string(),
+        description: permissionDescriptionSchema,
+      }),
+    )
+    .optional(),
 });
 
 export const listRolesQuerySchema = paginationSchema.extend({
@@ -61,6 +71,7 @@ export const rolePublicSchema = z.object({
   updatedAt: isoDateTimeStringSchema,
   permissions: z.array(
     z.object({
+      // value: z.boolean().optional(),
       id: permissionIdSchema,
       key: z.string().trim(),
       name: z.string().trim(),
