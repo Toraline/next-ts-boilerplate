@@ -24,8 +24,6 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
 
   const updateRoleMutation = useUpdateRole();
 
-  const initialRolePermission = initialState.permissions.map((permission) => permission.key);
-
   const lockedPermissions = {
     "categories.view": true,
     "categories.edit": true,
@@ -47,15 +45,6 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
       name: initialState.name,
       description: initialState.description || "",
       permissionIds: initialState.permissions,
-      // [
-      //   { key: "roles.manage", value: false, name: "Manage Roles" },
-      //   { key: "users.manage", value: false, name: "Manage Users" },
-      //   { key: "users.invite", value: false, name: "Invite Users" },
-      //   { key: "categories.view", value: true, name: "View Categories" },
-      //   { key: "categories.edit", value: true, name: "Edit Categories" },
-      //   { key: "tasks.view", value: true, name: "View Tasks" },
-      //   { key: "tasks.edit", value: true, name: "Edit Tasks" },
-      // ],
     },
   });
 
