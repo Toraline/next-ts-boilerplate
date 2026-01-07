@@ -34,7 +34,6 @@ export const roleUpdate = (id: string, data: Prisma.RoleUpdateInput) =>
   });
 
 export const rolePermissionCreateMany = async (roleId: string, permissionKeys: string[]) => {
-  // Convert permission keys to IDs for Prisma
   const permissions = await permissionsByKeys(permissionKeys);
   const permissionIdMap = new Map(permissions.map((permission) => [permission.key, permission.id]));
   const permissionIds = permissionKeys.map((key) => {
@@ -53,7 +52,6 @@ export const rolePermissionCreateMany = async (roleId: string, permissionKeys: s
 };
 
 export const rolePermissionCreate = async (roleId: string, permissionKey: string) => {
-  // Convert permission key to ID for Prisma
   const permissions = await permissionsByKeys([permissionKey]);
   if (!permissions.length) throw new Error(`Permission with key "${permissionKey}" not found`);
   const [permission] = permissions;
@@ -64,7 +62,6 @@ export const rolePermissionCreate = async (roleId: string, permissionKey: string
     include: { permission: true },
   });
 
-  // Convert back to permissionKey for the entity schema
   return {
     ...result,
     permissionKey: result.permission.key,
@@ -77,7 +74,6 @@ export const rolePermissionsDeleteMany = (roleId: string) =>
   });
 
 export const rolePermissionDelete = async (roleId: string, permissionKey: string) => {
-  // Convert permission key to ID for Prisma
   const permissions = await permissionsByKeys([permissionKey]);
   if (!permissions.length) throw new Error(`Permission with key "${permissionKey}" not found`);
   const [permission] = permissions;
@@ -99,7 +95,6 @@ export const roleDelete = (id: string) =>
   });
 
 export const rolePermissionByIds = async (roleId: string, permissionKey: string) => {
-  // Convert permission key to ID for Prisma
   const permissions = await permissionsByKeys([permissionKey]);
   if (!permissions.length) return null;
   const [permission] = permissions;
@@ -112,7 +107,6 @@ export const rolePermissionByIds = async (roleId: string, permissionKey: string)
 
   if (!result) return null;
 
-  // Convert back to permissionKey for the entity schema
   return {
     ...result,
     permissionKey: result.permission.key,
