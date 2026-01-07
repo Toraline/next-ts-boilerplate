@@ -2,7 +2,6 @@ import { z } from "zod";
 import { VALIDATION_MESSAGES } from "lib/constants";
 import { isoDateTimeStringSchema } from "lib/validation/datetime";
 import { paginationSchema, sortDirectionSchema } from "lib/validation/pagination";
-import { permissionDescriptionSchema } from "modules/permissions";
 
 export const roleIdSchema = z.cuid();
 export const roleKeySchema = z
@@ -23,21 +22,13 @@ export const roleDescriptionSchema = z
   .optional();
 
 export const permissionIdSchema = z.cuid();
+export const permissionKeySchema = z.string().trim();
 
 export const createRoleSchema = z.object({
   key: roleKeySchema,
   name: roleNameSchema,
   description: roleDescriptionSchema,
-  permissionIds: z
-    .array(
-      z.object({
-        id: z.cuid(),
-        name: z.string(),
-        key: z.string(),
-        description: permissionDescriptionSchema,
-      }),
-    )
-    .optional(),
+  permissionKeys: z.array(z.string()).optional(),
 });
 
 export const listRolesQuerySchema = paginationSchema.extend({
@@ -69,15 +60,7 @@ export const rolePublicSchema = z.object({
   description: roleDescriptionSchema,
   createdAt: isoDateTimeStringSchema,
   updatedAt: isoDateTimeStringSchema,
-  permissions: z.array(
-    z.object({
-      // value: z.boolean().optional(),
-      id: permissionIdSchema,
-      key: z.string().trim(),
-      name: z.string().trim(),
-      description: z.string().nullable(),
-    }),
-  ),
+  permissions: z.array(z.string()).optional(),
 });
 
 export const listRolesResponseSchema = z.object({
@@ -92,39 +75,33 @@ export const updateRoleSchema = z
     name: roleNameSchema.optional(),
     description: roleDescriptionSchema,
     key: roleKeySchema.optional(),
-    permissionIds: z.array(permissionIdSchema).optional(),
+    permissionKeys: z.array(permissionKeySchema).optional(),
   })
   .refine(
     (value) =>
       typeof value.name !== "undefined" ||
       typeof value.description !== "undefined" ||
-      typeof value.permissionIds !== "undefined",
+      typeof value.permissionKeys !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
 
 export const assignRolePermissionSchema = z.object({
-  permissionId: permissionIdSchema,
+  permissionKey: permissionKeySchema,
 });
 
 export const rolePermissionEntitySchema = z.object({
   roleId: roleIdSchema,
-  permissionId: permissionIdSchema,
+  permissionKey: permissionKeySchema,
   createdAt: z.date(),
 });
 
 export const rolePermissionPublicSchema = z.object({
   roleId: roleIdSchema,
-  permissionId: permissionIdSchema,
+  permissionKey: permissionKeySchema,
   createdAt: isoDateTimeStringSchema,
 });
 
-export const rolePermissionAssignmentSchema = z.object({
-  id: permissionIdSchema,
-  key: z.string().trim(),
-  name: z.string().trim(),
-  description: z.string().nullable(),
-  assignedAt: isoDateTimeStringSchema,
-});
+export const rolePermissionAssignmentSchema = z.array(permissionKeySchema);
 
 export const listRolePermissionsResponseSchema = z.object({
   items: z.array(rolePermissionAssignmentSchema),

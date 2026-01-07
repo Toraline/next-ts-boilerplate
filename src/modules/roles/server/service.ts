@@ -17,15 +17,9 @@ import {
 } from "../schema";
 import * as roleRepo from "./repo";
 
-function mapPermissionToPublic(raw: unknown) {
+function mapPermissionToPublic(raw: unknown): string {
   const entity = permissionEntitySchema.parse(raw);
-
-  return {
-    id: entity.id,
-    key: entity.key,
-    name: entity.name,
-    description: entity.description,
-  };
+  return entity.key;
 }
 
 function mapRoleToPublic(raw: unknown) {
@@ -53,13 +47,13 @@ export async function createRole(raw: unknown, options?: AuditLogOptions) {
   const existing = await roleRepo.roleByKey(key);
   if (existing) throw new ConflictError("Role key already exists");
 
-  const permissionIds = payload.permissionIds ?? [];
-  const uniquePermissionIds = Array.from(new Set(permissionIds));
+  const permissionKeys = payload.permissionKeys ?? [];
+  const uniquePermissionKeys = Array.from(new Set(permissionKeys));
 
-  if (uniquePermissionIds.length) {
-    const permissions = await roleRepo.permissionsByIds(uniquePermissionIds);
+  if (uniquePermissionKeys.length) {
+    const permissions = await roleRepo.permissionsByKeys(uniquePermissionKeys);
 
-    if (permissions.length !== uniquePermissionIds.length) {
+    if (permissions.length !== uniquePermissionKeys.length) {
       throw new NotFoundError("One or more permissions were not found");
     }
   }
@@ -73,8 +67,8 @@ export async function createRole(raw: unknown, options?: AuditLogOptions) {
         : (payload.description ?? null),
   });
 
-  if (uniquePermissionIds.length) {
-    await roleRepo.rolePermissionCreateMany(created.id, uniquePermissionIds);
+  if (uniquePermissionKeys.length) {
+    await roleRepo.rolePermissionCreateMany(created.id, uniquePermissionKeys);
   }
 
   const role = await roleRepo.roleById(created.id);
@@ -156,20 +150,20 @@ export async function updateRole(id: string, raw: unknown, options?: AuditLogOpt
     await roleRepo.roleUpdate(id, updates);
   }
 
-  if (typeof payload.permissionIds !== "undefined") {
-    const uniquePermissionIds = Array.from(new Set(payload.permissionIds));
+  if (typeof payload.permissionKeys !== "undefined") {
+    const uniquePermissionKeys = Array.from(new Set(payload.permissionKeys));
 
-    if (uniquePermissionIds.length) {
-      const permissions = await roleRepo.permissionsByIds(uniquePermissionIds);
-      if (permissions.length !== uniquePermissionIds.length) {
+    if (uniquePermissionKeys.length) {
+      const permissions = await roleRepo.permissionsByKeys(uniquePermissionKeys);
+      if (permissions.length !== uniquePermissionKeys.length) {
         throw new NotFoundError("One or more permissions were not found");
       }
     }
 
     await roleRepo.rolePermissionsDeleteMany(id);
 
-    if (uniquePermissionIds.length) {
-      await roleRepo.rolePermissionCreateMany(id, uniquePermissionIds);
+    if (uniquePermissionKeys.length) {
+      await roleRepo.rolePermissionCreateMany(id, uniquePermissionKeys);
     }
   }
 
@@ -224,10 +218,10 @@ function mapPermissionAssignment(raw: unknown) {
     .parse(raw);
 
   return rolePermissionAssignmentSchema.parse({
-    id: entity.permission.id,
+    // id: entity.permission.id,
     key: entity.permission.key,
-    name: entity.permission.name,
-    description: entity.permission.description,
+    // name: entity.permission.name,
+    // description: entity.permission.description,
     assignedAt: entity.createdAt.toISOString(),
   });
 }
@@ -242,13 +236,13 @@ export async function assignPermissionToRole(
   const role = await roleRepo.roleById(roleId);
   if (!role) throw new NotFoundError("Role not found");
 
-  const permissions = await roleRepo.permissionsByIds([payload.permissionId]);
+  const permissions = await roleRepo.permissionsByKeys([payload.permissionKey]);
   if (!permissions.length) throw new NotFoundError("Permission not found");
 
-  const existing = await roleRepo.rolePermissionByIds(roleId, payload.permissionId);
+  const existing = await roleRepo.rolePermissionByIds(roleId, payload.permissionKey);
   if (existing) throw new ConflictError("Role already has this permission");
 
-  const created = await roleRepo.rolePermissionCreate(roleId, payload.permissionId);
+  const created = await roleRepo.rolePermissionCreate(roleId, payload.permissionKey);
 
   const assignment = mapRolePermissionToPublic(created);
 
@@ -257,7 +251,7 @@ export async function assignPermissionToRole(
     action: "role.permission.assigned",
     targetType: "role",
     targetId: roleId,
-    metadata: { roleId, permissionId: payload.permissionId },
+    metadata: { roleId, permissionKey: payload.permissionKey },
   });
 
   return assignment;
@@ -265,23 +259,23 @@ export async function assignPermissionToRole(
 
 export async function removePermissionFromRole(
   roleId: string,
-  permissionId: string,
+  permissionKey: string,
   options?: AuditLogOptions,
 ) {
   const role = await roleRepo.roleById(roleId);
   if (!role) throw new NotFoundError("Role not found");
 
-  const assignment = await roleRepo.rolePermissionByIds(roleId, permissionId);
+  const assignment = await roleRepo.rolePermissionByIds(roleId, permissionKey);
   if (!assignment) throw new NotFoundError("Role does not have this permission");
 
-  await roleRepo.rolePermissionDelete(roleId, permissionId);
+  await roleRepo.rolePermissionDelete(roleId, permissionKey);
 
   await recordAuditLog({
     ...resolveAuditActorFromOptions(options),
     action: "role.permission.removed",
     targetType: "role",
     targetId: roleId,
-    metadata: { roleId, permissionId },
+    metadata: { roleId, permissionKey },
   });
 }
 

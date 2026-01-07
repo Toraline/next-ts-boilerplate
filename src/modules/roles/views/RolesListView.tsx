@@ -43,6 +43,7 @@ export default function RolesListView() {
   const total = rolesResponse?.total || 0;
   const page = rolesResponse?.page || 1;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  console.log({ items });
 
   const onFiltersSubmit = (data: RolesListFilters) => {
     setFilters(data);
