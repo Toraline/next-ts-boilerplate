@@ -24,12 +24,7 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
 
   const updateRoleMutation = useUpdateRole();
 
-  const initialRolePermission = initialState.permissions.map((permission) => permission.key);
-
-  const uncheckedPermissions =
-    fetchPermissions.data?.items.filter(
-      (permission) => !initialRolePermission.includes(permission.key),
-    ) || [];
+  // const initialRolePermission = initialState.permissions.map((permission) => permission.key);
 
   const lockedPermissions = {
     "categories.view": true,
