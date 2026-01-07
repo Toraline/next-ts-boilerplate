@@ -26,11 +26,6 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
 
   const initialRolePermission = initialState.permissions.map((permission) => permission.key);
 
-  const uncheckedPermissions =
-    fetchPermissions.data?.items.filter(
-      (permission) => !initialRolePermission.includes(permission.key),
-    ) || [];
-
   const lockedPermissions = {
     "categories.view": true,
     "categories.edit": true,
