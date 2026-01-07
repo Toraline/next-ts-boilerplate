@@ -135,11 +135,12 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
           <h1>Permissions</h1>
           {fetchPermissions.data?.items.map((permission) => (
             <Controller
+              key={permission.key}
               name="permissionKeys"
               control={control}
               render={({ field }) => {
                 const value = field.value ?? [];
-                const isChecked = value.some((key) => key === permission.key);
+                const isChecked = value.some((key) => key == permission.key);
 
                 return (
                   <Checkbox
@@ -151,7 +152,7 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
                       const checked = e.target.checked;
 
                       if (checked) {
-                        field.onChange([...value, permission]);
+                        field.onChange([...value, permission.key]);
                       } else {
                         field.onChange(value.filter((key) => key !== permission.key));
                       }
