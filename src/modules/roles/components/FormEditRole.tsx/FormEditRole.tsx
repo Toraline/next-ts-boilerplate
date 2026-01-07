@@ -46,7 +46,7 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
       key: initialState.key,
       name: initialState.name,
       description: initialState.description || "",
-      permissionIds: initialState.permissions,
+      permissionKeys: initialState.permissions,
       // [
       //   { key: "roles.manage", value: false, name: "Manage Roles" },
       //   { key: "users.manage", value: false, name: "Manage Users" },
@@ -74,8 +74,8 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
       updates.description = data.description;
     }
 
-    if (data.permissionIds !== initialState.permissions) {
-      updates.permissionIds = data.permissionIds;
+    if (data.permissionKeys !== initialState.permissions) {
+      updates.permissionKeys = data.permissionKeys;
     }
 
     if (Object.keys(updates).length === 0) {
@@ -135,11 +135,11 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
           <h1>Permissions</h1>
           {fetchPermissions.data?.items.map((permission) => (
             <Controller
-              name="permissionIds"
+              name="permissionKeys"
               control={control}
               render={({ field }) => {
                 const value = field.value ?? [];
-                const isChecked = value.some((p) => p.key === permission.key);
+                const isChecked = value.some((key) => key === permission.key);
 
                 return (
                   <Checkbox
@@ -153,7 +153,7 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
                       if (checked) {
                         field.onChange([...value, permission]);
                       } else {
-                        field.onChange(value.filter((p) => p.key !== permission.key));
+                        field.onChange(value.filter((key) => key !== permission.key));
                       }
                     }}
                   />
