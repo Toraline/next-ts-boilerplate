@@ -129,8 +129,8 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
               control={control}
               render={({ field }) => {
                 const value = field.value ?? [];
-                const isChecked = value.some((key) => key === permission.key);
-
+                const isChecked =
+                  value.some((key) => key === permission.key) || lockedPermissions[permission.key];
                 return (
                   <Checkbox
                     id={permission.key}
