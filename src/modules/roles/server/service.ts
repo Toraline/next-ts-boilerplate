@@ -218,10 +218,7 @@ function mapPermissionAssignment(raw: unknown) {
     .parse(raw);
 
   return rolePermissionAssignmentSchema.parse({
-    // id: entity.permission.id,
     key: entity.permission.key,
-    // name: entity.permission.name,
-    // description: entity.permission.description,
     assignedAt: entity.createdAt.toISOString(),
   });
 }

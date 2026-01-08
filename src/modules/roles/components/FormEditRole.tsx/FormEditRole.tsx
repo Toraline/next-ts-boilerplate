@@ -86,6 +86,16 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
     );
   };
 
+  const handleChange = (value: string[], e, permission, field) => {
+    const checked = e.target.checked;
+
+    if (checked) {
+      field.onChange([...value, permission.key]);
+    } else {
+      field.onChange(value.filter((key) => key !== permission.key));
+    }
+  };
+
   const isLoading = updateRoleMutation.isPending || isSubmitting;
 
   return (
@@ -137,15 +147,7 @@ export default function FormEditRole({ initialState, roleId, onSuccess }: FormEd
                     label={permission.name}
                     checked={isChecked}
                     disabled={lockedPermissions[permission.key]}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-
-                      if (checked) {
-                        field.onChange([...value, permission.key]);
-                      } else {
-                        field.onChange(value.filter((key) => key !== permission.key));
-                      }
-                    }}
+                    onChange={(e) => handleChange(value, e, permission, field)}
                   />
                 );
               }}
