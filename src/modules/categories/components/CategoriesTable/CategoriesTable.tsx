@@ -1,9 +1,16 @@
 "use client";
 
-import Link from "next/link";
-import { Category, useDeleteCategory, CATEGORIES_UI, CATEGORY_ERRORS } from "../..";
+import {
+  Category,
+  useDeleteCategory,
+  CATEGORIES_UI,
+  CATEGORY_ERRORS,
+  CATEGORY_SUCCESSES,
+} from "../..";
 import { GLOBAL_UI } from "global/constants";
-import { Table, TableColumn } from "global/ui";
+import { Button, Table, TableColumn } from "global/ui";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type CategoriesTableProps = {
   items: Category[];
@@ -26,12 +33,18 @@ export default function CategoriesTable({
 }: CategoriesTableProps) {
   const deleteCategoryMutation = useDeleteCategory();
 
+  const route = useRouter();
+
   const onDelete = async (slug: string) => {
     if (!confirm(CATEGORIES_UI.CONFIRMATIONS.DELETE_CATEGORY)) return;
 
     deleteCategoryMutation.mutate(slug, {
-      onError: (error) => {
-        console.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR, error);
+      onSuccess: () => {
+        toast.success(CATEGORY_SUCCESSES.DELETE_CATEGORY_SUCCESS);
+        route.push("/categories");
+      },
+      onError: () => {
+        toast.error(CATEGORY_ERRORS.DELETE_CATEGORY_ERROR);
         // Global error handler will handle this, but we can add specific UI feedback if needed
       },
     });
@@ -73,10 +86,10 @@ export default function CategoriesTable({
       label: CATEGORIES_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          <Link href={`/categories/${item.slug}`} className="text-blue-500 hover:underline">
+          <Button href={`/categories/${item.slug}`} className="text-blue-500 hover:underline">
             {GLOBAL_UI.ACTIONS.EDIT}
-          </Link>
-          <button
+          </Button>
+          <Button
             id="delete-button"
             type="button"
             onClick={() => onDelete(item.slug)}
@@ -86,7 +99,7 @@ export default function CategoriesTable({
             {deleteCategoryMutation.isPending
               ? GLOBAL_UI.BUTTONS.DELETING
               : GLOBAL_UI.ACTIONS.DELETE}
-          </button>
+          </Button>
           {deleteCategoryMutation.error && (
             <p className="error text-sm">{deleteCategoryMutation.error.message}</p>
           )}
