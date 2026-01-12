@@ -60,7 +60,7 @@ export default function FormEditRole({
     const updates: Record<string, unknown> = {};
 
     if (data.key !== initialState.key) {
-      updates.key = data.key;
+      updates.key = data.key.toUpperCase();
     }
 
     if (data.name !== initialState.name) {
