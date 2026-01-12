@@ -15,6 +15,11 @@ export const roleById = (id: string) =>
 export const roleByKey = (key: string) =>
   prisma.role.findUnique({
     where: { key },
+    include: {
+      permissions: {
+        include: { permission: true },
+      },
+    },
   });
 
 export const roleCreate = (data: Prisma.RoleCreateInput) =>
@@ -28,33 +33,65 @@ export const roleUpdate = (id: string, data: Prisma.RoleUpdateInput) =>
     data,
   });
 
-export const rolePermissionCreateMany = (roleId: string, permissionIds: string[]) =>
-  prisma.rolePermission.createMany({
+export const rolePermissionCreateMany = async (roleId: string, permissionKeys: string[]) => {
+  const permissions = await permissionsByKeys(permissionKeys);
+  const permissionIdMap = new Map(permissions.map((permission) => [permission.key, permission.id]));
+  const permissionIds = permissionKeys.map((key) => {
+    const id = permissionIdMap.get(key);
+    if (!id) throw new Error(`Permission with key "${key}" not found`);
+    return id;
+  });
+
+  return prisma.rolePermission.createMany({
     data: permissionIds.map((permissionId) => ({
       roleId,
       permissionId,
     })),
     skipDuplicates: true,
   });
+};
 
-export const rolePermissionCreate = (roleId: string, permissionId: string) =>
-  prisma.rolePermission.create({
+export const rolePermissionCreate = async (roleId: string, permissionKey: string) => {
+  const permissions = await permissionsByKeys([permissionKey]);
+  if (!permissions.length) throw new Error(`Permission with key "${permissionKey}" not found`);
+  const [permission] = permissions;
+  const permissionId = permission.id;
+
+  const result = await prisma.rolePermission.create({
     data: { roleId, permissionId },
+    include: { permission: true },
   });
+
+  return {
+    ...result,
+    permissionKey: result.permission.key,
+  };
+};
 
 export const rolePermissionsDeleteMany = (roleId: string) =>
   prisma.rolePermission.deleteMany({
     where: { roleId },
   });
 
-export const rolePermissionDelete = (roleId: string, permissionId: string) =>
-  prisma.rolePermission.delete({
+export const rolePermissionDelete = async (roleId: string, permissionKey: string) => {
+  const permissions = await permissionsByKeys([permissionKey]);
+  if (!permissions.length) throw new Error(`Permission with key "${permissionKey}" not found`);
+  const [permission] = permissions;
+  const permissionId = permission.id;
+
+  return prisma.rolePermission.delete({
     where: { roleId_permissionId: { roleId, permissionId } },
   });
+};
 
-export const permissionsByIds = (ids: string[]) =>
+export const permissionsByKeys = (keys: string[]) =>
   prisma.permission.findMany({
-    where: { id: { in: ids } },
+    where: { key: { in: keys } },
+  });
+
+export const roleUsersCount = (roleId: string) =>
+  prisma.userRole.count({
+    where: { roleId },
   });
 
 export const roleDelete = (id: string) =>
@@ -62,10 +99,24 @@ export const roleDelete = (id: string) =>
     where: { id },
   });
 
-export const rolePermissionByIds = (roleId: string, permissionId: string) =>
-  prisma.rolePermission.findUnique({
+export const rolePermissionByIds = async (roleId: string, permissionKey: string) => {
+  const permissions = await permissionsByKeys([permissionKey]);
+  if (!permissions.length) return null;
+  const [permission] = permissions;
+  const permissionId = permission.id;
+
+  const result = await prisma.rolePermission.findUnique({
     where: { roleId_permissionId: { roleId, permissionId } },
+    include: { permission: true },
   });
+
+  if (!result) return null;
+
+  return {
+    ...result,
+    permissionKey: result.permission.key,
+  };
+};
 
 export async function rolePermissionsWithDetails(roleId: string) {
   return prisma.rolePermission.findMany({

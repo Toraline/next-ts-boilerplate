@@ -1,21 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { GLOBAL_UI } from "global/constants";
 import { Button, Table, TableColumn } from "global/ui";
-import { PERMISSION_SUCCESSES } from "modules/permissions/constants";
-import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
-import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
-import { useDeletePermission } from "modules/permissions/hooks/useDeletePermission";
-import { Permission } from "modules/permissions/server/types";
-import Link from "next/link";
+import { Role } from "../../types";
+import { ROLES_UI } from "../../constants/ui";
+import { GLOBAL_UI } from "global/constants";
 import { toast } from "sonner";
+import { ROLE_ERRORS, ROLE_SUCCESSES } from "../../constants";
+import { useDeleteRole } from "../../hooks/useDeleteRole";
 import { createAuthClient } from "lib/auth/client";
 import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
 import { PERMISSION_KEYS } from "modules/permissions/constants";
 
 const authClient = createAuthClient();
 
-type PermissionsTableProps = {
-  items: Permission[];
+type RolesTableProps = {
+  items: Role[];
   loading: boolean;
   totalPages: number;
   page: number;
@@ -24,7 +22,7 @@ type PermissionsTableProps = {
   currentSort?: { sortBy: string; sortDir: "asc" | "desc" };
 };
 
-export default function PermissionsTable({
+export default function RolesTable({
   items,
   loading,
   totalPages,
@@ -32,8 +30,8 @@ export default function PermissionsTable({
   onPageChange,
   onSortChange,
   currentSort,
-}: PermissionsTableProps) {
-  const deletePermissionMutation = useDeletePermission();
+}: RolesTableProps) {
+  const deleteRoleMutation = useDeleteRole();
 
   const sessionQuery = useQuery({
     queryKey: ["auth", "session"],
@@ -43,24 +41,24 @@ export default function PermissionsTable({
 
   const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
 
-  const hasManagePermissionsPermission = permissionsResponse?.items.some(
-    (permission) => permission.key === PERMISSION_KEYS.PERMISSIONS_MANAGE,
+  const hasManageRolesPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.ROLES_MANAGE,
   );
 
   const onDelete = async (id: string) => {
-    if (!confirm(PERMISSIONS_UI.CONFIRMATIONS.DELETE_PERMISSION)) return;
+    if (!confirm(ROLES_UI.CONFIRMATIONS.DELETE_ROLE)) return;
 
-    deletePermissionMutation.mutate(id, {
+    deleteRoleMutation.mutate(id, {
       onSuccess: () => {
-        toast.success(PERMISSION_SUCCESSES.DELETE_PERMISSION_SUCCESS);
+        toast.success(ROLE_SUCCESSES.DELETE_ROLE_SUCCESS);
       },
       onError: () => {
-        toast.error(PERMISSION_ERRORS.DELETE_PERMISSION_ERROR);
+        toast.error(ROLE_ERRORS.DELETE_ROLE_ERROR);
       },
     });
   };
 
-  const columns: TableColumn<Permission>[] = [
+  const columns: TableColumn<Role>[] = [
     {
       key: "key",
       label: "Key",
@@ -91,30 +89,33 @@ export default function PermissionsTable({
     },
     {
       key: "actions",
-      label: PERMISSIONS_UI.TABLE_COLUMNS.ACTIONS,
+      label: ROLES_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          {hasManagePermissionsPermission && (
+          {hasManageRolesPermission && (
             <>
-              <Link href={`permissions/${item.id}`} className="text-blue-500 hover:underline">
+              <Button
+                href={`/admin/roles/${item.id}`}
+                className="text-blue-500 hover:underline disabled:opacity-50 cursor-pointer"
+              >
                 {GLOBAL_UI.ACTIONS.EDIT}
-              </Link>
+              </Button>
               <Button
                 id="delete-button"
                 type="button"
-                onClick={() => onDelete(item.id)}
-                disabled={deletePermissionMutation.isPending}
                 className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
+                onClick={() => onDelete(item.id)}
+                disabled={deleteRoleMutation.isPending}
               >
-                {deletePermissionMutation.isPending
+                {deleteRoleMutation.isPending
                   ? GLOBAL_UI.BUTTONS.DELETING
                   : GLOBAL_UI.ACTIONS.DELETE}
               </Button>
             </>
           )}
-          {deletePermissionMutation.error && (
-            <p className="error text-sm">{deletePermissionMutation.error.message}</p>
+          {deleteRoleMutation.error && (
+            <p className="error text-sm">{deleteRoleMutation.error.message}</p>
           )}
         </div>
       ),

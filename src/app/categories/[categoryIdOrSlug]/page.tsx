@@ -1,12 +1,20 @@
-import { CategoryContent } from "modules/categories";
+"use client";
 
-export default async function Page({
+import { AuthGuard } from "global/components/AuthGuard";
+import { CategoryContent } from "modules/categories";
+import { use } from "react";
+
+export default function Page({
   params,
 }: {
   params: Promise<{ categoryIdOrSlug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { categoryIdOrSlug } = await params;
+  const { categoryIdOrSlug } = use(params);
 
-  return <CategoryContent categoryIdOrSlug={categoryIdOrSlug} />;
+  return (
+    <AuthGuard>
+      <CategoryContent categoryIdOrSlug={categoryIdOrSlug} />
+    </AuthGuard>
+  );
 }

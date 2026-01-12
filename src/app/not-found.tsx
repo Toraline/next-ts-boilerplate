@@ -1,11 +1,5 @@
-import Link from "next/link";
+import { NotFound as NotFoundComponent } from "global/components/NotFound";
 
 export default function NotFound() {
-  return (
-    <div>
-      <h2>Not Found</h2>
-      <p>Could not find requested resource</p>
-      <Link href="/">Return Home</Link>
-    </div>
-  );
+  return <NotFoundComponent />;
 }

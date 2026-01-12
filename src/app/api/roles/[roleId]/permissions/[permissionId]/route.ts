@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 
 export const DELETE = withActorFromSession(async (req, _auth, { params }) => {
   const { roleId, permissionId } = await params;
+
   const actor = getRequestAuditActor(req);
   await removePermissionFromRole(roleId, permissionId, actor ? { actor } : undefined);
   return new Response(null, { status: 204 });

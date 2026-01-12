@@ -6,10 +6,16 @@ import { rolesListFiltersSchema } from "../schema";
 import { GLOBAL_UI } from "global/constants";
 import { ROLE_ERRORS } from "../constants/errors";
 import { ROLES_UI } from "../constants/ui";
-import RolesTable from "../components/RolesTable";
+import RolesTable from "../components/RolesTable/RolesTable";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { Field } from "global/ui";
+import { useQuery } from "@tanstack/react-query";
+import { createAuthClient } from "lib/auth/client";
+import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
+import { PERMISSION_KEYS } from "modules/permissions/constants";
+
+const authClient = createAuthClient();
 
 export default function RolesListView() {
   const [filters, setFilters] = useState<RolesListFilters>({});
@@ -25,6 +31,18 @@ export default function RolesListView() {
   };
 
   const { data: rolesResponse, isLoading, error } = useRolesList(query);
+
+  const sessionQuery = useQuery({
+    queryKey: ["auth", "session"],
+    queryFn: () => authClient.getSession(),
+    retry: false,
+  });
+
+  const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
+
+  const hasManageRolesPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.ROLES_MANAGE,
+  );
 
   const {
     register,
@@ -156,10 +174,11 @@ export default function RolesListView() {
           </h3>
         </div>
       )}
-      {/* Create Role Link */}
-      <div className="mt-4">
-        <Link href="/admin/roles/new">{ROLES_UI.LINKS.CREATE_ROLE}</Link>
-      </div>
+      {hasManageRolesPermission && (
+        <div className="mt-4">
+          <Link href="/admin/roles/new">{ROLES_UI.LINKS.CREATE_ROLE}</Link>
+        </div>
+      )}
     </div>
   );
 }

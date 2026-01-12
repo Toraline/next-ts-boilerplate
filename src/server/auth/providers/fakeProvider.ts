@@ -1,4 +1,5 @@
-import { NotFoundError } from "lib/http/errors";
+import { NotFoundError, ForbiddenError } from "lib/http/errors";
+import { UserStatus } from "@prisma/client";
 import type {
   AuthProvider,
   SignInParams,
@@ -31,13 +32,14 @@ async function handleSignIn(params: SignInParams): Promise<SignInResult> {
 
   const payload = loginRequestSchema.parse(body);
 
-  const user =
-    payload.email != null
-      ? await userRepo.userByEmail(payload.email)
-      : await userRepo.userById(payload.userId!);
+  const user = await userRepo.userByEmail(payload.email);
 
   if (!user || user.deletedAt) {
     throw new NotFoundError("User not found");
+  }
+
+  if (user.status === UserStatus.SUSPENDED) {
+    throw new ForbiddenError("User account is suspended");
   }
 
   const session = await createUserSession({

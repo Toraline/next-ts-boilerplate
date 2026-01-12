@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { use } from "react";
 import { AuthGuard } from "global/components/AuthGuard";
 import { NotFound } from "global/components/NotFound";
-import { EditStatePermission } from "modules/permissions";
+import EditStateRole from "modules/roles/components/EditStateRole/EditStateRole";
 import { createAuthClient } from "lib/auth/client";
 import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
 import { PERMISSION_KEYS } from "modules/permissions/constants";
@@ -15,10 +15,10 @@ const authClient = createAuthClient();
 export default function Page({
   params,
 }: {
-  params: Promise<{ permissionId: string }>;
+  params: Promise<{ roleId: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { permissionId } = use(params);
+  const { roleId } = use(params);
 
   const sessionQuery = useQuery({
     queryKey: ["auth", "session"],
@@ -28,22 +28,22 @@ export default function Page({
 
   const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
 
-  const hasViewPermissionsPermission = permissionsResponse?.items.some(
-    (permission) => permission.key === PERMISSION_KEYS.PERMISSIONS_VIEW,
+  const hasViewRolesPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.ROLES_VIEW,
   );
 
   if (sessionQuery.isLoading || permissionsResponse === undefined) {
     return <div>{GLOBAL_UI.LOADING.DEFAULT}</div>;
   }
 
-  if (!hasViewPermissionsPermission) {
+  if (!hasViewRolesPermission) {
     return <NotFound />;
   }
 
   return (
     <AuthGuard>
       <div className="flex-col flex pt-18 pl-41 pr-6 gap-15 max-w-xl">
-        <EditStatePermission permissionId={permissionId} />
+        <EditStateRole roleId={roleId} />
       </div>
     </AuthGuard>
   );
