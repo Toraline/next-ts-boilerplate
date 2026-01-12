@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { ROLES_UI } from "modules/roles/constants/ui";
 import { useRole } from "modules/roles/hooks/useRole";
 import FormEditRole from "../FormEditRole.tsx/FormEditRole";
@@ -10,12 +11,29 @@ import { ROLE_SUCCESSES } from "modules/roles/constants";
 import { GLOBAL_UI } from "global/constants";
 import { Button } from "global/ui";
 import { useRouter } from "next/navigation";
+import { createAuthClient } from "lib/auth/client";
+import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
+import { PERMISSION_KEYS } from "modules/permissions/constants";
+
+const authClient = createAuthClient();
 
 export default function EditStateRole({ roleId }: { roleId: string }) {
   const { data: role, isLoading, error } = useRole(roleId);
 
   const deleteRoleMutation = useDeleteRole();
   const router = useRouter();
+
+  const sessionQuery = useQuery({
+    queryKey: ["auth", "session"],
+    queryFn: () => authClient.getSession(),
+    retry: false,
+  });
+
+  const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
+
+  const hasManageRolesPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.ROLES_MANAGE,
+  );
 
   const onDelete = async () => {
     if (!role || !confirm(ROLES_UI.CONFIRMATIONS.DELETE_ROLE)) return;
@@ -51,16 +69,18 @@ export default function EditStateRole({ roleId }: { roleId: string }) {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold">{role.name}</h1>
       </div>
-      <FormEditRole initialState={role} roleId={role.id} />
-      <Button
-        id="delete-button"
-        type="button"
-        onClick={onDelete}
-        disabled={deleteRoleMutation.isPending}
-      >
-        Delete
-        {deleteRoleMutation.isPending && GLOBAL_UI.BUTTONS.DELETING}
-      </Button>
+      <FormEditRole initialState={role} roleId={role.id} readOnly={!hasManageRolesPermission} />
+      {hasManageRolesPermission && (
+        <Button
+          id="delete-button"
+          type="button"
+          onClick={onDelete}
+          disabled={deleteRoleMutation.isPending}
+        >
+          Delete
+          {deleteRoleMutation.isPending && GLOBAL_UI.BUTTONS.DELETING}
+        </Button>
+      )}
     </div>
   );
 }
