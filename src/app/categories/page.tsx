@@ -1,5 +1,12 @@
+"use client";
+
+import { AuthGuard } from "global/components/AuthGuard";
 import { CategoriesListView } from "modules/categories";
 
 export default function Page() {
-  return <CategoriesListView />;
+  return (
+    <AuthGuard>
+      <CategoriesListView />
+    </AuthGuard>
+  );
 }

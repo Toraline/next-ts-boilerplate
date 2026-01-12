@@ -1,10 +1,14 @@
 "use client";
+
+import { AuthGuard } from "global/components/AuthGuard";
 import RolesListView from "modules/roles/views/RolesListView";
 
 export default function Page() {
   return (
-    <div>
-      <RolesListView />
-    </div>
+    <AuthGuard>
+      <div>
+        <RolesListView />
+      </div>
+    </AuthGuard>
   );
 }

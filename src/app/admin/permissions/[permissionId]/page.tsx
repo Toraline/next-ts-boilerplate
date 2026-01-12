@@ -1,15 +1,22 @@
+"use client";
+
+import { AuthGuard } from "global/components/AuthGuard";
 import { EditStatePermission } from "modules/permissions";
-export default async function Page({
+import { use } from "react";
+
+export default function Page({
   params,
 }: {
   params: Promise<{ permissionId: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { permissionId } = await params;
+  const { permissionId } = use(params);
 
   return (
-    <div className="flex-col flex pt-18 pl-41 pr-6 gap-15 max-w-xl">
-      <EditStatePermission permissionId={permissionId} />
-    </div>
+    <AuthGuard>
+      <div className="flex-col flex pt-18 pl-41 pr-6 gap-15 max-w-xl">
+        <EditStatePermission permissionId={permissionId} />
+      </div>
+    </AuthGuard>
   );
 }
