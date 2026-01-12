@@ -38,7 +38,8 @@ export const createUserSchema = z.object({
   email: emailSchema,
   name: nameSchema,
   avatarUrl: avatarUrlSchema.optional(),
-  status: userStatusSchema.default("INVITED"),
+  // BO-230 remove the optional from the status when adding Clerk
+  status: userStatusSchema.optional(),
   tenantId: tenantIdOptionalSchema,
   clerkUserId: clerkUserIdOptionalSchema,
 });
