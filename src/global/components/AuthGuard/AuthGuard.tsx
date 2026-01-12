@@ -35,4 +35,3 @@ export function AuthGuard({ children }: AuthGuardProps) {
   // Render children if authenticated (useEffect handles redirect if not authenticated)
   return <>{children}</>;
 }
-

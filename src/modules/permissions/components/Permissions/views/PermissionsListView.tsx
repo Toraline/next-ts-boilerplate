@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GLOBAL_UI } from "global/constants";
 import { Field } from "global/ui";
@@ -10,6 +11,11 @@ import PermissionsTable from "../../PermissionsTable/PermissionsTable";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
 import Link from "next/link";
 import { permissionsListFiltersSchema } from "modules/permissions/schema";
+import { createAuthClient } from "lib/auth/client";
+import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
+import { PERMISSION_KEYS } from "modules/permissions/constants";
+
+const authClient = createAuthClient();
 
 export default function PermissionsListView() {
   const [filters, setFilters] = useState<PermissionsListFilters>({});
@@ -24,7 +30,19 @@ export default function PermissionsListView() {
     search: filters.search,
   };
 
-  const { data: permissionsResponse, isLoading, error } = usePermissionsList(query);
+  const { data: permissionsListResponse, isLoading, error } = usePermissionsList(query);
+
+  const sessionQuery = useQuery({
+    queryKey: ["auth", "session"],
+    queryFn: () => authClient.getSession(),
+    retry: false,
+  });
+
+  const { data: userPermissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
+
+  const hasManagePermissionsPermission = userPermissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.PERMISSIONS_MANAGE,
+  );
 
   const {
     register,
@@ -39,9 +57,9 @@ export default function PermissionsListView() {
     },
   });
 
-  const items = permissionsResponse?.items || [];
-  const total = permissionsResponse?.total || 0;
-  const page = permissionsResponse?.page || 1;
+  const items = permissionsListResponse?.items || [];
+  const total = permissionsListResponse?.total || 0;
+  const page = permissionsListResponse?.page || 1;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   const onFiltersSubmit = (data: PermissionsListFilters) => {
@@ -157,10 +175,11 @@ export default function PermissionsListView() {
         </div>
       )}
 
-      {/* Create Permission Link */}
-      <div className="mt-4">
-        <Link href="/admin/permissions/new">{PERMISSIONS_UI.LINKS.CREATE_PERMISSION}</Link>
-      </div>
+      {hasManagePermissionsPermission && (
+        <div className="mt-4">
+          <Link href="/admin/permissions/new">{PERMISSIONS_UI.LINKS.CREATE_PERMISSION}</Link>
+        </div>
+      )}
     </div>
   );
 }

@@ -45,6 +45,16 @@ const defaultPermissions = [
     name: "Edit Tasks",
     description: "Create, update and complete tasks.",
   },
+  {
+    key: PERMISSION_KEYS.PERMISSIONS_VIEW,
+    name: "View Permissions",
+    description: "Read access to permissions.",
+  },
+  {
+    key: PERMISSION_KEYS.PERMISSIONS_MANAGE,
+    name: "Manage Permissions",
+    description: "Create and edit permissions.",
+  },
 ] as const;
 
 const defaultRoles: Array<{
@@ -63,16 +73,7 @@ const defaultRoles: Array<{
     key: "ADMIN",
     name: "Admin",
     description: "Manage users, roles and operational data.",
-    permissions: [
-      PERMISSION_KEYS.USERS_MANAGE,
-      PERMISSION_KEYS.USERS_INVITE,
-      PERMISSION_KEYS.ROLES_VIEW,
-      PERMISSION_KEYS.ROLES_MANAGE,
-      PERMISSION_KEYS.CATEGORIES_VIEW,
-      PERMISSION_KEYS.CATEGORIES_EDIT,
-      PERMISSION_KEYS.TASKS_VIEW,
-      PERMISSION_KEYS.TASKS_EDIT,
-    ],
+    permissions: defaultPermissions.map((permission) => permission.key),
   },
   {
     key: "MANAGER",
@@ -90,7 +91,25 @@ const defaultRoles: Array<{
     key: "VIEWER",
     name: "Viewer",
     description: "Read-only access to categories and tasks.",
-    permissions: [PERMISSION_KEYS.CATEGORIES_VIEW, PERMISSION_KEYS.TASKS_VIEW],
+    permissions: [
+      PERMISSION_KEYS.ROLES_VIEW,
+      PERMISSION_KEYS.PERMISSIONS_VIEW,
+      PERMISSION_KEYS.CATEGORIES_VIEW,
+      PERMISSION_KEYS.CATEGORIES_EDIT,
+      PERMISSION_KEYS.TASKS_VIEW,
+      PERMISSION_KEYS.TASKS_EDIT,
+    ],
+  },
+  {
+    key: "DEFAULT",
+    name: "Default",
+    description: "Basic access with required permissions for categories and tasks.",
+    permissions: [
+      PERMISSION_KEYS.CATEGORIES_VIEW,
+      PERMISSION_KEYS.CATEGORIES_EDIT,
+      PERMISSION_KEYS.TASKS_VIEW,
+      PERMISSION_KEYS.TASKS_EDIT,
+    ],
   },
 ];
 

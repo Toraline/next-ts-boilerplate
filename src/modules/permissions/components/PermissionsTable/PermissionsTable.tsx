@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { GLOBAL_UI } from "global/constants";
-import { Table, TableColumn } from "global/ui";
+import { Button, Table, TableColumn } from "global/ui";
 import { PERMISSION_SUCCESSES } from "modules/permissions/constants";
 import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
@@ -7,6 +8,11 @@ import { useDeletePermission } from "modules/permissions/hooks/useDeletePermissi
 import { Permission } from "modules/permissions/server/types";
 import Link from "next/link";
 import { toast } from "sonner";
+import { createAuthClient } from "lib/auth/client";
+import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
+import { PERMISSION_KEYS } from "modules/permissions/constants";
+
+const authClient = createAuthClient();
 
 type PermissionsTableProps = {
   items: Permission[];
@@ -28,6 +34,18 @@ export default function PermissionsTable({
   currentSort,
 }: PermissionsTableProps) {
   const deletePermissionMutation = useDeletePermission();
+
+  const sessionQuery = useQuery({
+    queryKey: ["auth", "session"],
+    queryFn: () => authClient.getSession(),
+    retry: false,
+  });
+
+  const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
+
+  const hasManagePermissionsPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.PERMISSIONS_MANAGE,
+  );
 
   const onDelete = async (id: string) => {
     if (!confirm(PERMISSIONS_UI.CONFIRMATIONS.DELETE_PERMISSION)) return;
@@ -76,21 +94,25 @@ export default function PermissionsTable({
       label: PERMISSIONS_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          <Link href={`permissions/${item.id}`} className="text-blue-500 hover:underline">
-            {GLOBAL_UI.ACTIONS.EDIT}
-          </Link>
-          <button
-            id="delete-button"
-            type="button"
-            onClick={() => onDelete(item.id)}
-            disabled={deletePermissionMutation.isPending}
-            className="text-red-500 hover:underline disabled:opacity-50
+          {hasManagePermissionsPermission && (
+            <>
+              <Link href={`permissions/${item.id}`} className="text-blue-500 hover:underline">
+                {GLOBAL_UI.ACTIONS.EDIT}
+              </Link>
+              <Button
+                id="delete-button"
+                type="button"
+                onClick={() => onDelete(item.id)}
+                disabled={deletePermissionMutation.isPending}
+                className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
-          >
-            {deletePermissionMutation.isPending
-              ? GLOBAL_UI.BUTTONS.DELETING
-              : GLOBAL_UI.ACTIONS.DELETE}
-          </button>
+              >
+                {deletePermissionMutation.isPending
+                  ? GLOBAL_UI.BUTTONS.DELETING
+                  : GLOBAL_UI.ACTIONS.DELETE}
+              </Button>
+            </>
+          )}
           {deletePermissionMutation.error && (
             <p className="error text-sm">{deletePermissionMutation.error.message}</p>
           )}
