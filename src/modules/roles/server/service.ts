@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { ConflictError, NotFoundError } from "lib/http/errors";
+import { BadRequestError, ConflictError, NotFoundError } from "lib/http/errors";
 import { AuditLogOptions, recordAuditLog, resolveAuditActorFromOptions } from "modules/audit";
 import {
   createRoleSchema,
@@ -183,6 +183,11 @@ export async function updateRole(id: string, raw: unknown, options?: AuditLogOpt
 export async function deleteRole(id: string, options?: AuditLogOptions) {
   const role = await roleRepo.roleById(id);
   if (!role) throw new NotFoundError("Role not found");
+
+  const usersCount = await roleRepo.roleUsersCount(id);
+  if (usersCount > 0) {
+    throw new BadRequestError("Cannot delete role in use. Each user must have at least one role.");
+  }
 
   const before = mapRoleToPublic({
     ...role,

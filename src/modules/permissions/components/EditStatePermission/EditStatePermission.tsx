@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { usePermission } from "modules/permissions/hooks/usePermission";
 import { FormEditPermission } from "../FormEditPermission/FormEditPermission";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
@@ -10,11 +11,28 @@ import { PERMISSION_SUCCESSES } from "modules/permissions/constants";
 import { useRouter } from "next/navigation";
 import { Button } from "global/ui";
 import { GLOBAL_UI } from "global/constants";
+import { createAuthClient } from "lib/auth/client";
+import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
+import { PERMISSION_KEYS } from "modules/permissions/constants";
+
+const authClient = createAuthClient();
 
 export default function EditStatePermission({ permissionId }: { permissionId: string }) {
   const router = useRouter();
   const { data: permission, isLoading, error } = usePermission(permissionId);
   const deletePermissionMutation = useDeletePermission();
+
+  const sessionQuery = useQuery({
+    queryKey: ["auth", "session"],
+    queryFn: () => authClient.getSession(),
+    retry: false,
+  });
+
+  const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
+
+  const hasManagePermissionsPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.PERMISSIONS_MANAGE,
+  );
 
   if (isLoading) {
     return <div className="permission-content">{PERMISSIONS_UI.LOADING.LOADING_PERMISSION}</div>;
@@ -53,8 +71,12 @@ export default function EditStatePermission({ permissionId }: { permissionId: st
       <div>
         <h1 className="text-3xl font-semibold"> {permission.name}</h1>
       </div>
-      <FormEditPermission initialState={permission} id={permissionId} />
-      <div>
+      <FormEditPermission
+        initialState={permission}
+        id={permissionId}
+        readOnly={!hasManagePermissionsPermission}
+      />
+      {hasManagePermissionsPermission && (
         <Button
           id="delete-button"
           type="button"
@@ -64,7 +86,7 @@ export default function EditStatePermission({ permissionId }: { permissionId: st
           Delete
           {deletePermissionMutation.isPending && GLOBAL_UI.BUTTONS.DELETING}
         </Button>
-      </div>
+      )}
     </div>
   );
 }

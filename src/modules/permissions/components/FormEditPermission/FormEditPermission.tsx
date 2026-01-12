@@ -16,10 +16,12 @@ export const FormEditPermission = ({
   initialState,
   id,
   onSuccess,
+  readOnly = false,
 }: {
   initialState: Permission;
   id: string;
   onSuccess?: () => void;
+  readOnly?: boolean;
 }) => {
   const updatePermissionMutation = useUpdatePermission();
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
@@ -85,6 +87,18 @@ export const FormEditPermission = ({
             type="text"
             error={errors.name?.message}
             placeholder={PERMISSIONS_UI.PLACEHOLDERS.NAME}
+            disabled={readOnly}
+          />
+        </div>
+        <div>
+          <Field
+            label={PERMISSIONS_UI.LABELS.KEY}
+            {...register("key")}
+            id="permission-key"
+            type="text"
+            error={errors.key?.message}
+            placeholder={PERMISSIONS_UI.PLACEHOLDERS.KEY}
+            disabled
           />
         </div>
         <div>
@@ -94,10 +108,11 @@ export const FormEditPermission = ({
             label={PERMISSIONS_UI.LABELS.DESCRIPTION}
             placeholder={PERMISSIONS_UI.PLACEHOLDERS.DESCRIPTION}
             error={errors.description?.message}
+            disabled={readOnly}
           />
         </div>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}{" "}
+        <Button type="submit" disabled={isLoading || readOnly}>
+          {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
         </Button>
       </form>
     </div>

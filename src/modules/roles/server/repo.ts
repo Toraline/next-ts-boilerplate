@@ -89,6 +89,11 @@ export const permissionsByKeys = (keys: string[]) =>
     where: { key: { in: keys } },
   });
 
+export const roleUsersCount = (roleId: string) =>
+  prisma.userRole.count({
+    where: { roleId },
+  });
+
 export const roleDelete = (id: string) =>
   prisma.role.delete({
     where: { id },

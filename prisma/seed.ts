@@ -1,43 +1,59 @@
 import "dotenv/config";
 import { PrismaClient, UserStatus } from "@prisma/client";
+import { PERMISSION_KEYS } from "../src/modules/permissions/constants/permissions";
 
 const prisma = new PrismaClient();
 
 const defaultPermissions = [
   {
-    key: "users.manage",
+    key: PERMISSION_KEYS.USERS_MANAGE,
     name: "Manage Users",
     description: "Create, update, suspend and delete users.",
   },
   {
-    key: "users.invite",
+    key: PERMISSION_KEYS.USERS_INVITE,
     name: "Invite Users",
     description: "Send and manage invitations for new users.",
   },
   {
-    key: "roles.manage",
+    key: PERMISSION_KEYS.ROLES_VIEW,
+    name: "View Roles",
+    description: "Read access to roles.",
+  },
+  {
+    key: PERMISSION_KEYS.ROLES_MANAGE,
     name: "Manage Roles",
     description: "Create and edit roles and their permissions.",
   },
   {
-    key: "categories.view",
+    key: PERMISSION_KEYS.CATEGORIES_VIEW,
     name: "View Categories",
     description: "Read access to task categories.",
   },
   {
-    key: "categories.edit",
+    key: PERMISSION_KEYS.CATEGORIES_EDIT,
     name: "Edit Categories",
     description: "Create, update and delete task categories.",
   },
   {
-    key: "tasks.view",
+    key: PERMISSION_KEYS.TASKS_VIEW,
     name: "View Tasks",
     description: "Read access to tasks.",
   },
   {
-    key: "tasks.edit",
+    key: PERMISSION_KEYS.TASKS_EDIT,
     name: "Edit Tasks",
     description: "Create, update and complete tasks.",
+  },
+  {
+    key: PERMISSION_KEYS.PERMISSIONS_VIEW,
+    name: "View Permissions",
+    description: "Read access to permissions.",
+  },
+  {
+    key: PERMISSION_KEYS.PERMISSIONS_MANAGE,
+    name: "Manage Permissions",
+    description: "Create and edit permissions.",
   },
 ] as const;
 
@@ -57,27 +73,43 @@ const defaultRoles: Array<{
     key: "ADMIN",
     name: "Admin",
     description: "Manage users, roles and operational data.",
-    permissions: [
-      "users.manage",
-      "users.invite",
-      "roles.manage",
-      "categories.view",
-      "categories.edit",
-      "tasks.view",
-      "tasks.edit",
-    ],
+    permissions: defaultPermissions.map((permission) => permission.key),
   },
   {
     key: "MANAGER",
     name: "Manager",
     description: "Manage operational data and view users.",
-    permissions: ["users.invite", "categories.view", "categories.edit", "tasks.view", "tasks.edit"],
+    permissions: [
+      PERMISSION_KEYS.USERS_INVITE,
+      PERMISSION_KEYS.CATEGORIES_VIEW,
+      PERMISSION_KEYS.CATEGORIES_EDIT,
+      PERMISSION_KEYS.TASKS_VIEW,
+      PERMISSION_KEYS.TASKS_EDIT,
+    ],
   },
   {
     key: "VIEWER",
     name: "Viewer",
     description: "Read-only access to categories and tasks.",
-    permissions: ["categories.view", "tasks.view"],
+    permissions: [
+      PERMISSION_KEYS.ROLES_VIEW,
+      PERMISSION_KEYS.PERMISSIONS_VIEW,
+      PERMISSION_KEYS.CATEGORIES_VIEW,
+      PERMISSION_KEYS.CATEGORIES_EDIT,
+      PERMISSION_KEYS.TASKS_VIEW,
+      PERMISSION_KEYS.TASKS_EDIT,
+    ],
+  },
+  {
+    key: "DEFAULT",
+    name: "Default",
+    description: "Basic access with required permissions for categories and tasks.",
+    permissions: [
+      PERMISSION_KEYS.CATEGORIES_VIEW,
+      PERMISSION_KEYS.CATEGORIES_EDIT,
+      PERMISSION_KEYS.TASKS_VIEW,
+      PERMISSION_KEYS.TASKS_EDIT,
+    ],
   },
 ];
 
