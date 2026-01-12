@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Button, Table, TableColumn } from "global/ui";
 import { Role } from "../../types";
 import { ROLES_UI } from "../../constants/ui";
@@ -5,6 +6,11 @@ import { GLOBAL_UI } from "global/constants";
 import { toast } from "sonner";
 import { ROLE_ERRORS, ROLE_SUCCESSES } from "../../constants";
 import { useDeleteRole } from "../../hooks/useDeleteRole";
+import { createAuthClient } from "lib/auth/client";
+import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
+import { PERMISSION_KEYS } from "modules/permissions/constants";
+
+const authClient = createAuthClient();
 
 type RolesTableProps = {
   items: Role[];
@@ -26,6 +32,18 @@ export default function RolesTable({
   currentSort,
 }: RolesTableProps) {
   const deleteRoleMutation = useDeleteRole();
+
+  const sessionQuery = useQuery({
+    queryKey: ["auth", "session"],
+    queryFn: () => authClient.getSession(),
+    retry: false,
+  });
+
+  const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
+
+  const hasManageRolesPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.ROLES_MANAGE,
+  );
 
   const onDelete = async (id: string) => {
     if (!confirm(ROLES_UI.CONFIRMATIONS.DELETE_ROLE)) return;
@@ -74,22 +92,28 @@ export default function RolesTable({
       label: ROLES_UI.TABLE_COLUMNS.ACTIONS,
       render: (item) => (
         <div className="flex gap-2">
-          <Button
-            href={`/admin/roles/${item.id}`}
-            className="text-blue-500 hover:underline disabled:opacity-50 cursor-pointer"
-          >
-            {GLOBAL_UI.ACTIONS.EDIT}
-          </Button>
-          <Button
-            id="delete-button"
-            type="button"
-            className="text-red-500 hover:underline disabled:opacity-50
+          {hasManageRolesPermission && (
+            <>
+              <Button
+                href={`/admin/roles/${item.id}`}
+                className="text-blue-500 hover:underline disabled:opacity-50 cursor-pointer"
+              >
+                {GLOBAL_UI.ACTIONS.EDIT}
+              </Button>
+              <Button
+                id="delete-button"
+                type="button"
+                className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
-            onClick={() => onDelete(item.id)}
-            disabled={deleteRoleMutation.isPending}
-          >
-            {deleteRoleMutation.isPending ? GLOBAL_UI.BUTTONS.DELETING : GLOBAL_UI.ACTIONS.DELETE}
-          </Button>
+                onClick={() => onDelete(item.id)}
+                disabled={deleteRoleMutation.isPending}
+              >
+                {deleteRoleMutation.isPending
+                  ? GLOBAL_UI.BUTTONS.DELETING
+                  : GLOBAL_UI.ACTIONS.DELETE}
+              </Button>
+            </>
+          )}
           {deleteRoleMutation.error && (
             <p className="error text-sm">{deleteRoleMutation.error.message}</p>
           )}
