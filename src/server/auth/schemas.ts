@@ -4,18 +4,9 @@ import { isoDateTimeStringSchema } from "lib/validation/datetime";
 
 export const sessionIdSchema = z.string().cuid();
 
-export const loginRequestSchema = z
-  .object({
-    email: emailSchema.optional(),
-    userId: userIdSchema.optional(),
-  })
-  .refine(
-    (value) => {
-      const provided = Number(Boolean(value.email)) + Number(Boolean(value.userId));
-      return provided === 1;
-    },
-    { message: "Provide either email or userId" },
-  );
+export const loginRequestSchema = z.object({
+  email: emailSchema,
+});
 
 export const loginResponseSchema = z.object({
   user: userPublicSchema,
