@@ -25,7 +25,7 @@ export const nameSchema = z
   .min(1, VALIDATION_MESSAGES.NAME_TOO_SHORT)
   .max(120, VALIDATION_MESSAGES.NAME_TOO_LONG);
 
-export const avatarUrlSchema = z.string().trim().url();
+export const avatarUrlSchema = z.string().trim().optional();
 
 export const tenantIdSchema = z.string().trim().min(1).max(120);
 

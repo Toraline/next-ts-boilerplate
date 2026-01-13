@@ -72,7 +72,7 @@ export const FormNewUser = () => {
           error={errors.tenantId?.message}
         />
         <Field
-          label={USER_CONSTANTS.PLACEHOLDERS.TENANT_ID}
+          label={USER_CONSTANTS.LABELS.PROFILE_PICTURE}
           type="url"
           id="imageUrlInput"
           placeholder={USER_CONSTANTS.PLACEHOLDERS.PROFILE_PICTURE}
