@@ -146,7 +146,7 @@ export async function updateRole(id: string, raw: unknown, options?: AuditLogOpt
         : (payload.description ?? null);
   }
 
-  if (typeof payload.key !== "undefined") {
+  if (payload.key) {
     const key = payload.key.trim();
     if (key !== role.key) {
       const existing = await roleRepo.roleByKey(key);
