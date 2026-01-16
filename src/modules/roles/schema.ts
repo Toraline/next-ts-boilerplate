@@ -81,6 +81,7 @@ export const updateRoleSchema = z
     (value) =>
       typeof value.name !== "undefined" ||
       typeof value.description !== "undefined" ||
+      typeof value.key !== "undefined" ||
       typeof value.permissionKeys !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
