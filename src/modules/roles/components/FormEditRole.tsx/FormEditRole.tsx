@@ -27,7 +27,6 @@ export default function FormEditRole({
   readOnly = false,
 }: FormEditRoleProps) {
   const fetchPermissions = usePermissionsList();
-  console.log({ fetchPermissions });
   const updateRoleMutation = useUpdateRole();
 
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);

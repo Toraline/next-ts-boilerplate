@@ -31,19 +31,15 @@ export const permissionDelete = (id: string) =>
 export async function permissionFindMany(rawQuery: unknown) {
   const { page, pageSize, search, sortBy, sortDir } = listPermissionsQuerySchema.parse(rawQuery);
 
-  const where: Prisma.PermissionWhereInput = {
-    AND: [
-      search
-        ? {
-            OR: [
-              { name: { contains: search, mode: "insensitive" } },
-              { key: { contains: search, mode: "insensitive" } },
-              { description: { contains: search, mode: "insensitive" } },
-            ],
-          }
-        : {},
-    ],
-  };
+  const where: Prisma.PermissionWhereInput = search
+    ? {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { key: { contains: search, mode: "insensitive" } },
+          { description: { contains: search, mode: "insensitive" } },
+        ],
+      }
+    : {};
 
   const [items, total] = await Promise.all([
     prisma.permission.findMany({
