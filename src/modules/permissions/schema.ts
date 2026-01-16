@@ -20,16 +20,18 @@ export const permissionDescriptionSchema = z
   .max(255, VALIDATION_MESSAGES.DESCRIPTION_MAX_LENGTH)
   .nullable()
   .optional();
+export const permissionIsRequiredSchema = z.boolean().optional();
 
 export const createPermissionSchema = z.object({
   key: permissionKeySchema,
   name: permissionNameSchema,
   description: permissionDescriptionSchema,
+  isRequired: permissionIsRequiredSchema,
 });
 
 export const listPermissionsQuerySchema = paginationSchema.extend({
   search: z.string().trim().min(1).optional(),
-  sortBy: z.enum(["createdAt", "updatedAt", "name", "key"]).default("createdAt"),
+  sortBy: z.enum(["createdAt", "updatedAt", "name", "key", "isRequired"]).default("createdAt"),
   sortDir: sortDirectionSchema.default("desc"),
 });
 
@@ -40,6 +42,7 @@ export const permissionEntitySchema = z.object({
   description: permissionDescriptionSchema,
   createdAt: z.date(),
   updatedAt: z.date(),
+  isRequired: permissionIsRequiredSchema,
 });
 
 export const permissionPublicSchema = z.object({
@@ -49,6 +52,7 @@ export const permissionPublicSchema = z.object({
   description: permissionDescriptionSchema,
   createdAt: isoDateTimeStringSchema,
   updatedAt: isoDateTimeStringSchema,
+  isRequired: permissionIsRequiredSchema,
 });
 
 export const listPermissionsResponseSchema = z.object({
@@ -62,9 +66,13 @@ export const updatePermissionSchema = z
   .object({
     name: permissionNameSchema.optional(),
     description: permissionDescriptionSchema,
+    isRequired: permissionIsRequiredSchema,
   })
   .refine(
-    (value) => typeof value.name !== "undefined" || typeof value.description !== "undefined",
+    (value) =>
+      typeof value.name !== "undefined" ||
+      typeof value.description !== "undefined" ||
+      typeof value.isRequired !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
 
