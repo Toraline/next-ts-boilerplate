@@ -71,9 +71,9 @@ export const updatePermissionSchema = z
   .refine(
     (value) =>
       typeof value.name !== "undefined" ||
-      typeof value.description !== "undefined" ||
-      typeof value.isRequired !== "undefined",
-    { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
+      typeof value.description !== "undefined" || {
+        message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED,
+      },
   );
 
 export const permissionsListFiltersSchema = listPermissionsQuerySchema
