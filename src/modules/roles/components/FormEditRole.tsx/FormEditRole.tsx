@@ -101,7 +101,7 @@ export default function FormEditRole({
       {updateRoleMutation.error && <div>{updateRoleMutation.error.message}</div>}
       {noChangesMessage && <div>{noChangesMessage}</div>}
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <div>
+        <div className="flex flex-row">
           <Field
             label={ROLES_UI.LABELS.NAME}
             {...register("name")}
