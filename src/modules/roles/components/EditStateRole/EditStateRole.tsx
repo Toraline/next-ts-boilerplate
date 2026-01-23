@@ -77,8 +77,7 @@ export default function EditStateRole({ roleId }: { roleId: string }) {
           onClick={onDelete}
           disabled={deleteRoleMutation.isPending}
         >
-          Delete
-          {deleteRoleMutation.isPending && GLOBAL_UI.BUTTONS.DELETING}
+          {deleteRoleMutation.isPending ? GLOBAL_UI.BUTTONS.DELETING : GLOBAL_UI.BUTTONS.DELETE}
         </Button>
       )}
     </div>
