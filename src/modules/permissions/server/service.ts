@@ -94,10 +94,7 @@ export async function updatePermission(id: string, raw: unknown, options?: Audit
   }
 
   if (typeof payload.isRequired !== "undefined") {
-    updates.isRequired =
-      typeof payload.isRequired === "boolean"
-        ? payload.isRequired.valueOf()
-        : (payload.isRequired ?? null);
+    updates.isRequired = payload.isRequired ?? null;
   }
 
   if (Object.keys(updates).length) {
