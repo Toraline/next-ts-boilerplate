@@ -59,6 +59,7 @@ model Permission {
   description String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  isRequired  Boolean          @default(false)
   roles       RolePermission[]
   users       UserPermission[]
 }

@@ -2,6 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GLOBAL_UI } from "global/constants";
 import { Button, Field, TextArea } from "global/ui";
+import { Checkbox } from "global/ui/Checkbox";
 import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
 import { PERMISSION_SUCCESSES } from "modules/permissions/constants/successes";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
@@ -36,6 +37,7 @@ export const FormEditPermission = ({
       key: initialState.key,
       name: initialState.name,
       description: initialState.description || "",
+      isRequired: initialState.isRequired,
     },
   });
 
@@ -53,6 +55,10 @@ export const FormEditPermission = ({
 
     if (data.description !== (initialState.description || "")) {
       updates.description = data.description;
+    }
+
+    if (data.isRequired !== initialState.isRequired) {
+      updates.isRequired = data.isRequired;
     }
 
     if (Object.keys(updates).length === 0) {
@@ -113,6 +119,7 @@ export const FormEditPermission = ({
             error={errors.description?.message}
             disabled={readOnly}
           />
+          <Checkbox id="isRequired" label="Default Permission" {...register("isRequired")} />
         </div>
         <Button type="submit" disabled={isLoading || readOnly}>
           {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE_CHANGES}
