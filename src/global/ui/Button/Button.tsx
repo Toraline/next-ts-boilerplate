@@ -20,7 +20,7 @@ export const Button = ({
   ...buttonProps
 }: ButtonProps) => {
   const classes = clsx(
-    "align-middle bg-black rounded-md border-none cursor-pointer inline-block text-base text-white font-medium  text-center hover:bg-neutral-200",
+    "align-middle bg-black rounded-md border-none cursor-pointer inline-block text-base text-white font-medium  text-center hover:bg-neutral-200 disabled:border-none disabled:bg-neutral-300 disabled:text-neutral-100 disabled:cursor-default ",
     {
       "bg-transparent border-none text-black hover:bg-transparent": variant === "transparent",
       "p-0": size === "xs",
