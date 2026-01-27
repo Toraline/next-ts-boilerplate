@@ -90,35 +90,42 @@ export default function RolesTable({
     {
       key: "actions",
       label: ROLES_UI.TABLE_COLUMNS.ACTIONS,
-      render: (item) => (
-        <div className="flex gap-2">
-          {hasManageRolesPermission && (
-            <>
-              <Button
-                href={`/admin/roles/${item.id}`}
-                className="text-blue-500 hover:underline disabled:opacity-50 cursor-pointer"
-              >
-                {GLOBAL_UI.ACTIONS.EDIT}
-              </Button>
-              <Button
-                id="delete-button"
-                type="button"
-                className="text-red-500 hover:underline disabled:opacity-50
+      render: (item: Role) => {
+        const rowDeleting = deleteRoleMutation.variables === item.id;
+        const errorDeletingRow = deleteRoleMutation.isError && rowDeleting;
+
+        return (
+          <div className="flex flex-col gap-1">
+            <div className="flex gap-2">
+              {hasManageRolesPermission && (
+                <>
+                  <Button
+                    href={`/admin/roles/${item.id}`}
+                    className="text-blue-500 hover:underline disabled:opacity-50 cursor-pointer"
+                  >
+                    {GLOBAL_UI.ACTIONS.EDIT}
+                  </Button>
+                  <Button
+                    id="delete-button"
+                    type="button"
+                    className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
-                onClick={() => onDelete(item.id)}
-                disabled={deleteRoleMutation.isPending}
-              >
-                {deleteRoleMutation.isPending
-                  ? GLOBAL_UI.BUTTONS.DELETING
-                  : GLOBAL_UI.ACTIONS.DELETE}
-              </Button>
-            </>
-          )}
-          {deleteRoleMutation.error && (
-            <p className="error text-sm">{deleteRoleMutation.error.message}</p>
-          )}
-        </div>
-      ),
+                    onClick={() => onDelete(item.id)}
+                    disabled={deleteRoleMutation.isPending && errorDeletingRow}
+                  >
+                    {deleteRoleMutation.isPending && errorDeletingRow
+                      ? GLOBAL_UI.BUTTONS.DELETING
+                      : GLOBAL_UI.ACTIONS.DELETE}
+                  </Button>
+                </>
+              )}
+            </div>
+            {errorDeletingRow && (
+              <p>{deleteRoleMutation.error && deleteRoleMutation.error.message}</p>
+            )}
+          </div>
+        );
+      },
     },
   ];
   return (
