@@ -43,6 +43,10 @@ export const FormEditPermission = ({
     setNoChangesMessage(null);
     const updates: Record<string, unknown> = {};
 
+    if (data.key !== initialState.key) {
+      updates.key = data.key;
+    }
+
     if (data.name !== initialState.name) {
       updates.name = data.name;
     }
@@ -98,7 +102,6 @@ export const FormEditPermission = ({
             type="text"
             error={errors.key?.message}
             placeholder={PERMISSIONS_UI.PLACEHOLDERS.KEY}
-            disabled
           />
         </div>
         <div>
