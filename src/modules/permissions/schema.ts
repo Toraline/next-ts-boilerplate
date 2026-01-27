@@ -67,13 +67,14 @@ export const updatePermissionSchema = z
     name: permissionNameSchema.optional(),
     description: permissionDescriptionSchema,
     isRequired: permissionIsRequiredSchema,
+    key: permissionKeySchema.optional(),
   })
   .refine(
     (value) =>
       typeof value.name !== "undefined" ||
-      typeof value.description !== "undefined" || {
-        message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED,
-      },
+      typeof value.description !== "undefined" ||
+      typeof value.key !== "undefined",
+    { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
 
 export const permissionsListFiltersSchema = listPermissionsQuerySchema

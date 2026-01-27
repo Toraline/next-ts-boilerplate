@@ -85,6 +85,16 @@ export async function updatePermission(id: string, raw: unknown, options?: Audit
   if (typeof payload.name !== "undefined") {
     updates.name = payload.name.trim();
   }
+  if (payload.key) {
+    const key = payload.key.trim();
+    if (key !== permission.key) {
+      const existing = await permissionRepo.permissionByKey(key);
+      if (existing) {
+        throw new ConflictError("Permission key already exists");
+      }
+      updates.key = key;
+    }
+  }
 
   if (typeof payload.description !== "undefined") {
     updates.description =
