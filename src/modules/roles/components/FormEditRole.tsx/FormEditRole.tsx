@@ -61,7 +61,10 @@ export default function FormEditRole({
       updates.description = data.description;
     }
 
-    if (data.permissionKeys !== initialState.permissions) {
+    const currentPermissions = [...(data.permissionKeys || [])].sort().join(",");
+    const initialPermissions = [...(initialState.permissions || [])].sort().join(",");
+
+    if (currentPermissions !== initialPermissions) {
       updates.permissionKeys = data.permissionKeys;
     }
 
