@@ -76,7 +76,9 @@ export const FormNewUser = () => {
           type="url"
           id="imageUrlInput"
           placeholder={USER_CONSTANTS.PLACEHOLDERS.PROFILE_PICTURE}
-          {...register("avatarUrl")}
+          {...register("avatarUrl", {
+            setValueAs: (value) => (value === "" ? undefined : value),
+          })}
           error={errors.avatarUrl?.message}
         />
 
