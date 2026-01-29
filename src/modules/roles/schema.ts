@@ -32,7 +32,7 @@ export const createRoleSchema = z.object({
 });
 
 export const listRolesQuerySchema = paginationSchema.extend({
-  search: z.string().trim().min(1).optional(),
+  search: z.string().trim().optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "key"]).default("createdAt"),
   sortDir: sortDirectionSchema.default("desc"),
 });

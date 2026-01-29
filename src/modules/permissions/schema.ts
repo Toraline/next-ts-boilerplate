@@ -30,7 +30,7 @@ export const createPermissionSchema = z.object({
 });
 
 export const listPermissionsQuerySchema = paginationSchema.extend({
-  search: z.string().trim().min(1).optional(),
+  search: z.string().trim().optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "key", "isRequired"]).default("createdAt"),
   sortDir: sortDirectionSchema.default("desc"),
 });
