@@ -3,7 +3,6 @@ import { GLOBAL_UI } from "global/constants";
 import { Button, Field, TextArea } from "global/ui";
 import { Checkbox } from "global/ui/Checkbox";
 import { usePermissionsList } from "modules/permissions/hooks/usePermissionsList";
-import { PERMISSION_KEYS } from "modules/permissions/constants";
 import { ROLE_ERRORS } from "modules/roles/constants/errors";
 import { ROLES_SUCCESSES } from "modules/roles/constants/successes";
 import { ROLES_UI } from "modules/roles/constants/ui";
@@ -28,15 +27,7 @@ export default function FormEditRole({
   readOnly = false,
 }: FormEditRoleProps) {
   const fetchPermissions = usePermissionsList();
-
   const updateRoleMutation = useUpdateRole();
-
-  const lockedPermissions = {
-    [PERMISSION_KEYS.CATEGORIES_VIEW]: true,
-    [PERMISSION_KEYS.CATEGORIES_EDIT]: true,
-    [PERMISSION_KEYS.TASKS_VIEW]: true,
-    [PERMISSION_KEYS.TASKS_EDIT]: true,
-  };
 
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null);
 
@@ -60,7 +51,7 @@ export default function FormEditRole({
     const updates: Record<string, unknown> = {};
 
     if (data.key !== initialState.key) {
-      updates.key = data.key;
+      updates.key = data.key.toUpperCase();
     }
 
     if (data.name !== initialState.name) {
@@ -70,7 +61,10 @@ export default function FormEditRole({
       updates.description = data.description;
     }
 
-    if (data.permissionKeys !== initialState.permissions) {
+    const currentPermissions = [...(data.permissionKeys || [])].sort().join(",");
+    const initialPermissions = [...(initialState.permissions || [])].sort().join(",");
+
+    if (currentPermissions !== initialPermissions) {
       updates.permissionKeys = data.permissionKeys;
     }
 
@@ -110,7 +104,7 @@ export default function FormEditRole({
       {updateRoleMutation.error && <div>{updateRoleMutation.error.message}</div>}
       {noChangesMessage && <div>{noChangesMessage}</div>}
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <div>
+        <div className="flex flex-row">
           <Field
             label={ROLES_UI.LABELS.NAME}
             {...register("name")}
@@ -150,13 +144,13 @@ export default function FormEditRole({
               render={({ field }) => {
                 const value = field.value ?? [];
                 const isChecked =
-                  value.some((key) => key === permission.key) || lockedPermissions[permission.key];
+                  value.some((key) => key === permission.key) || permission.isRequired;
                 return (
                   <Checkbox
                     id={permission.key}
                     label={permission.name}
                     checked={isChecked}
-                    disabled={readOnly || lockedPermissions[permission.key]}
+                    disabled={readOnly || permission.isRequired}
                     onChange={(e) => handleChange(value, e, permission, field)}
                   />
                 );

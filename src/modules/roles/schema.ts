@@ -32,7 +32,7 @@ export const createRoleSchema = z.object({
 });
 
 export const listRolesQuerySchema = paginationSchema.extend({
-  search: z.string().trim().min(1).optional(),
+  search: z.string().trim().optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "key"]).default("createdAt"),
   sortDir: sortDirectionSchema.default("desc"),
 });
@@ -81,6 +81,7 @@ export const updateRoleSchema = z
     (value) =>
       typeof value.name !== "undefined" ||
       typeof value.description !== "undefined" ||
+      typeof value.key !== "undefined" ||
       typeof value.permissionKeys !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );

@@ -146,6 +146,17 @@ export async function updateRole(id: string, raw: unknown, options?: AuditLogOpt
         : (payload.description ?? null);
   }
 
+  if (payload.key) {
+    const key = payload.key.trim();
+    if (key !== role.key) {
+      const existing = await roleRepo.roleByKey(key);
+      if (existing) {
+        throw new ConflictError("Role key already exists");
+      }
+      updates.key = key;
+    }
+  }
+
   if (Object.keys(updates).length) {
     await roleRepo.roleUpdate(id, updates);
   }

@@ -3,12 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GLOBAL_UI } from "global/constants";
 import { Button, Field, TextArea } from "global/ui";
+import { Checkbox } from "global/ui/Checkbox";
+import { usePermissionsList } from "modules/permissions/hooks/usePermissionsList";
 import { ROLE_ERRORS, ROLE_SUCCESSES, ROLES_UI } from "modules/roles/constants";
 import { useCreateRole } from "modules/roles/hooks/useCreateRole";
 import { createRoleSchema } from "modules/roles/schema";
 import { CreateRole } from "modules/roles/types";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export const FormNewRole = () => {
@@ -34,6 +36,7 @@ export const FormNewRole = () => {
   };
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -45,7 +48,17 @@ export const FormNewRole = () => {
       description: "",
     },
   });
+  const fetchPermissions = usePermissionsList();
   const isLoading = createRoleMutation.isPending || isSubmitting;
+  const handleChange = (value: string[], e, permission, field) => {
+    const checked = e.target.checked;
+
+    if (checked) {
+      field.onChange([...value, permission.key]);
+    } else {
+      field.onChange(value.filter((key) => key !== permission.key));
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -75,6 +88,28 @@ export const FormNewRole = () => {
           {...register("description")}
           error={errors.description?.message}
         />
+        <h1>Permissions</h1>
+        {fetchPermissions.data?.items.map((permission) => (
+          <Controller
+            key={permission.key}
+            name="permissionKeys"
+            control={control}
+            render={({ field }) => {
+              const value = field.value ?? [];
+              const isChecked =
+                value.some((key) => key === permission.key) || permission.isRequired;
+              return (
+                <Checkbox
+                  id={permission.key}
+                  label={permission.name}
+                  checked={isChecked}
+                  disabled={permission.isRequired}
+                  onChange={(e) => handleChange(value, e, permission, field)}
+                />
+              );
+            }}
+          />
+        ))}
         <div className="flex p-4">
           <Button aria-label="save" type="submit" disabled={isLoading}>
             {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE}

@@ -34,7 +34,7 @@ export default function Page() {
 
   return (
     <AuthGuard>
-      <div>
+      <div className="flex-col flex pt-18 pl-41 pr-6 gap-15 max-w-xl">
         <FormNewRole />
       </div>
     </AuthGuard>

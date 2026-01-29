@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GLOBAL_UI } from "global/constants";
 import { Button, Field, TextArea } from "global/ui";
+import { Checkbox } from "global/ui/Checkbox";
 import { PERMISSION_ERRORS } from "modules/permissions/constants/errors";
 import { PERMISSION_SUCCESSES } from "modules/permissions/constants/successes";
 import { PERMISSIONS_UI } from "modules/permissions/constants/ui";
@@ -35,6 +36,7 @@ export const FormNewPermission = () => {
       key: "",
       name: "",
       description: "",
+      isRequired: false,
     },
   });
 
@@ -70,6 +72,8 @@ export const FormNewPermission = () => {
           {...register("description")}
           error={errors.description?.message}
         />
+        <Checkbox id="isRequired" label="Default Permission" {...register("isRequired")} />
+
         <div className="flex p-4">
           <Button aria-label="save" type="submit" disabled={isLoading}>
             {isLoading ? GLOBAL_UI.BUTTONS.SAVING : GLOBAL_UI.BUTTONS.SAVE}

@@ -34,6 +34,7 @@ export async function createPermission(raw: unknown, options?: AuditLogOptions) 
       typeof payload.description === "string"
         ? payload.description.trim()
         : (payload.description ?? null),
+    isRequired: typeof payload.isRequired == "boolean" ? payload.isRequired.valueOf() : false,
   });
 
   const permission = mapPermissionToPublic(created);
@@ -84,12 +85,26 @@ export async function updatePermission(id: string, raw: unknown, options?: Audit
   if (typeof payload.name !== "undefined") {
     updates.name = payload.name.trim();
   }
+  if (payload.key) {
+    const key = payload.key.trim();
+    if (key !== permission.key) {
+      const existing = await permissionRepo.permissionByKey(key);
+      if (existing) {
+        throw new ConflictError("Permission key already exists");
+      }
+      updates.key = key;
+    }
+  }
 
   if (typeof payload.description !== "undefined") {
     updates.description =
       typeof payload.description === "string"
         ? payload.description.trim()
         : (payload.description ?? null);
+  }
+
+  if (typeof payload.isRequired !== "undefined") {
+    updates.isRequired = payload.isRequired ?? null;
   }
 
   if (Object.keys(updates).length) {
