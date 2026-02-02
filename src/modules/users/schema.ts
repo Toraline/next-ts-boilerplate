@@ -7,7 +7,7 @@ export const userStatusSchema = z.enum(["ACTIVE", "INVITED", "SUSPENDED"]);
 
 export const userIdSchema = z.cuid();
 
-export const emailSchema = z.string().trim().email();
+export const emailSchema = z.email().trim();
 
 export const roleIdSchema = z.cuid();
 export const roleKeySchema = z.string().trim().min(1).max(120);
@@ -25,7 +25,7 @@ export const nameSchema = z
   .min(1, VALIDATION_MESSAGES.NAME_TOO_SHORT)
   .max(120, VALIDATION_MESSAGES.NAME_TOO_LONG);
 
-export const avatarUrlSchema = z.string().trim().url();
+export const avatarUrlSchema = z.url().trim().optional().nullable();
 
 export const tenantIdSchema = z.string().trim().min(1).max(120);
 
@@ -37,7 +37,7 @@ const clerkUserIdOptionalSchema = clerkUserIdSchema.optional();
 export const createUserSchema = z.object({
   email: emailSchema,
   name: nameSchema,
-  avatarUrl: avatarUrlSchema.optional(),
+  avatarUrl: avatarUrlSchema,
   // BO-230 remove the optional from the status when adding Clerk
   status: userStatusSchema.optional(),
   tenantId: tenantIdOptionalSchema,
