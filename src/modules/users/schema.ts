@@ -25,7 +25,7 @@ export const nameSchema = z
   .min(1, VALIDATION_MESSAGES.NAME_TOO_SHORT)
   .max(120, VALIDATION_MESSAGES.NAME_TOO_LONG);
 
-export const avatarUrlSchema = z.string().trim().url();
+export const avatarUrlSchema = z.string().trim().optional();
 
 export const tenantIdSchema = z.string().trim().min(1).max(120);
 
@@ -80,7 +80,7 @@ export const listUsersQuerySchema = paginationSchema.extend({
   email: emailSchema.optional(),
   clerkUserId: clerkUserIdSchema.optional(),
   includeDeleted: z.coerce.boolean().optional(),
-  search: z.string().trim().min(1).optional(),
+  search: z.string().trim().optional(),
   sortBy: z.enum(["createdAt", "updatedAt", "name", "email", "lastLoginAt"]).default("createdAt"),
   sortDir: sortDirectionSchema.default("desc"),
 });
@@ -183,3 +183,10 @@ export const permissionWithAssignmentSchema = z.object({
 export const listUserPermissionsResponseSchema = z.object({
   items: z.array(permissionWithAssignmentSchema),
 });
+export const usersListFiltersSchema = listUsersQuerySchema
+  .pick({
+    search: true,
+    sortBy: true,
+    sortDir: true,
+  })
+  .partial();
