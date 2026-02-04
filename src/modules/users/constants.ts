@@ -1,10 +1,18 @@
 export const USER_CONSTANTS = {
   ERRORS: {
     CREATE_USER_ERRORS: "Fail to create user",
+    UPDATE_USER_ERROR: "Fail to update user",
+    ERROR_LOADING_USER: "Fail to load user",
+    USER_NOT_FOUND: "User not found",
+  },
+
+  FORM_MESSAGES: {
+    NO_CHANGES_DETECTED: "No changes detected. Please modify at least one field before saving.",
   },
 
   SUCCESSES: {
     CREATE_USER_SUCCESS: "User created succesfully",
+    UPDATE_USER_SUCCESS: "User updated succesfully",
   },
 
   LABELS: {
@@ -13,6 +21,10 @@ export const USER_CONSTANTS = {
     PROFILE_PICTURE: "Profile picture url",
     TENANT_ID: "Tenant ID",
     STATUS: "Status",
+  },
+
+  LOADING: {
+    LOADING_USER: "Loading user...",
   },
 
   PLACEHOLDERS: {

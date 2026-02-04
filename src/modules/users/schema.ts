@@ -70,7 +70,8 @@ export const updateUserSchema = z
       typeof value.tenantId !== "undefined" ||
       typeof value.clerkUserId !== "undefined" ||
       typeof value.lastLoginAt !== "undefined" ||
-      typeof value.deletedAt !== "undefined",
+      typeof value.deletedAt !== "undefined" ||
+      typeof value.email !== "undefined",
     { message: VALIDATION_MESSAGES.AT_LEAST_ONE_FIELD_REQUIRED },
   );
 
