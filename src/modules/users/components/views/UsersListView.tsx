@@ -40,8 +40,8 @@ export default function UsersListView() {
 
   const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
 
-  const hasManageRolesPermission = permissionsResponse?.items.some(
-    (permission) => permission.key === PERMISSION_KEYS.ROLES_MANAGE,
+  const hasManageUsersPermission = permissionsResponse?.items.some(
+    (permission) => permission.key === PERMISSION_KEYS.USERS_MANAGE,
   );
 
   const {
@@ -176,7 +176,7 @@ export default function UsersListView() {
           </h3>
         </div>
       )}
-      {hasManageRolesPermission && (
+      {hasManageUsersPermission && (
         <div className="mt-4">
           <Link href="/admin/roles/new">{USER_CONSTANTS.LINKS.CREATE_USER}</Link>
         </div>
