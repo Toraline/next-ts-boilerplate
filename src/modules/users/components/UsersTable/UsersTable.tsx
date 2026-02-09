@@ -93,9 +93,6 @@ export default function UsersTable({
       key: "actions",
       label: USER_CONSTANTS.TABLE_COLUMNS.ACTIONS,
       render: (item: User) => {
-        // const rowDeleting ;
-        // const errorDeletingRow ;
-
         return (
           <div className="flex flex-col gap-1">
             <div className="flex gap-2">
@@ -112,19 +109,12 @@ export default function UsersTable({
                     type="button"
                     className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
-                    // onClick={() => onDelete(item.id)}
-                    // disabled={deleteRoleMutation.isPending && errorDeletingRow}
                   >
-                    {/* {deleteRoleMutation.isPending && errorDeletingRow
-                      ? GLOBAL_UI.BUTTONS.DELETING
-                      : GLOBAL_UI.ACTIONS.DELETE} */}
+                    {" "}
                   </Button>
                 </>
               )}
             </div>
-            {/* {errorDeletingRow && (
-              <p>{deleteRoleMutation.error && deleteRoleMutation.error.message}</p>
-            )} */}
           </div>
         );
       },
