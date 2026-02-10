@@ -3,6 +3,7 @@ export const USER_CONSTANTS = {
     CREATE_USER_ERRORS: "Fail to create user",
     UPDATE_USER_ERROR: "Fail to update user",
     ERROR_LOADING_USER: "Fail to load user",
+    ERROR_LOADING_USERS: "Fail to load users",
     USER_NOT_FOUND: "User not found",
   },
 
