@@ -1,6 +1,11 @@
 export const USER_CONSTANTS = {
+  CONFIRMATIONS: {
+    DELETE_USER: "",
+  },
+
   ERRORS: {
     CREATE_USER_ERRORS: "Fail to create user",
+    DELETE_USER_ERROR: "Fail to delete user",
     LOADING_USERS: "Fail to load users",
   },
 
@@ -12,6 +17,7 @@ export const USER_CONSTANTS = {
 
   SUCCESSES: {
     CREATE_USER_SUCCESS: "User created succesfully",
+    DELETE_USER_SUCCESS: "User deleted succesfully",
   },
 
   LABELS: {

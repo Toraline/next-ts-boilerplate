@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
-import { ConflictError, NotFoundError } from "lib/http/errors";
+import { BadRequestError, ConflictError, NotFoundError } from "lib/http/errors";
 import { AuditLogOptions, recordAuditLog, resolveAuditActorFromOptions } from "modules/audit";
 import {
   assignUserRoleSchema,
@@ -263,6 +263,11 @@ export async function deleteUser(id: string, options?: AuditLogOptions) {
 
   if (existing.deletedAt) {
     throw new NotFoundError("User not found");
+  }
+
+  const usersCount = await userRepo.usersCount(id);
+  if (usersCount > 0) {
+    throw new BadRequestError("Cannot delete user in use.");
   }
 
   const before = mapToPublic(existing);
