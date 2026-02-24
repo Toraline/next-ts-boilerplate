@@ -1,6 +1,14 @@
 export const USER_CONSTANTS = {
   ERRORS: {
     CREATE_USER_ERRORS: "Fail to create user",
+    UPDATE_USER_ERROR: "Fail to update user",
+    ERROR_LOADING_USER: "Fail to load user",
+    ERROR_LOADING_USERS: "Fail to load users",
+    USER_NOT_FOUND: "User not found",
+  },
+
+  FORM_MESSAGES: {
+    NO_CHANGES_DETECTED: "No changes detected. Please modify at least one field before saving.",
     LOADING_USERS: "Fail to load users",
   },
 
@@ -12,6 +20,7 @@ export const USER_CONSTANTS = {
 
   SUCCESSES: {
     CREATE_USER_SUCCESS: "User created succesfully",
+    UPDATE_USER_SUCCESS: "User updated succesfully",
   },
 
   LABELS: {
@@ -22,13 +31,13 @@ export const USER_CONSTANTS = {
     STATUS: "Status",
   },
 
-  LINKS: {
-    CREATE_USER: "Create User",
-  },
-
   LOADING: {
     LOADING_USER: "Loading user...",
     LOADING_USERS: "Loading users...",
+  },
+
+  LINKS: {
+    CREATE_USER: "Create User",
   },
 
   PAGINATION: {

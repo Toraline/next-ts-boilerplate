@@ -1,5 +1,6 @@
 import z from "zod";
 import {
+  updateUserSchema,
   createUserSchema,
   listUsersResponseSchema,
   listUsersQuerySchema,
@@ -10,6 +11,8 @@ import {
 export type CreateUser = z.infer<typeof createUserSchema>;
 
 export type User = z.infer<typeof userPublicSchema>;
+
+export type UpdateUser = z.infer<typeof updateUserSchema>;
 
 export type ListUsersQuery = z.infer<typeof listUsersQuerySchema>;
 
