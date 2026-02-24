@@ -1,6 +1,6 @@
 export const USER_CONSTANTS = {
   CONFIRMATIONS: {
-    DELETE_USER: "",
+    DELETE_USER: "Are you sure you want to delete this user?",
   },
 
   ERRORS: {
