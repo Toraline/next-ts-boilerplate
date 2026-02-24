@@ -88,7 +88,7 @@ export default function UsersListView() {
   if (error) {
     return (
       <div className="flex flex-col items-center h-lvh">
-        <h1>{USER_CONSTANTS.ERRORS.LOADING_USERS}</h1>
+        <h1>{USER_CONSTANTS.ERRORS.ERROR_LOADING_USERS}</h1>
         <p className="error">{GLOBAL_UI.MESSAGES.SOMETHING_WENT_WRONG}</p>
       </div>
     );
