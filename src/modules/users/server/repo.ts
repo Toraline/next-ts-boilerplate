@@ -26,6 +26,11 @@ export const userUpdate = (id: string, data: Prisma.UserUpdateInput) =>
     data,
   });
 
+export const usersCount = (id: string) =>
+  prisma.user.count({
+    where: { id },
+  });
+
 export const userDelete = (id: string) =>
   prisma.user.update({
     where: { id },

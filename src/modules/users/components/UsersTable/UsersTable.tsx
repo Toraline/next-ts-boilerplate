@@ -6,6 +6,8 @@ import { useUserPermissions } from "modules/users/hooks/useUserPermissions";
 import { PERMISSION_KEYS } from "modules/permissions/constants";
 import { User } from "modules/users/types";
 import { USER_CONSTANTS } from "modules/users/constants";
+import { useDeleteUser } from "modules/users/hooks/useDeleteUser";
+import { toast } from "sonner";
 
 const authClient = createAuthClient();
 
@@ -33,12 +35,26 @@ export default function UsersTable({
     queryFn: () => authClient.getSession(),
     retry: false,
   });
+  const deleteUserMutation = useDeleteUser();
 
   const { data: permissionsResponse } = useUserPermissions(sessionQuery.data?.user?.id);
 
   const hasManageUsersPermission = permissionsResponse?.items.some(
     (permission) => permission.key === PERMISSION_KEYS.USERS_MANAGE,
   );
+
+  const onDelete = async (id: string) => {
+    if (!confirm(USER_CONSTANTS.CONFIRMATIONS.DELETE_USER)) return;
+
+    deleteUserMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success(USER_CONSTANTS.SUCCESSES.DELETE_USER_SUCCESS);
+      },
+      onError: () => {
+        toast.error(USER_CONSTANTS.ERRORS.DELETE_USER_ERROR);
+      },
+    });
+  };
 
   const columns: TableColumn<User>[] = [
     {
@@ -93,6 +109,8 @@ export default function UsersTable({
       key: "actions",
       label: USER_CONSTANTS.TABLE_COLUMNS.ACTIONS,
       render: (item: User) => {
+        const rowDeleting = deleteUserMutation.variables === item.id;
+        const errorDeletingRow = deleteUserMutation.isError && rowDeleting;
         return (
           <div className="flex flex-col gap-1">
             <div className="flex gap-2">
@@ -109,12 +127,19 @@ export default function UsersTable({
                     type="button"
                     className="text-red-500 hover:underline disabled:opacity-50
             cursor-pointer"
+                    onClick={() => onDelete(item.id)}
+                    disabled={deleteUserMutation.isPending && errorDeletingRow}
                   >
-                    {" "}
+                    {deleteUserMutation.isPending && errorDeletingRow
+                      ? GLOBAL_UI.BUTTONS.DELETING
+                      : GLOBAL_UI.ACTIONS.DELETE}
                   </Button>
                 </>
               )}
             </div>
+            {errorDeletingRow && (
+              <p>{deleteUserMutation.error && deleteUserMutation.error.message}</p>
+            )}
           </div>
         );
       },
